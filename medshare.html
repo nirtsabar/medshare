@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תכנית תרופות</title>
+    <link rel="icon" href="https://medlookup.org/img/group_2.svg">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <style>
+        * {
+            font-size: x-large;
+        }
+
+        ::-webkit-scrollbar {
+            width: 20px;
+            height: 20px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #646b91;
+            border-radius: 6px;
+        }
+
+        #medicationForm::-webkit-scrollbar {
+            height: 30px;
+        }
+
+        /* For Firefox */
+        #medicationForm {
+            scrollbar-width: thick;
+        }
+
+        .container::-webkit-scrollbar {
+            height: 30px;
+            /* Adjust the height to make it thicker */
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            width: 95%;
+        }
+
+        small {
+            font-size: small;
+        }
+
+        muted-text {
+            color: #6c757d;
+        }
+
+        .modal-body-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        #imageInput {
+            touch-action: auto;
+            /* Explicit default touch behavior for file input */
+            font-size: xx-large;
+            line-height: 50%;
+            padding: 40px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            cursor: pointer;
+        }
+
+        #data_text {
+            white-space: pre;
+        }
+
+        figure,
+        menu,
+        #img_menu,
+        #deetails {
+            border-style: solid;
+            border-color: rgb(46, 43, 226);
+            border-radius: 10px;
+            padding: 1%;
+            justify-content: center;
+        }
+
+        menu {
+            touch-action: auto !important;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        canvas {
+            touch-action: none;
+            /* Initially prevents touch actions on canvas */
+        }
+
+        /* The thumbnail picked - shown here (details) */
+        #mdlThumbCnv {
+            visibility: hidden;
+            position: relative;
+            border: 2px solid rgb(131, 2, 156);
+            cursor: move;
+            top: 0;
+            left: 0;
+            pointer-events: all;
+            box-sizing: border-box;
+            /*   box-shadow: 20px 20px 50px 50px #8888888c, -20px -20px 50px 50px #88888873; */
+        }
+
+        .label-pointer {
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #000000;
+            min-height: 100vh;
+            max-width: fit-content;
+            max-height: 100%;
+        }
+
+        h1 {
+            color: #adc5f7;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .patient-controls {
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            /* min-width: fit-content; */
+            max-width: fit-content;
+            margin: 0;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-input {
+            color: white;
+            display: flex;
+            align-items: left;
+            width: 100%;
+        }
+
+        #patientName {
+            width: 100%;
+            margin: 5px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 20px;
+
+            min-width: 0%;
+        }
+
+        .container {
+            max-width: fit-content;
+            margin: auto;
+            background: rgb(35, 36, 36);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
+            overflow: auto;
+        }
+
+        .container>div {
+            background-color: #3e3e3f;
+            padding: 0;
+            font-size: 30px;
+            align-items: center;
+        }
+
+
+        form {
+            scrollbar-color: #adc5f7 #6366f1;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: fit-content;
+        }
+
+        #medicationForm::-webkit-scrollbar {
+            height: 60px;
+        }
+
+        /* For Firefox */
+        #medicationForm {
+            scrollbar-width: thick;
+        }
+
+        .form-grid {
+            gap: 5px;
+            margin: 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            table-layout: fixed;
+            border-radius: 8px;
+            background-color: #52d1f8;
+            padding: 10px;
+            gap: 1px;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 4em;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 20px;
+            align-items: center;
+            min-width: 0%;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            margin: 6px;
+            border: 1px solid #020f83;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.486);
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            background-color: #3b82f6;
+            height: 100%;
+        }
+
+        .btn-add {
+            background-color: #029e0f;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+
+        .btn-delete {
+            background-color: #757474;
+            padding: 6px;
+        }
+
+        .btn-open {
+            background-color: #6366f1;
+        }
+
+        .btn-save {
+            background-color: #10b981;
+        }
+
+        .share-button {
+            background-color: #037c30;
+        }
+
+        .paste-button {
+            background-color: #8B5CF6;
+        }
+
+        .btn-confirm-paste {
+            background-color: #8B5CF6;
+        }
+
+        .btn-lookup {
+            background-color: #594b8b;
+            padding: 6px;
+        }
+
+        .btn-lookup:hover {
+            background-color: #475569;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            border-collapse: collapse;
+            background: white;
+            flex: left;
+            align-items: center;
+        }
+
+        .timing {
+            width: 90px;
+        }
+
+        .medName {
+            width: 120px;
+        }
+
+        .dose {
+            width: 50px;
+        }
+
+        .quantity {
+            width: 60px;
+        }
+
+        .note {
+            width: 50px;
+        }
+
+        .info {
+            width: 30px;
+        }
+
+        .imager {
+            width: 40px;
+        }
+
+        .action {
+            width: 40px;
+        }
+
+        th,
+        td {
+            background-color: #d8e5f8;
+            border: 1px solid #ddd;
+            margin: auto;
+            padding: 3px;
+        }
+
+        th {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .med-image {
+            width: 100px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 96%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+        }
+
+        .modal-buttons {
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            vertical-align: middle;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background-color: #4b638b;
+        }
+
+        .btn-confirm-delete {
+            background-color: #ef4444;
+        }
+
+        .sorting-icon {
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .paste-area {
+            width: 100%;
+            min-height: 200px;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        /* Specific styles for img_handler modal */
+        #img_handler_modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #img_handler_modal .modal-content {
+            background-color: white;
+            padding: 7px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            /*            width: 95%; /* for smartphone screen */
+            text-align: center;
+        }
+
+        #img_handler_modal .modal-buttons {
+            /*             display: flex;
+            justify-content: center; */
+            height: 100px;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #img_handler_modal button {
+            height: 60px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #img_handler_modal .modal-buttons .btn-cancel {
+            background-color: #324464;
+        }
+
+        #img_handler_modal .modal-buttons .btn-confirm {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        [contenteditable="true"] {
+            padding: 5px;
+            border: 1px solid;
+            /* transparent */
+            transition: border-color 0.2s;
+        }
+
+        [contenteditable="true"]:hover {
+            border-color: #ddd;
+            background-color: #f8f8f8;
+        }
+
+        [contenteditable="true"]:focus {
+            outline: none;
+            border-color: #b1c4e2;
+            background-color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .patient-controls {
+                flex-direction: column;
+                display: flex;
+            }
+
+            .patient-input {
+                color: white;
+                display: flex;
+                align-items: left;
+                width: 100%;
+            }
+
+            #patientName {
+                width: 100%;
+                margin: 5px;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 20px;
+                min-width: 0%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="language-selector">
+            <label for="language" data-text-key="language">Language:</label>
+            <select id="language" onchange="handleLanguageChange(event)">
+                <option value="en">English</option>
+                <!--                 <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="ar">العربية</option> -->
+                <option value="he">עברית</option>
+            </select>
+        </div>
+    </div>
+    <div class="container">
+
+        <h1 data-text-key="title"></h1>
+    </div>
+    <!-- Patient name and info-control buttons   -->
+    <div class="container">
+        <div class="patient-controls">
+            <div class="patient-input">
+                <i data-feather="user"></i> <input type="text" id="patientName" required>
+            </div>
+            <div class="pt-btn">
+                <button class="btn-open" onclick="openPatientData()">
+                    <i data-feather="folder"></i>
+                    Open
+                </button>
+                <button class="btn-save" onclick="savePatientData()">
+                    <i data-feather="save"></i>
+                    Save
+                </button>
+                <button class="share-button" onclick="shareViaWhatsApp()">
+                    <i data-feather="share-2"></i>
+                    Share
+                </button>
+                <button class="paste-button" onclick="showPasteModal()">
+                    <i data-feather="clipboard"></i>
+                    Paste
+                </button>
+            </div>
+        </div>
+        <!-- Medications table   -->
+        <div class="scroll-wrapper" style="overflow-x: auto">
+            <form id="medicationForm">
+                <!-- <div class="form-grid" style="display: flex; flex-direction: column"> -->
+                <table id="medicationTable" class="table-container">
+                    <tr id="tHeader">
+                        <th id="timing_header" onclick="sortTable()" class="timing">timing</th>
+                        <th id="medName_header" class="medName">Medicine Name שם תרופה</th>
+                        <th id="dose_header" class="dose">Dose <i data-feather="circle"></i> מינון</th>
+                        <th id="quantity_header" class="quantity">Quantity <i data-feather="pie-chart"></i><i
+                                data-feather="database"></i> כמות</th>
+                        <th id="note_header" class="note">Note <i data-feather="feather"></i> הערה</th>
+                        <th id="info_header" class="info"><i data-feather="info"></i></th>
+                        <th id="pic_header" class="imager"><i data-feather="eye"></i></th>
+                        <th id="action_header" class="action">Action פעולה</th>
+                    </tr>
+                    <!--  Input Row of the form  -->
+                    <tr id="tInputForm">
+                        <th class="timing">
+                            <label for="timing_header" class="label-select" title="timing">
+                                <i data-feather="clock"></i></label>
+                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required>
+                                <option value="">&#x1F553?</option>
+                                <option value="As needed">&#x1F6A8 SOS</option>
+                                <option value="Morning">&#x1F413;&#xFE0F AM</option>
+                                <option value="Noon">&#x2600;&#xFE0F Noon</option>
+                                <option value="Evening">&#x1F319 PM</option>
+                            </select>
+                            <small class="form-text text-muted">Timing מתי</small>
+                        </th>
+                        <th class="medName">
+                            <label for="medicineName"> <!-- Sticker svg as label -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+                                    <!-- Main sticker body -->
+                                    <path
+                                        d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
+                                        fill="white" stroke="black" stroke-width="1" filter="url(#shadow)" />
+                                    <!-- Peeled corner with updated path -->
+                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="#e9ecef"
+                                        stroke="black" stroke-width="1" />
+                                </svg>
+                            </label>
+                            <input id="medicineName" type="text" name="medicineName"
+                                placeholder="Medicine Name שם תרופה" required>
+                            <small class="form-text text-muted">שם התרופה</small>
+                        </th>
+                        <th class="dose"><input type="text" name="dose" placeholder="Dose מינון"></th>
+                        <th class="quantity"><input type="number" name="quantity" step="0.25"
+                                placeholder="Quantity כמות" min="0">
+                        </th>
+                        <th class="note"><input type="text" name="note" placeholder="Note הערה"></th>
+                        <th class="info">
+                            <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
+                                <i data-feather="clipboard"></i>
+                            </button>
+                        </th>
+                        <th class="imager">
+                            <label for="take_pic" class="label-pointer">
+                                <!--      <i data-feather="camera"></i>-->
+                                <button id="take_pic" class="take_pic" type="button" onclick="img_handler(true)">
+                                    <i data-feather="camera" style="color:#0f3883"></i>
+                                </button>
+                                <canvas id="formThumbCnv" name="thumb" width="100" height="50"
+                                    style="border:1px solid grey">
+                                </canvas>
+                            </label>
+                            <!-- <input type="file" id="picture" name="picture" style="display:none" onchange="thumbnailing(event)"
+                    accept="image/*"> -->
+                        </th>
+                        <th class="action"><button type="submit" class="btn-add">
+                                <i data-feather="check"></i>
+                            </button></th>
+                    </tr id="tInputForm">
+                    <!-- Data rows will be added here via the script -->
+                </table>
+            </form>
+        </div>
+
+    </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top: 0;">Confirm Delete</h2>
+            <p>Are you sure you want to delete this medication?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeDeleteModal()">
+                    <i data-feather="x"></i>
+                    Cancel
+                </button>
+                <button class="btn-confirm-delete" id="confirmDelete">
+                    <i data-feather="trash-2"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pasteModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top: 0;">Paste Medication Data</h2>
+            <p>Paste the shared medication data below:</p>
+            <textarea id="pasteArea" class="paste-area" rows="10"
+                placeholder="Paste medication schedule here..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closePasteModal()">
+                    <i data-feather="x"></i>
+                    Cancel
+                </button>
+                <button class="btn-confirm-paste" onclick="processePastedData()">
+                    <i data-feather="check"></i>
+                    Import
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="img_handler_modal" class="modal">
+        <div class="modal-content">
+            <header>
+                <h2 style="margin-top: 0;">Taking Medication Picture</h2>
+            </header>
+
+            <div class="modal-body-vertical">
+                <menu id="img_menu" class="modal-buttons">
+                    <button class="btn-cancel" onclick="closeImgHandlerModal()">
+                        <i data-feather="x"></i>
+                    </button>
+                    <button onclick="document.getElementById('imageInput').click()"
+                        style="padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
+                        <svg viewBox="0 0 200 200" width="100" height="100"
+                            xmlns="http://www.w3.org/2000/svg"><!--camera icon-->
+                            <rect x="40" y="60" width="120" height="80" rx="10" fill="#3b82f6" stroke="white"
+                                stroke-width="4" />
+                            <circle cx="100" cy="100" r="30" fill="#3b82f6" stroke="white" stroke-width="4" />
+                            <circle cx="100" cy="100" r="20" fill="#3b82f6" stroke="white" stroke-width="4" />
+                            <rect x="140" y="70" width="20" height="15" fill="white" />
+                        </svg>
+                    </button>
+                    <button id="frame_to_thumb" style="padding: 20px;"> <!--onclick="frame_to_thumb()"-->
+                        <i data-feather="airplay"></i>
+                    </button>
+                    <button id="ok_thumb" class="btn-confirm" style="padding: 20px;">
+                        <i data-feather="check-circle"></i>
+                    </button>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                </menu>
+                <div style="padding: none; overflow-y: auto;">
+                    <figure style="margin:1px;">
+                        <canvas id="mdlCanvas" alt="Medication Picture"></canvas>
+                    </figure>
+                    <div id="deetails"> <!--details for the thumbnail-->
+                        <p id="data_text"></p>
+                        <p><canvas id="mdlThumbCnv"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+
+<!-- Your React code goes here -->
+<script>
+
+    //#region main script !!!
+    // Initialize Feather icons
+    feather.replace();
+
+    let medications = [];
+    const medicationForm = document.getElementById('medicationForm');
+    const medicationTable = document.getElementById('medicationTable');
+    const patientNameInput = document.getElementById('patientName');
+    const pasteModal = document.getElementById('pasteModal');
+    const pasteArea = document.getElementById('pasteArea');
+    const formThumbCnv = document.getElementById('formThumbCnv');
+    const formThumbCtx = formThumbCnv.getContext("2d");
+    formThumbCnv.clientWidth = "100px";
+    formThumbCnv.clientHeight = "50px";
+
+    // Define timing order
+    const timingOrder = {
+        'As needed': 0,
+        'Morning': 1,
+        'Noon': 2,
+        'Evening': 3
+    };
+
+    // Update table with medications
+    function updateTable() {
+        // deleting old table data, from last data row to first data row
+        for (var i = medicationTable.rows.length - 1; i > 1; i--) {
+            medicationTable.deleteRow(i);
+        }
+        const tbody = medicationTable.querySelector('tbody');
+        // re-sorting and re-building the html data table rows
+        medications
+            .sort((a, b) => timingOrder[a.timing] - timingOrder[b.timing])
+            .forEach(med => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="updateCell(${med.id}, 'timing', this.textContent)">${med.timing}</td>
+                    <td contenteditable="true" onblur="updateCell(${med.id}, 'medicineName', this.textContent)">${med.medicineName}</td>
+                    <td contenteditable="true" onblur="updateCell(${med.id}, 'dose', this.textContent)">${med.dose}</td>
+                    <td contenteditable="true" onblur="updateCell(${med.id}, 'quantity', this.textContent)">${med.quantity}</td>
+                    <td contenteditable="true" onblur="updateCell(${med.id}, 'note', this.textContent)">${med.note}</td>
+                    <td>
+                        <button class="btn-lookup" type="button" onclick="openMedLookup('${med.medicineName}')">
+                            <i data-feather="clipboard"></i>
+                        </button>
+                    </td>
+                    <td>${med.thumb ? `<img src="${med.thumb}" class="med-image" style="width:${formThumbCnv.clientWidth}px; height:${formThumbCnv.clientHeight}px" alt="${med.medicineName}">` : ''}</td>
+                    <td>
+                        <button class="btn-delete" onclick="showDeleteModal(${med.id}, '${med.medicineName}')">
+                            <i data-feather="trash-2"></i>
+                        </button>
+                    </td>
+                `;
+                /* new debug alert 
+                alert('med.picture ='+med.picture);		*/
+                tbody.appendChild(tr);
+            });
+
+        feather.replace();
+    }
+
+    // Function to open MedLookup
+    function openMedLookup(medicineName) {
+        const url = `https://medlookup.org/he/index.html#${encodeURIComponent(medicineName)}`;
+        localStorage.setItem("freeze_mode", "freeze");
+        window.open(url, '_blank');
+    }
+
+    // Update cell content
+    function updateCell(id, field, value) {
+        const medication = medications.find(med => med.id === id);
+        if (!medication) return;
+
+        if (field === 'timing') {
+            if (!Object.keys(timingOrder).includes(value)) {
+                alert('Invalid timing value. Please use: As needed, Morning, Noon, or Evening');
+                updateTable();
+                return;
+            }
+        }
+
+        if (field === 'quantity') {
+            const numValue = parseFloat(value);
+            if (isNaN(numValue)) {
+                alert('Please enter a valid number for quantity');
+                updateTable();
+                return;
+            }
+            value = numValue;
+        }
+
+        medication[field] = value;
+
+        if (field === 'timing') {
+            sortTable();
+        }
+
+        saveCurrentState();
+    }
+
+    // Sort function
+    function sortTable() {
+        medications.sort((a, b) => {
+            return timingOrder[a.timing] - timingOrder[b.timing];
+        });
+        updateTable();
+        saveCurrentState();
+    }
+
+    // Handle form submission
+    medicationForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!patientNameInput.value.trim()) {
+            alert('Please enter patient name first');
+            return;
+        }
+        const formData = new FormData(this);
+        const picDataUrl = document.getElementById('formThumbCnv').toDataURL();
+        if (picDataUrl.length > 0) {
+            addMedication(formData, picDataUrl);
+        } else {
+            addMedication(formData, null);
+        }
+    });
+
+    // Add medication function
+    function addMedication(formData, picDataUrl) {
+        const newPic = new Image();
+        newPic
+        const medication = {
+            id: Date.now(),
+            timing: formData.get('timing'),
+            medicineName: formData.get('medicineName'),
+            dose: formData.get('dose'),
+            quantity: formData.get('quantity'),
+            note: formData.get('note'),
+            thumb: picDataUrl
+        };
+        const frmCnv = document.getElementById('formThumbCnv');
+        const frmCtx = frmCnv.getContext('2d');
+        /*         frmCnv.width=frame.width+"px";
+                frmCnv.height=frame.height+"px"; */
+        medications.push(medication);
+        medicationForm.reset();
+        frmCtx.clearRect(0, 0, frmCnv.width, frmCnv.height);
+        updateTable();
+        saveCurrentState();
+    }
+
+    // Share via WhatsApp
+    function shareViaWhatsApp() {
+        const patientName = patientNameInput.value.trim();
+        if (!patientName) {
+            alert('Please enter patient name first');
+            return;
+        }
+
+        let message = `Medication Schedule for ${patientName}:\n\n`;
+
+        const groupedMeds = medications.reduce((acc, med) => {
+            if (!acc[med.timing]) {
+                acc[med.timing] = [];
+            }
+            acc[med.timing].push(med);
+            return acc;
+        }, {});
+
+        Object.keys(groupedMeds)
+            .sort((a, b) => timingOrder[a] - timingOrder[b])
+            .forEach(timing => {
+                message += `${timing}:\n`;
+                groupedMeds[timing].forEach(med => {
+                    message += `- ${med.medicineName}`;
+                    if (med.dose) message += ` (${med.dose})`;
+                    if (med.quantity) message += ` - ${med.quantity} units`;
+                    if (med.note) message += ` - Note: ${med.note}`;
+                    message += '\n';
+                });
+                message += '\n';
+            });
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    // Paste functionality
+    function showPasteModal() {
+        pasteModal.style.display = 'block';
+        pasteArea.value = '';
+        feather.replace();
+    }
+
+    function closePasteModal() {
+        pasteModal.style.display = 'none';
+    }
+
+    function processePastedData() {
+        const pastedText = pasteArea.value.trim();
+        if (!pastedText) {
+            alert('Please paste medication data first');
+            return;
+        }
+
+        try {
+            const lines = pastedText.split('\n');
+            let currentTiming = '';
+            let newMedications = [];
+            let patientName = '';
+
+            if (lines[0].startsWith('Medication Schedule for')) {
+                patientName = lines[0].replace('Medication Schedule for', '').trim().replace(':', '');
+                patientNameInput.value = patientName;
+            }
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                if (Object.keys(timingOrder).includes(line.replace(':', ''))) {
+                    currentTiming = line.replace(':', '');
+                }
+                else if (line.startsWith('-')) {
+                    const medInfo = line.substring(1).trim();
+                    const medication = {
+                        id: Date.now() + Math.random(),
+                        timing: currentTiming,
+                        medicineName: '',
+                        dose: '',
+                        quantity: '',
+                        note: '',
+                        picture: null
+                    };
+
+                    let parts = medInfo.split(' - ');
+
+                    let nameAndDose = parts[0].split(' (');
+                    medication.medicineName = nameAndDose[0].trim();
+                    if (nameAndDose[1]) {
+                        medication.dose = nameAndDose[1].replace(')', '').trim();
+                    }
+
+                    parts.slice(1).forEach(part => {
+                        if (part.toLowerCase().startsWith('note:')) {
+                            medication.note = part.substring(5).trim();
+                        } else if (part.includes('units')) {
+                            medication.quantity = part.replace('units', '').trim();
+                        }
+                    });
+
+                    newMedications.push(medication);
+                }
+            });
+
+            if (newMedications.length > 0) {
+                medications = newMedications;
+                updateTable();
+                saveCurrentState();
+                closePasteModal();
+                alert('Medication data imported successfully');
+            } else {
+                alert('No valid medication data found in the pasted text');
+            }
+        } catch (error) {
+            alert('Error processing pasted data. Please make sure the format is correct.');
+            console.error('Error processing pasted data:', error);
+        }
+    }
+
+    // Delete confirmation modal functionality
+    const deleteModal = document.getElementById('deleteModal');
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    let medicationToDelete = null;
+
+    function showDeleteModal(id, medicineName) {
+        medicationToDelete = id;
+        deleteModal.style.display = 'block';
+        const message = deleteModal.querySelector('p');
+        message.textContent = `${t(`deleteMedication`)}${medicineName}?`;
+        feather.replace();
+    }
+
+    function closeDeleteModal() {
+        deleteModal.style.display = 'none';
+        medicationToDelete = null;
+    }
+
+    confirmDeleteBtn.addEventListener('click', function () {
+        if (medicationToDelete !== null) {
+            medications = medications.filter(med => med.id !== medicationToDelete);
+            updateTable();
+            closeDeleteModal();
+            saveCurrentState();
+        }
+    });
+
+    // Save patient data
+    function savePatientData() {
+        const patientName = patientNameInput.value.trim();
+        if (!patientName) {
+            alert('Please enter patient name');
+            return;
+        }
+        saveCurrentState();
+        alert(`Medication data saved for patient: ${patientName}`);
+    }
+
+    // Open patient data
+    function openPatientData() {
+        const patientName = patientNameInput.value.trim();
+        if (!patientName) {
+            alert('Please enter patient name');
+            return;
+        }
+
+        const savedData = localStorage.getItem(`patient_${patientName}`);
+        if (savedData) {
+            medications = JSON.parse(savedData);
+            updateTable();
+            alert(`Loaded medication data for patient: ${patientName}`);
+        } else {
+            alert(`No saved data found for patient: ${patientName}`);
+            medications = [];
+            updateTable();
+        }
+    }
+
+    // Helper function to save current state
+    function saveCurrentState() {
+        const patientName = patientNameInput.value.trim();
+        if (patientName) {
+            try {
+                localStorage.setItem(`patient_${patientName}`, JSON.stringify(medications));
+            }
+            catch (err) {
+                if (err.message === "Failed to execute 'setItem' on 'Storage': Setting the value of 'patient_e' exceeded the quota") { }
+                alert(t(`errorQuotaExceeded`) + patientName);
+            }
+        }
+    }
+
+    // Close modal if clicking outside
+    window.onclick = function (event) {
+        if (event.target === deleteModal) {
+            closeDeleteModal();
+        }
+        if (event.target === pasteModal) {
+            closePasteModal();
+        }
+    }
+    // Switch to Thumbnail if QuotaExceededError
+    //#endregion main script
+    //#region Translation
+    const translations = {
+        en: {
+            title: 'My Medication List',
+            note: 'Note',
+            language: 'Language',
+            open: 'Open',
+            save: 'Save',
+            share: 'Share',
+            paste: 'Paste',
+            timing: 'Timing',
+            medicineName: 'Medicine Name',
+            dose: 'Dose',
+            quantity: 'Quantity',
+            action: 'Action',
+            delete: 'Delete',
+            confirmDelete: 'Confirm Delete',
+            cancel: 'Cancel',
+            import: 'Import',
+            patientName: 'Patient Name',
+            patientNamePlaceholder: 'Patient Name',
+            patientNameRequired: 'Please enter patient name',
+            invalidTiming: 'Invalid timing value. Please use: As needed, Morning, Noon, or Evening',
+            invalidQuantity: 'Please enter a valid number for quantity',
+            medicationScheduleFor: 'Medication Schedule for',
+            medicationDataImported: 'Medication data imported successfully',
+            noValidMedicationData: 'No valid medication data found in the pasted text',
+            errorProcessingPastedData: 'Error processing pasted data. Please make sure the format is correct',
+            errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
+            medicationDataSaved: 'Medication data saved for patient:',
+            loadedMedicationData: 'Loaded medication data for patient:',
+            noSavedDataFound: 'No saved data found for patient:',
+            deleteMedication: 'Are you sure you want to delete',
+            camera: 'Camera',
+            importMedicationData: 'Import Medication Data',
+            pasteMedicationData: 'Paste Medication Data',
+            confirmDeleteMedication: 'Confirm Delete Medication',
+        },
+        he: {
+            title: 'רשימת התרופות שלי',
+            note: 'הערה',
+            language: 'שפה',
+            open: 'פתח',
+            save: 'שמור',
+            share: 'שתף',
+            paste: 'הדבק',
+            timing: 'מתי',
+            medicineName: 'שם תרופה',
+            dose: 'מינון',
+            quantity: 'כמות',
+            action: 'פעולה',
+            delete: 'מחק',
+            confirmDelete: 'אשר מחיקה',
+            cancel: 'ביטול',
+            import: 'ייבא',
+            patientName: 'שם המטופל',
+            patientNamePlaceholder: 'שם המטופל',
+            patientNameRequired: 'יש להזין את שם המטופל',
+            invalidTiming: 'ערך זמן לא חוקי. יש להשתמש ב: לפי הצורך, בוקר, צהריים, או ערב',
+            invalidQuantity: 'יש להזין מספר תקין לכמות',
+            medicationScheduleFor: 'סידור התרופות של',
+            medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
+            noValidMedicationData: 'לא נמצאו נתוני תרופות תקינים בטקסט שהודבק',
+            errorProcessingPastedData: 'שגיאה בעיבוד הנתונים שהודבקו. יש לוודא שהפורמט נכון',
+            errorQuotaExceeded: ' חריגת גודל. שגיאה בשמירת הנתונים עבור',
+            medicationDataSaved: 'נתוני התרופות נשמרו עבור המטופל:',
+            loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
+            noSavedDataFound: 'לא נמצאו נתונים עבור המטופל:',
+            deleteMedication: 'האם אתה בטוח שברצונך למחוק',
+            camera: 'מצלמה',
+            importMedicationData: 'ייבוא נתוני תרופות',
+            pasteMedicationData: 'הדבק נתוני תרופות',
+            confirmDeleteMedication: 'אשר מחיקת תרופה',
+        }
+    };
+
+    const rtlLanguages = ['ar', 'he'];
+    const defaultLang = 'en';
+    let currentLang = defaultLang;
+    function t(key) {
+        return translations[currentLang][key];
+    }
+
+    function handleLanguageChange(event) {
+        currentLang = event.target.value;
+        const isRTL = rtlLanguages.includes(currentLang);
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+
+        // Get all elements with an id attribute
+        const elementsWithId = document.querySelectorAll('[id]');
+        // Convert NodeList to Array and map to get just the ids
+        elementArray = Array.from(elementsWithId).map(element => element.id);
+        for (let i = 0; i < elementArray.length; i++) {
+            const element = elementArray[i];
+
+            // Update text content if element has this property
+            if ('textContent' in element) {
+                element.textContent = t(element.id) || element.textContent;
+            }
+
+            // Update placeholder if element has this attribute
+            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+                element.placeholder = t(element.id) || element.placeholder;
+            }
+        }
+    };
+
+    /*   document.getElementById('title').textContent = t('title');
+      document.getElementById('welcome').textContent = t('welcome');
+      document.getElementById('app').className = isRTL ? 'text-right' : 'text-left'; */
+
+
+    // Initialize the content
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('title').textContent = t('title');
+        document.getElementById('patientName').placeHolder.textContent = t('patientNamePlaceholder');
+    });
+
+    //#endregion Translation
+
+    console.log("Script re/start");// js start point
+    // ******** Image Handler  *********** 
+    // #region Initialize img_handler global elements
+    const img_handler_mdl = document.getElementById('img_handler_modal');
+    // Call img_handler once to set up the initial state
+    const mdlCanvas = document.getElementById('mdlCanvas');
+    mdlCanvas.style.width = "100%";
+    const mdlCtx = mdlCanvas.getContext('2d');
+    let clntX = null; // for mouse/touch position
+    let clntY = null;
+    let pictureIn = null;
+    let scale; // will be used for scaling picture into canvas.
+    let Wdth_to_Hght; // picture's ratio of width to height 
+    const mdlThumbCnv = document.getElementById('mdlThumbCnv'); // thumbnail canvas in the image handling modal
+    // Frame parameters
+    let frame = {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        imgScale: 1,
+        isDragging: false,
+        DX: 0,
+        DY: 0,
+        startX: 0,
+        startY: 0
+    };
+    const handlers = img_handler(false); // call img_handler to set up the initial state
+    //#endregion
+
+    function img_handler(show) {
+        if (show) { img_handler_mdl.style.display = 'block'; } // show the modal
+        frame.isDragging = false;
+        function mdlCnvClntRect() { // get client canvas position and size           
+            /*             console.log("mdlCanvas:", mdlCanvas, "  mdlCnvClntRect:", Object.fromEntries(
+                            ['x', 'y', 'width', 'height']//, 'top', 'right', 'bottom', 'left']
+                                .map(key => [key, Math.floor(mdlCanvas.getBoundingClientRect()[key])])
+                        )
+                        ); */
+            return mdlCanvas.getBoundingClientRect();
+        }
+        //const pixelRatio = window.devicePixelRatio || 1; // may be needed for high resolution displays
+        data_out();
+
+        document.getElementById('imageInput').addEventListener('change', function (e) { // Load image from user's chosen file (via FileReader)
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.src = event.target.result; // loading picture into img element
+                    img.onload = function () { // setting picture into canvas size and drawing it (happens after loading)
+                        pictureIn = img;
+                        Wdth_to_Hght = pictureIn.naturalWidth / pictureIn.naturalHeight;
+                        mdlCanvas.width = Math.sqrt(Wdth_to_Hght * 250000);
+                        mdlCanvas.height = mdlCanvas.width / Wdth_to_Hght;
+                        drawImage();
+                        frame.imgScale = Math.min( // scaling the frame to the picture size
+                            mdlCanvas.width / formThumbCnv.width,
+                            mdlCanvas.height / formThumbCnv.height
+                        );
+                        frame.width = formThumbCnv.width * frame.imgScale;
+                        frame.height = formThumbCnv.height * frame.imgScale;
+                        centerFrame(); // centering the 'thumbnail selection' frame on the canvas.
+                    };
+                };
+            }
+        });
+
+        function drawImage() {
+            if (!pictureIn) return;
+            mdlCtx.clearRect(0, 0, mdlCanvas.width, mdlCanvas.height);
+            //context.drawImage(img, sx, sy, swidth, sheight, 
+            //                  x, y, width, height)
+            mdlCtx.drawImage(pictureIn, 0, 0, pictureIn.naturalWidth, pictureIn.naturalHeight,
+                0, 0, mdlCanvas.width, mdlCanvas.height);
+            data_out(); // shows parameters below the picture (debugging stage).
+        }
+
+        // shows parameters below the picture.
+        function data_out() {
+            let dataText = document.getElementById('data_text');
+            dataText.innerHTML = "";
+            if (pictureIn) {
+                dataText.innerHTML += `     Pic    size = ` + pictureIn.naturalWidth + `x` + pictureIn.naturalHeight;
+            }
+            dataText.innerHTML += `
+    Canvas size=`+ mdlCanvas.clientWidth + `x` + mdlCanvas.clientHeight;
+            dataText.innerHTML += `
+    Thumb size=`+ mdlThumbCnv.width + `x` + mdlThumbCnv.height;
+            if (clntX == null) {
+                dataText.innerHTML += `
+     (no clntX)`;
+            }
+            else {
+                dataText.innerHTML += `
+    touch clientX,Y = `+ parseInt(clntX) + `, ` + parseInt(clntY);
+            };
+            /*            dataText.innerHTML += `
+                pixelRatio=` + pixelRatio;*/
+        }
+
+        function centerFrame() { // Centering the frame on the canvas
+            frame.x = (mdlCanvas.width - frame.width) / 2;
+            frame.y = (mdlCanvas.height - frame.height) / 2;
+            drawFrame();
+
+        }
+
+        function drawFrame() { // Drawing and presenting the frame on the canvas
+            mdlCtx.shadowColor = 'rgba(20,220,500,0.7)';
+            mdlCtx.shadowBlur = 18;
+            mdlCtx.strokeStyle = `rgba(220,520,700,0.3)`;
+            mdlCtx.strokeRect(frame.x - 25, frame.y - 25, frame.width + 50, frame.height + 50);
+            // Reset shadow for future drawings
+            mdlCtx.shadowColor = 'transparent';
+            mdlCtx.shadowBlur = 0;
+            mdlCtx.shadowOffsetX = 0;
+            mdlCtx.shadowOffsetY = 0;
+            // Draw semitransparent rectangle around the frame. Gradient used to trim corners
+            const grd = mdlCtx.createRadialGradient(             //   (x0, y0, r0,           x1, y1, r1)
+                (frame.x + frame.width / 2), (frame.y + frame.height / 2), Math.sqrt(((50 + frame.width) ** 2 + (50 + frame.height) ** 2)) / 2,
+                (frame.x + frame.width / 2), (frame.y + frame.height / 2), Math.sqrt(((51 + frame.width) ** 2 + (51 + frame.height) ** 2)) / 2
+            );
+            grd.addColorStop(0, `rgba(220,520,700,0.8)`);
+            grd.addColorStop(1, `rgba(220,520,700,0)`);
+            mdlCtx.lineWidth = 30;
+            mdlCtx.strokeStyle = grd;
+            mdlCtx.strokeRect(frame.x - 13, frame.y - 13, frame.width + 26, frame.height + 26);
+            // Draw the main frame
+            mdlCtx.strokeStyle = '#0066cc';
+            mdlCtx.lineWidth = 4;
+            mdlCtx.strokeRect(frame.x, frame.y, frame.width, frame.height);
+        }
+
+        //#region Frame dragging Events:
+        // Mouse events
+        mdlCanvas.addEventListener('mousedown', (e) => {
+            clntXY(e);
+            startDragging();
+        });
+        document.addEventListener('mousemove', (e) => {
+            clntXY(e);
+            drag();
+        });
+        document.addEventListener('mouseup', stopDragging);
+
+        // Touch events with specific targeting. FUTURE PLAN: TO FUSE IT WITH THE TOUCHMOVE
+        mdlCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            clntXY(e.touches[0]);
+            startDragging();
+        });
+
+        mdlCanvas.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+            clntXY(e.touches[0]);
+            drag();
+        })
+
+        mdlCanvas.addEventListener('touchend', function (e) {
+            frame.isDragging = false;
+        }, false);
+
+        mdlCanvas.addEventListener('touchcancel', function (e) {
+            frame.isDragging = false;
+        }, false);
+
+        function clntXY(e_) {
+            clntX = e_.clientX;
+            clntY = e_.clientY;
+        }
+        //#endregion
+
+        function startDragging() {
+            if (!pictureIn) return;
+            //update_mcc_rect();
+            frame.startX = clntX - mdlCnvClntRect().left;
+            frame.startY = clntY - mdlCnvClntRect().top;
+            // Convert click coordinates to canvas coordinates
+            const [CScaleX, CScaleY] = CanvasToClientXYScales();
+            const canvasX = frame.startX * CScaleX;
+            const canvasY = frame.startY * CScaleY;
+            const insideX = canvasX >= frame.x && canvasX <= frame.x + frame.width;
+            const insideY = canvasY >= frame.y && canvasY <= frame.y + frame.height;
+
+            if (insideX && insideY) {
+                frame.isDragging = true;
+                // Calculate offset from frame edge, not rect.x/y
+                frame.DX = canvasX - frame.x;
+                frame.DY = canvasY - frame.y;
+            }
+        }
+
+        let lastFrameRequest = null;
+
+        function CanvasToClientXYScales() {
+            return [mdlCanvas.width / mdlCnvClntRect().width, mdlCanvas.height / mdlCnvClntRect().height];
+        }
+
+        function drag() { // frame dragging function
+            if (!frame.isDragging) return;
+
+            // Cancel any pending frame request
+            if (lastFrameRequest) {
+                cancelAnimationFrame(lastFrameRequest);
+            }
+
+            // Schedule the update for the next animation frame (not to confuse with the drag and choose frame)
+            lastFrameRequest = requestAnimationFrame(() => {
+                //update_mcc_rect();
+                const [CScaleX, CScaleY] = CanvasToClientXYScales();
+                const canvasX = (clntX - mdlCnvClntRect().left) * CScaleX;
+                const canvasY = (clntY - mdlCnvClntRect().top) * CScaleY;
+                frame.x = canvasX - frame.DX;
+                frame.y = canvasY - frame.DY;
+                // Constrain to image boundaries
+                frame.x = Math.max(0, Math.min(frame.x, mdlCanvas.width - frame.width));
+                frame.y = Math.max(0, Math.min(frame.y, mdlCanvas.height - frame.height));
+                drawImage();
+                drawFrame();
+            });
+        }
+        function stopDragging() {
+            frame.isDragging = false;
+            if (lastFrameRequest) {
+                cancelAnimationFrame(lastFrameRequest);
+                lastFrameRequest = null;
+            }
+        }
+
+        document.getElementById('frame_to_thumb').addEventListener('click', async () => {
+            await handlers.frame_to_thumb();
+        });
+        async function frame_to_thumb() {
+            mdlCtx.save();
+            drawImage();
+            let { mdlThumbUrlData, mdlThumbScale } = resizeCanvasImage(mdlCanvas);
+            mdlCtx.restore();
+            drawFrame();
+            document.getElementById('mdlThumbCnv').style.visibility = 'visible';
+            //         await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100ms
+            const img = new Image();
+            img.src = mdlThumbUrlData;
+            await new Promise((resolve) => {
+                //alert('mdlThumbUrlData=' + mdlThumbUrlData);
+                img.onload = function () {
+                    mdlThumbCnv.style.width = mdlCanvas.style.width;
+                    mdlThumbCnv.style.height = mdlThumbCnv.offsetWidth * frame.height / frame.width + 'px';
+                    thmbScale = img.width / mdlCanvas.width;
+                    mdlThumbCnv.getContext('2d').clearRect(0, 0, mdlThumbCnv.width, mdlThumbCnv.height);
+                    mdlThumbCnv.getContext('2d').drawImage(
+                        img, frame.x * thmbScale, frame.y * thmbScale, frame.width * thmbScale, frame.height * thmbScale, 0, 0, mdlThumbCnv.width, mdlThumbCnv.height);
+                    //context.drawImage(img, sx, sy, swidth, sheight, 
+                    //                  x, y, width, height)
+                    resolve();
+                }
+            });
+            return img.src;
+        }
+        function resizeCanvasImage(sourceCanvas) {
+            // Start with original dimensions
+            let targetWidth = sourceCanvas.width;
+            let targetHeight = sourceCanvas.height;
+
+            // Create temporary canvas for resizing
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+
+            // Binary search for the right size
+            let quality = 0.7;  // JPEG quality
+            let minScale = 0.1;
+            let maxScale = 1.0;
+            let tmpScale = 0.5;
+            let bestSize = Infinity;
+            let bestData = null;
+            let iterations = 0;
+            let size = 0;
+            let tmpDataUrl = null;
+            const TARGET_SIZE = 10000; // Target ~10KB
+            const MAX_ITERATIONS = 10;
+
+            while (iterations < MAX_ITERATIONS) {
+                tmpScale = (minScale + maxScale) / 2;
+                tempCanvas.width = targetWidth * tmpScale;
+                tempCanvas.height = targetHeight * tmpScale;
+                // Draw resized image
+                tempCtx.drawImage(sourceCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+                // Convert to JPEG data URL
+                tmpDataUrl = tempCanvas.toDataURL('image/jpeg', quality);
+                size = Math.floor(tmpDataUrl.length); //* 3 / 4 =Approximate base64 size
+                if (Math.abs(size - TARGET_SIZE) < Math.abs(bestSize - TARGET_SIZE)) {
+                    bestSize = size;
+                    bestData = tmpDataUrl;
+                }
+                if (Math.abs(size - TARGET_SIZE) < TARGET_SIZE * 0.1) {
+                    break; // Within 10% of target
+                }
+                if (size > TARGET_SIZE) {
+                    maxScale = tmpScale;
+                } else {
+                    minScale = tmpScale;
+                }
+                iterations++;
+            }
+            return { mdlThumbUrlData: tmpDataUrl, mdlThumbScale: tmpScale }; // returns resized image data URL and scale
+        } // end of resizeCanvasImage
+        return {
+            frame_to_thumb: frame_to_thumb
+        } //end of img_handler
+    }
+    // Close the img_handler modal and save the thumbnail
+    document.getElementById('ok_thumb').addEventListener('click', async function () {  // ?? save the thumbnail thumbDataUrl
+        // Dispatch/Trigger/Fire the frame_to_thumb event
+        closeImgHandlerModal();
+        await handlers.frame_to_thumb();
+
+
+
+        // img_handler().frame_to_thumb();
+        formThumbCtx.clearRect(0, 0, formThumbCnv.width, formThumbCnv.height);
+        formThumbCtx.drawImage(mdlThumbCnv, 0, 0, formThumbCnv.width, formThumbCnv.height);
+
+    });
+    // Close the img_handler modal
+    function closeImgHandlerModal() {
+        document.getElementById('img_handler_modal').style.display = 'none';
+    }
+
+    // Initialize
+    updateTable();
+
+    // Ensure width of patient-controls is same as form
+    document.addEventListener('DOMContentLoaded', function () {
+        ensurePatientControlsWidthLessThanTable();
+    });
+    window.addEventListener('resize', function () { ensurePatientControlsWidthLessThanTable(); });
+    function ensurePatientControlsWidthLessThanTable() {
+        const table = document.querySelector('.table-container');
+        const patientControls = document.querySelector('.patient-controls');
+        if (table && patientControls) {
+            const tableWidth = table.offsetWidth;
+            console.log("tableWidth = " + tableWidth);
+            patientControls.style.maxWidth = `${tableWidth}px`;
+        }
+    };
+</script>
+
+</html>
