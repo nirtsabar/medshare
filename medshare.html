@@ -10,7 +10,23 @@
     <style>
         * {
             font-size: x-large;
+            text-align: center;
+            box-sizing: border-box;
         }
+        html {
+            max-width: fit-content;
+        }
+        .app-title {
+            color: #adc5f7;
+            order: 1;
+            margin: 0 auto;
+            white-space: nowrap;
+            min-width: fit-content;
+            /* position: absolute; */
+            width: fit-content;
+        }
+
+
 
         ::-webkit-scrollbar {
             width: 20px;
@@ -41,9 +57,13 @@
             border-radius: 10px;
         }
 
-        h1 {
-            text-align: center;
-            width: 95%;
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .inline-block {
+            float: inline-start;
+            /*display: inline-block;*/
         }
 
         small {
@@ -122,13 +142,6 @@
             min-height: 100vh;
             max-width: fit-content;
             max-height: 100%;
-        }
-
-        h1 {
-            color: #adc5f7;
-            margin-bottom: 10px;
-            width: 100%;
-            text-align: center;
         }
 
         .patient-controls {
@@ -508,26 +521,61 @@
                 min-width: 0%;
             }
         }
+
+        .label-language {
+            color: white;
+            width: fit-content;
+            text-align: right;
+        }
+
+        #language {
+            width: fit-content;
+            margin: 10px;
+        }
+
+        #lang-and-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        #languageSelector {
+            padding: 10px;
+            box-sizing: border-box;
+            justify-content: space-between;
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            order: 2;
+            gap: 8px;
+            max-width: 35%;
+            min-width: 20%;
+        }
+
+        /*display: flex;
+        /*align-items: center; /* Optional: vertically center the content */
     </style>
 </head>
 
 <body>
-    <div id="app">
-        <div id="language-selector">
-            <label for="language" data-text-key="language">Language:</label>
-            <select id="language" onchange="handleLanguageChange(event)">
+    <div id="lang-and-title">
+        <span data-t-key="title" class="app-title"></span>
+        <span id="spacer" style="height: 5px;"></span>
+        <span id="languageSelector">
+            <label for="language" data-t-key="language" class="label-language">Language:</label>
+            <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
+                aria-labelledby="languageSelector">
                 <option value="en">English</option>
                 <!--                 <option value="es">Español</option>
                 <option value="fr">Français</option>
                 <option value="ar">العربية</option> -->
                 <option value="he">עברית</option>
             </select>
-        </div>
-    </div>
-    <div class="container">
+        </span>
 
-        <h1 data-text-key="title"></h1>
     </div>
+
     <!-- Patient name and info-control buttons   -->
     <div class="container">
         <div class="patient-controls">
@@ -1150,9 +1198,9 @@
     };
 
     const rtlLanguages = ['ar', 'he'];
-    const defaultLang = navigator.language.split('-')[0];
+    const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
-    alert('defaultLang = ' + defaultLang);
+    console.log('defaultLang = ' + defaultLang);
     function t(key) {
         return translations[currentLang][key];
     }
@@ -1169,23 +1217,57 @@
         elementDTKArray = Array.from(elementsWithDTK).map(element => element.getAttribute('data-t-key'));
         for (let i = 0; i < elementDTKArray.length; i++) {
             const element = elementsWithDTK[i];
+            console.log('elementDTKArray[i] = ' + elementDTKArray[i]);
 
             // Update text content if element has this property
             element.textContent = t(elementDTKArray[i]) || element.textContent;
-            
+
             // Update placeholder if element has this attribute
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
                 element.placeholder = t(element.id) || element.placeholder;
             }
         }
+        TitleLayoutPerfection();
     };
+    function TitleLayoutPerfection() {
+        const getStyle = (element) => {
+            if (!element) return {};
+            const width = element.offsetWidth;
+            const contWidth = element.parentElement.offsetWidth;
+            spacerWidthPx= Math.floor(Math.max(0, contWidth * 0.2 - width / 2))+ "px";
+            console.log('width= ' + width+ 'contWidth' + contWidth); 
+            return {
+                spacerWidth: spacerWidthPx    // `calc(max(0, ${contWidth*0.2} - ${width / 2}) px)`
+            };
+        };
+        document.getElementById('spacer').style.width = getStyle(document.getElementsByClassName('app-title')[0]).spacerWidth;
+        console.log( getStyle(document.getElementById('spacer'))+'.spacerWidth =' + getStyle(document.getElementById('spacer')).spacerWidth);
+    }
 
     // Initialize the content
-  /*   document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('title').textContent = t('title');
-        document.getElementById('patientName').placeHolder.textContent = t('patientNamePlaceholder');
-    }); */
+    /*   document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('title').textContent = t('title');
+          document.getElementById('patientName').placeHolder.textContent = t('patientNamePlaceholder');
+      }); */
+    // Function to trigger change event programmatically
+    function triggerInitialLanguage() {
+        const selectElement = document.getElementById('language');
+        // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
+        const browserLang = navigator.language.slice(0, 2);
 
+        // Set the value if it exists in options
+        if (Array.from(selectElement.options).some(option => option.value === browserLang)) {
+            selectElement.value = browserLang;
+        }
+
+        // Create and dispatch change event
+        const event = new Event('change');
+        selectElement.dispatchEvent(event);
+        TitleLayoutPerfection();
+    }
+
+    // Call this function when the DOM is ready
+    document.addEventListener('DOMContentLoaded', triggerInitialLanguage);
     //#endregion Translation
 
     console.log("Script re/start");// js start point
@@ -1524,6 +1606,8 @@
     // Ensure width of patient-controls is same as form
     document.addEventListener('DOMContentLoaded', function () {
         ensurePatientControlsWidthLessThanTable();
+        triggerInitialLanguage();
+
     });
     window.addEventListener('resize', function () { ensurePatientControlsWidthLessThanTable(); });
     function ensurePatientControlsWidthLessThanTable() {
