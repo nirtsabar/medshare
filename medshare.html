@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl"> <!-- lang="en" dir="ltr" -->
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תכנית תרופות</title>
+    <title data-t-key="title">תכנית תרופות</title>
     <link rel="icon" href="https://medlookup.org/img/group_2.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
     <style>
@@ -1150,8 +1150,9 @@
     };
 
     const rtlLanguages = ['ar', 'he'];
-    const defaultLang = 'en';
+    const defaultLang = navigator.language.split('-')[0];
     let currentLang = defaultLang;
+    alert('defaultLang = ' + defaultLang);
     function t(key) {
         return translations[currentLang][key];
     }
@@ -1163,17 +1164,15 @@
         document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
 
         // Get all elements with an id attribute
-        const elementsWithId = document.querySelectorAll('[id]');
+        const elementsWithDTK = document.querySelectorAll('[data-t-key]');
         // Convert NodeList to Array and map to get just the ids
-        elementArray = Array.from(elementsWithId).map(element => element.id);
-        for (let i = 0; i < elementArray.length; i++) {
-            const element = elementArray[i];
+        elementDTKArray = Array.from(elementsWithDTK).map(element => element.getAttribute('data-t-key'));
+        for (let i = 0; i < elementDTKArray.length; i++) {
+            const element = elementsWithDTK[i];
 
             // Update text content if element has this property
-            if ('textContent' in element) {
-                element.textContent = t(element.id) || element.textContent;
-            }
-
+            element.textContent = t(elementDTKArray[i]) || element.textContent;
+            
             // Update placeholder if element has this attribute
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
                 element.placeholder = t(element.id) || element.placeholder;
@@ -1181,16 +1180,11 @@
         }
     };
 
-    /*   document.getElementById('title').textContent = t('title');
-      document.getElementById('welcome').textContent = t('welcome');
-      document.getElementById('app').className = isRTL ? 'text-right' : 'text-left'; */
-
-
     // Initialize the content
-    document.addEventListener('DOMContentLoaded', () => {
+  /*   document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('title').textContent = t('title');
         document.getElementById('patientName').placeHolder.textContent = t('patientNamePlaceholder');
-    });
+    }); */
 
     //#endregion Translation
 
@@ -1537,7 +1531,7 @@
         const patientControls = document.querySelector('.patient-controls');
         if (table && patientControls) {
             const tableWidth = table.offsetWidth;
-            console.log("tableWidth = " + tableWidth);
+            //console.log("tableWidth = " + tableWidth);
             patientControls.style.maxWidth = `${tableWidth}px`;
         }
     };
