@@ -12,10 +12,10 @@
             font-size: x-large;
             text-align: center;
             box-sizing: border-box;
-            border-color: #fff;
+            /*border-color: #fff;
             border-radius: 3px;
             border-width: 1px;
-            border-style: solid; /**/
+            border-style: solid; */
         }
         html {
             max-width: 100%;
@@ -27,16 +27,11 @@
             min-width: fit-content;
             /* position: absolute; */
             width: fit-content;
-
+            font-weight: bold;
         }
 
         #spacer {
             order: 2;
-        }
-        .label-language {
-            color: white;
-            width: fit-content;
-            margin: auto;
         }
 
         #language {
@@ -565,7 +560,7 @@
         <span data-t-key="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector">
-            <label for="language" data-t-key="language" class="label-language">Language:</label>
+            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> -->
             <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
