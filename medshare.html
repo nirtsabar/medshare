@@ -306,7 +306,7 @@
             background-color: #10b981;
         }
 
-        .share-button {
+        .export-button {
             background-color: #037c30;
         }
 
@@ -531,7 +531,7 @@
         <span data-t-key="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector">
-            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> -->
+            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> --->
             <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -559,9 +559,9 @@
                     <i data-feather="save"></i>
                     Save
                 </button>
-                <button class="share-button" onclick="shareViaWhatsApp()">
+                <button class="export-button" onclick="exportViaWhatsApp()">
                     <i data-feather="share-2"></i>
-                    Share
+                    export
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
                     <i data-feather="clipboard"></i>
@@ -670,7 +670,7 @@
     <div id="pasteModal" class="modal">
         <div class="modal-content">
             <h2 style="margin-top: 0;">Paste Medication Data</h2>
-            <p>Paste the shared medication data below:</p>
+            <p>Paste the exportd medication data below:</p>
             <textarea id="pasteArea" class="paste-area" rows="10"
                 placeholder="Paste medication schedule here..."></textarea>
             <div class="modal-buttons">
@@ -886,8 +886,8 @@
         saveCurrentState();
     }
 
-    // Share via WhatsApp
-    function shareViaWhatsApp() {
+    // export via WhatsApp
+    function exportViaWhatsApp() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert('Please enter patient name first');
@@ -1098,7 +1098,7 @@
             language: 'Language',
             open: 'Open',
             save: 'Save',
-            share: 'Share',
+            export: 'export',
             paste: 'Paste',
             timing: 'Timing',
             medicineName: 'Medicine Name',
@@ -1134,7 +1134,7 @@
             language: 'שפה',
             open: 'פתח',
             save: 'שמור',
-            share: 'שתף',
+            export: 'יצוא',
             paste: 'הדבק',
             timing: 'מתי',
             medicineName: 'שם תרופה',
