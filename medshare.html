@@ -12,22 +12,57 @@
             font-size: x-large;
             text-align: center;
             box-sizing: border-box;
+            border-color: #fff;
+            border-radius: 3px;
+            border-width: 1px;
+            border-style: solid; /**/
         }
         html {
-            max-width: fit-content;
+            max-width: 100%;
         }
         .app-title {
             color: #adc5f7;
-            order: 1;
-            margin: 0 auto;
+            order: 3;
             white-space: nowrap;
             min-width: fit-content;
             /* position: absolute; */
             width: fit-content;
+
         }
 
+        #spacer {
+            order: 2;
+        }
+        .label-language {
+            color: white;
+            width: fit-content;
+            margin: auto;
+        }
 
+        #language {
+            width: fit-content;
+            margin: 10px;
+        }
 
+        #lang-and-title {
+            display: flex;
+            align-items: center;/* Vertical center alignment */
+            flex-direction: row-reverse;
+
+        }
+
+        #languageSelector {
+            padding: 10px;
+            box-sizing: border-box;
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            order: 1;
+            gap: 8px;
+            max-width: 35%;
+            min-width: 20%;
+            flex-direction: row-reverse;
+        }
         ::-webkit-scrollbar {
             width: 20px;
             height: 20px;
@@ -171,7 +206,7 @@
             border-radius: 4px;
             font-size: 20px;
 
-            min-width: 0%;
+            min-width: 300px;
         }
 
         .container {
@@ -188,7 +223,7 @@
             background-color: #3e3e3f;
             padding: 0;
             font-size: 30px;
-            align-items: center;
+            align-items: center; /* Center align items vertically within the #lang-and-title container */
         }
 
 
@@ -238,7 +273,6 @@
             border-radius: 4px;
             font-size: 20px;
             align-items: center;
-            min-width: 0%;
         }
 
         button {
@@ -518,42 +552,10 @@
                 border: 1px solid #ddd;
                 border-radius: 4px;
                 font-size: 20px;
-                min-width: 0%;
+                min-width: fit-content;
             }
         }
 
-        .label-language {
-            color: white;
-            width: fit-content;
-            text-align: right;
-        }
-
-        #language {
-            width: fit-content;
-            margin: 10px;
-        }
-
-        #lang-and-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        #languageSelector {
-            padding: 10px;
-            box-sizing: border-box;
-            justify-content: space-between;
-            align-items: center;
-            display: flex;
-            flex-wrap: wrap;
-            order: 2;
-            gap: 8px;
-            max-width: 35%;
-            min-width: 20%;
-        }
-
-        /*display: flex;
         /*align-items: center; /* Optional: vertically center the content */
     </style>
 </head>
@@ -1230,18 +1232,20 @@
         TitleLayoutPerfection();
     };
     function TitleLayoutPerfection() {
-        const getStyle = (element) => {
-            if (!element) return {};
-            const width = element.offsetWidth;
-            const contWidth = element.parentElement.offsetWidth;
-            spacerWidthPx= Math.floor(Math.max(0, contWidth * 0.2 - width / 2))+ "px";
-            console.log('width= ' + width+ 'contWidth' + contWidth); 
+        function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
+            if (!titleE) return {};
+            const containerWidth = titleE.parentElement.offsetWidth;
+            const titleWidth = titleE.offsetWidth;
+            //let spacerWidth = document.getElementById('spacer');
+            const langWidth = document.getElementById('languageSelector').offsetWidth;
+            spacerWidthPx= Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth*0.5))+ "px";
+            //console.log('width= ' + width+ 'contWidth' + containerWidth); 
             return {
-                spacerWidth: spacerWidthPx    // `calc(max(0, ${contWidth*0.2} - ${width / 2}) px)`
+                Px: spacerWidthPx
             };
         };
-        document.getElementById('spacer').style.width = getStyle(document.getElementsByClassName('app-title')[0]).spacerWidth;
-        console.log( getStyle(document.getElementById('spacer'))+'.spacerWidth =' + getStyle(document.getElementById('spacer')).spacerWidth);
+        document.getElementById('spacer').style.width = properSpaceWidth(document.getElementsByClassName('app-title')[0]).Px;
+        //console.log( properSpaceWidth(document.getElementById('spacer'))+'.spacerWidth =' + properSpaceWidth(document.getElementById('spacer')).spacerWidth);
     }
 
     // Initialize the content
@@ -1609,7 +1613,10 @@
         triggerInitialLanguage();
 
     });
-    window.addEventListener('resize', function () { ensurePatientControlsWidthLessThanTable(); });
+    window.addEventListener('resize', function () { 
+        TitleLayoutPerfection();
+        ensurePatientControlsWidthLessThanTable();
+     });
     function ensurePatientControlsWidthLessThanTable() {
         const table = document.querySelector('.table-container');
         const patientControls = document.querySelector('.patient-controls');
