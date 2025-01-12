@@ -531,7 +531,7 @@
         <span data-t-key="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector">
-            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> ->
+            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> -->
             <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -733,14 +733,13 @@
 <!-- <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
-
-<!-- Your React code goes here -->
+<!-- Your React code goes here  [not any more...]-->
 <script>
 
     //#region main script !!!
+    //#region initializations
     // Initialize Feather icons
     feather.replace();
-
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
@@ -759,7 +758,8 @@
         'Noon': 2,
         'Evening': 3
     };
-
+    //#endregion initializations
+    //#region major table / form functions
     // Update table with medications
     function updateTable() {
         // deleting old table data, from last data row to first data row
@@ -1087,7 +1087,8 @@
             closePasteModal();
         }
     }
-    // Switch to Thumbnail if QuotaExceededError
+    // Switch to Thumbnail if QuotaExceededError (just idea...)
+    //#endregion major table / form functions
     //#endregion main script
     //#region Translation
     const translations = {
@@ -1240,8 +1241,8 @@
     document.addEventListener('DOMContentLoaded', triggerInitialLanguage);
     //#endregion Translation
 
-    console.log("Script re/start");// js start point
-    // ******** Image Handler  *********** 
+
+    //#region  Image Handler Modal
     // #region Initialize img_handler global elements
     const img_handler_mdl = document.getElementById('img_handler_modal');
     // Call img_handler once to set up the initial state
@@ -1569,8 +1570,11 @@
     function closeImgHandlerModal() {
         document.getElementById('img_handler_modal').style.display = 'none';
     }
+//#endregion Image Handler Modal
+    
+    //#region Initialize 
+    console.log("Script re/start");// js start point
 
-    // Initialize
     updateTable();
 
     // Ensure width of patient-controls is same as form
@@ -1592,6 +1596,7 @@
             patientControls.style.maxWidth = `${tableWidth}px`;
         }
     };
+    //#endregion Initialize
 </script>
 
 </html>
