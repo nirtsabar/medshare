@@ -17,9 +17,11 @@
             border-width: 1px;
             border-style: solid; */
         }
+
         html {
             max-width: 100%;
         }
+
         .app-title {
             color: #adc5f7;
             order: 3;
@@ -41,7 +43,8 @@
 
         #lang-and-title {
             display: flex;
-            align-items: center;/* Vertical center alignment */
+            align-items: center;
+            /* Vertical center alignment */
             flex-direction: row-reverse;
 
         }
@@ -58,6 +61,7 @@
             min-width: 20%;
             flex-direction: row-reverse;
         }
+
         ::-webkit-scrollbar {
             width: 20px;
             height: 20px;
@@ -218,7 +222,8 @@
             background-color: #3e3e3f;
             padding: 0;
             font-size: 30px;
-            align-items: center; /* Center align items vertically within the #lang-and-title container */
+            align-items: center;
+            /* Center align items vertically within the #lang-and-title container */
         }
 
 
@@ -522,7 +527,6 @@
             border-color: #b1c4e2;
             background-color: #fff;
         }
-
     </style>
 </head>
 
@@ -551,19 +555,19 @@
                 <i data-feather="user"></i> <input type="text" id="patientName" required>
             </div>
             <div class="pt-btn">
-                <button class="btn-open" onclick="openPatientData()">
+                <button class="btn-open" onclick="openPatientData()" data-t-key="open">
                     <i data-feather="folder"></i>
                     Open
                 </button>
-                <button class="btn-save" onclick="savePatientData()">
+                <button class="btn-save" onclick="savePatientData()" data-t-key="save">
                     <i data-feather="save"></i>
                     Save
                 </button>
-                <button class="export-button" onclick="exportViaWhatsApp()">
+                <button class="export-button" onclick="exportViaWhatsApp()"  data-t-key="export">
                     <i data-feather="share-2"></i>
                     export
                 </button>
-                <button class="paste-button" onclick="showPasteModal()">
+                <button class="paste-button" onclick="showPasteModal()" data-t-key="paste">
                     <i data-feather="clipboard"></i>
                     Paste
                 </button>
@@ -575,29 +579,29 @@
                 <!-- <div class="form-grid" style="display: flex; flex-direction: column"> -->
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
-                        <th id="timing_header" onclick="sortTable()" class="timing" data>timing</th>
-                        <th id="medName_header" class="medName">Medicine Name שם תרופה</th>
-                        <th id="dose_header" class="dose">Dose <i data-feather="circle"></i> מינון</th>
-                        <th id="quantity_header" class="quantity">Quantity <i data-feather="pie-chart"></i><i
+                        <th id="timing_header" onclick="sortTable()" class="timing"  data-t-key="timing">timing</th>
+                        <th id="medName_header" class="medName" data-t-key="medicineName">Medicine Name שם תרופה</th>
+                        <th id="dose_header" class="dose" data-t-key="dose">Dose <i data-feather="circle"></i> מינון</th>
+                        <th id="quantity_header" class="quantity" data-t-key="quantity">Quantity <i data-feather="pie-chart"></i><i
                                 data-feather="database"></i> כמות</th>
-                        <th id="note_header" class="note">Note <i data-feather="feather"></i> הערה</th>
-                        <th id="info_header" class="info"><i data-feather="info"></i></th>
-                        <th id="pic_header" class="imager"><i data-feather="eye"></i></th>
-                        <th id="action_header" class="action">Action פעולה</th>
+                        <th id="note_header" class="note" data-t-key="note">Note <i data-feather="feather"></i> הערה</th>
+                        <th id="info_header" class="info" data-t-key="info"><i data-feather="info"></i></th>
+                        <th id="pic_header" class="imager" data-t-key="picture"><i data-feather="eye"></i></th>
+                        <th id="action_header" class="action" data-t-key="action">Action פעולה</th>
                     </tr>
                     <!--  Input Row of the form  -->
                     <tr id="tInputForm">
                         <th class="timing">
-                            <label for="timing_header" class="label-select" title="timing">
+                            <label for="timing_header" class="label-select" title="timing" data-t-key="timing">
                                 <i data-feather="clock"></i></label>
-                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required>
+                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required data-t-key="timingInstructions">
                                 <option value="">&#x1F553?</option>
                                 <option value="As needed">&#x1F6A8 SOS</option>
                                 <option value="Morning">&#x1F413;&#xFE0F AM</option>
                                 <option value="Noon">&#x2600;&#xFE0F Noon</option>
                                 <option value="Evening">&#x1F319 PM</option>
                             </select>
-                            <small class="form-text text-muted">Timing מתי</small>
+                            <small class="form-text text-muted" data-t-key="timing">Timing מתי</small>
                         </th>
                         <th class="medName">
                             <label for="medicineName"> <!-- Sticker svg as label -->
@@ -1112,6 +1116,7 @@
             patientName: 'Patient Name',
             patientNamePlaceholder: 'Patient Name',
             patientNameRequired: 'Please enter patient name',
+            timingInstructions: 'Please select medication intake time',
             invalidTiming: 'Invalid timing value. Please use: As needed, Morning, Noon, or Evening',
             invalidQuantity: 'Please enter a valid number for quantity',
             medicationScheduleFor: 'Medication Schedule for',
@@ -1148,6 +1153,7 @@
             patientName: 'שם המטופל',
             patientNamePlaceholder: 'שם המטופל',
             patientNameRequired: 'יש להזין את שם המטופל',
+            timingInstructions: 'יש לבחור זמן נטילת התרופה',
             invalidTiming: 'ערך זמן לא חוקי. יש להשתמש ב: לפי הצורך, בוקר, צהריים, או ערב',
             invalidQuantity: 'יש להזין מספר תקין לכמות',
             medicationScheduleFor: 'סידור התרופות של',
@@ -1187,9 +1193,29 @@
         for (let i = 0; i < elementDTKArray.length; i++) {
             const element = elementsWithDTK[i];
             console.log('elementDTKArray[i] = ' + elementDTKArray[i]);
+            // ****
+            // Instead of directly setting textContent (which removes HTML elements)
+            // We need to handle the HTML content more carefully
+            console.log(element.tagName); // Should print "BUTTON"
+console.log(element.innerHTML); // Should show the full content including the <i> tag
+console.log(element.querySelector('i')); // This should actually work and find the <i> tag
 
+            if (element.querySelector('svg')) {
+                // Store the feather icon element
+                const featherIcon = element.querySelector('svg');
+                const newText = t(elementDTKArray[i]) || element.textContent.trim();
+
+                // Clear the element but keep the icon
+                element.innerHTML = '';
+                element.appendChild(featherIcon);
+                // Add the new text after the icon
+                element.appendChild(document.createTextNode(' ' + newText));
+            } else {
+                element.textContent = t(elementDTKArray[i]) || element.textContent;
+            }
+            // ****
             // Update text content if element has this property
-            element.textContent = t(elementDTKArray[i]) || element.textContent;
+            //    element.textContent = t(elementDTKArray[i]) || element.textContent;
 
             // Update placeholder if element has this attribute
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
@@ -1205,7 +1231,7 @@
             const titleWidth = titleE.offsetWidth;
             //let spacerWidth = document.getElementById('spacer');
             const langWidth = document.getElementById('languageSelector').offsetWidth;
-            spacerWidthPx= Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth*0.5))+ "px";
+            spacerWidthPx = Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth * 0.5)) + "px";
             //console.log('width= ' + width+ 'contWidth' + containerWidth); 
             return {
                 Px: spacerWidthPx
@@ -1570,8 +1596,8 @@
     function closeImgHandlerModal() {
         document.getElementById('img_handler_modal').style.display = 'none';
     }
-//#endregion Image Handler Modal
-    
+    //#endregion Image Handler Modal
+
     //#region Initialize 
     console.log("Script re/start");// js start point
 
@@ -1583,10 +1609,10 @@
         triggerInitialLanguage();
 
     });
-    window.addEventListener('resize', function () { 
+    window.addEventListener('resize', function () {
         TitleLayoutPerfection();
         ensurePatientControlsWidthLessThanTable();
-     });
+    });
     function ensurePatientControlsWidthLessThanTable() {
         const table = document.querySelector('.table-container');
         const patientControls = document.querySelector('.patient-controls');
