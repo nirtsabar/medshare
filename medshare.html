@@ -555,20 +555,23 @@
                 <i data-feather="user"></i> <input type="text" id="patientName" required>
             </div>
             <div class="pt-btn">
-                <button class="btn-open" onclick="openPatientData()" data-t-key="open">
+                <button class="btn-open" onclick="openPatientData()">
                     <i data-feather="folder"></i>
-                    Open
+                    <span data-t-key="open"></span>
                 </button>
-                <button class="btn-save" onclick="savePatientData()" data-t-key="save">
+                <button class="btn-save" onclick="savePatientData()">
                     <i data-feather="save"></i>
+                    <span data-t-key="save"></span>
                     Save
                 </button>
-                <button class="export-button" onclick="exportViaWhatsApp()"  data-t-key="export">
+                <button class="export-button" onclick="exportViaWhatsApp()">
                     <i data-feather="share-2"></i>
+                    <span data-t-key="export"></span>
                     export
                 </button>
-                <button class="paste-button" onclick="showPasteModal()" data-t-key="paste">
+                <button class="paste-button" onclick="showPasteModal()">
                     <i data-feather="clipboard"></i>
+                    <span data-t-key="paste"></span>
                     Paste
                 </button>
             </div>
@@ -579,13 +582,56 @@
                 <!-- <div class="form-grid" style="display: flex; flex-direction: column"> -->
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
-                        <th id="timing_header" onclick="sortTable()" class="timing"  data-t-key="timing">timing</th>
-                        <th id="medName_header" class="medName" data-t-key="medicineName">Medicine Name שם תרופה</th>
-                        <th id="dose_header" class="dose" data-t-key="dose">Dose <i data-feather="circle"></i> מינון</th>
-                        <th id="quantity_header" class="quantity" data-t-key="quantity">Quantity <i data-feather="pie-chart"></i><i
-                                data-feather="database"></i> כמות</th>
-                        <th id="note_header" class="note" data-t-key="note">Note <i data-feather="feather"></i> הערה</th>
-                        <th id="info_header" class="info" data-t-key="info"><i data-feather="info"></i></th>
+                        <th id="timing_header" onclick="sortTable()" class="timing" data-t-key="timing"></th>
+                        <th id="medName_header" class="medName" data-t-key="medicineName"></th>
+                        <th id="dose_header" class="dose">
+                            <svg viewBox="0 0 80 25">
+                                <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
+                                <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
+                            </svg>
+                            <span data-t-key="dose"></span>
+                        </th>
+                        <th id="quantity_header" class="quantity">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
+                            </svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-database">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
+                                <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
+                            </svg>
+                            <span data-t-key="quantity"></span>
+                        </th>
+                        <th id="note_header" class="note">
+                <!--             <i data-feather="feather"></i> -->
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path 
+                    d="M12 2 
+                    A2.3 2.3 0 0 1 14.3 4.3
+                    L14.3 15
+                    A2.3 2.3 0 0 1 12 17.3
+                    A2.3 2.3 0 0 1 9.7 15
+                    L9.7 4.3
+                    A2.3 2.3 0 0 1 12 2
+                    
+                    M12 18.3
+                    A2.3 2.3 0 0 1 14.3 20.6
+                    A2.3 2.3 0 0 1 12 22.9
+                    A2.3 2.3 0 0 1 9.7 20.6
+                    A2.3 2.3 0 0 1 12 18.3
+                    Z" 
+                      stroke="black" 
+                      stroke-width="2" 
+                      fill="none"/>
+                  </svg>
+                            <span data-t-key="note"></span>
+                        </th>
+                        <th id="info_header" class="info"><i data-feather="info"></i>
+                            <span data-t-key="info"></span>
+                        </th>
                         <th id="pic_header" class="imager" data-t-key="picture"><i data-feather="eye"></i></th>
                         <th id="action_header" class="action" data-t-key="action">Action פעולה</th>
                     </tr>
@@ -594,7 +640,8 @@
                         <th class="timing">
                             <label for="timing_header" class="label-select" title="timing" data-t-key="timing">
                                 <i data-feather="clock"></i></label>
-                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required data-t-key="timingInstructions">
+                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required
+                                data-t-key="timingInstructions">
                                 <option value="">&#x1F553?</option>
                                 <option value="As needed">&#x1F6A8 SOS</option>
                                 <option value="Morning">&#x1F413;&#xFE0F AM</option>
@@ -605,11 +652,11 @@
                         </th>
                         <th class="medName">
                             <label for="medicineName"> <!-- Sticker svg as label -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+                                <svg viewBox="0 0 400 120">
                                     <!-- Main sticker body -->
                                     <path
                                         d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="1" filter="url(#shadow)" />
+                                        fill="white" stroke="black" stroke-width="4" filter="url(#shadow)" />
                                     <!-- Peeled corner with updated path -->
                                     <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="#e9ecef"
                                         stroke="black" stroke-width="1" />
@@ -1108,6 +1155,7 @@
             medicineName: 'Medicine Name',
             dose: 'Dose',
             quantity: 'Quantity',
+            info: 'Leaflet',	
             action: 'Action',
             delete: 'Delete',
             confirmDelete: 'Confirm Delete',
@@ -1145,6 +1193,7 @@
             medicineName: 'שם תרופה',
             dose: 'מינון',
             quantity: 'כמות',
+            info: 'עלון',
             action: 'פעולה',
             delete: 'מחק',
             confirmDelete: 'אשר מחיקה',
@@ -1196,13 +1245,11 @@
             // ****
             // Instead of directly setting textContent (which removes HTML elements)
             // We need to handle the HTML content more carefully
-            console.log(element.tagName); // Should print "BUTTON"
-console.log(element.innerHTML); // Should show the full content including the <i> tag
-console.log(element.querySelector('i')); // This should actually work and find the <i> tag
+            console.log("element.tagName=" + element.tagName + " .innerHTML=" + element.innerHTML + " .querySelector('svg')=" + element.querySelector('svg')); // Should print "BUTTON"
 
             if (element.querySelector('svg')) {
                 // Store the feather icon element
-                const featherIcon = element.querySelector('svg');
+                const featherIcon = element.querySelector('svg, option');
                 const newText = t(elementDTKArray[i]) || element.textContent.trim();
 
                 // Clear the element but keep the icon
