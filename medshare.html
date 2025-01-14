@@ -562,17 +562,14 @@
                 <button class="btn-save" onclick="savePatientData()">
                     <i data-feather="save"></i>
                     <span data-t-key="save"></span>
-                    Save
                 </button>
                 <button class="export-button" onclick="exportViaWhatsApp()">
                     <i data-feather="share-2"></i>
                     <span data-t-key="export"></span>
-                    export
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
                     <i data-feather="clipboard"></i>
                     <span data-t-key="paste"></span>
-                    Paste
                 </button>
             </div>
         </div>
@@ -582,8 +579,38 @@
                 <!-- <div class="form-grid" style="display: flex; flex-direction: column"> -->
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
-                        <th id="timing_header" onclick="sortTable()" class="timing" data-t-key="timing"></th>
-                        <th id="medName_header" class="medName" data-t-key="medicineName"></th>
+                        <th id="timing_header" onclick="sortTable()" class="timing">
+                            <label for="timing_header" class="label-select" title="timing">
+                                <i data-feather="clock"></i>
+                                <span data-t-key="timing"></span>
+                            </label>
+                        </th>
+                        <th id="medName_header" class="medName">
+                            <label for="medicineName"> <!-- Sticker svg as label -->
+                                <svg height="24" viewBox="0 0 400 120">
+                                    <!-- Add drop shadow filter -->
+                                    <defs>
+                                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3" />
+                                        </filter>
+                                    </defs>
+
+                                    <!-- Main sticker body -->
+                                    <path
+                                        d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
+                                        fill="white" stroke="black" stroke-width="4" filter="url(#shadow)" />
+
+                                    <!-- Peeled corner -->
+                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="#e9ecef"
+                                        stroke="black" stroke-width="1" />
+
+                                    <!-- Added text element -->
+                                    <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
+                                        fill="black" data-t-key="medicineName1"></text>
+                                </svg>
+                                <span data-t-key="medicineName2"></span>
+                            </label>
+                        </th>
                         <th id="dose_header" class="dose">
                             <svg viewBox="0 0 80 25">
                                 <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
@@ -596,9 +623,9 @@
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
                             </svg>
-                            <svg width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-database">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-database">
                                 <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                                 <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
                                 <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
@@ -606,10 +633,8 @@
                             <span data-t-key="quantity"></span>
                         </th>
                         <th id="note_header" class="note">
-                <!--             <i data-feather="feather"></i> -->
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path 
-                    d="M12 2 
+                            <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
+                                <path d="M12 2 
                     A2.3 2.3 0 0 1 14.3 4.3
                     L14.3 15
                     A2.3 2.3 0 0 1 12 17.3
@@ -622,26 +647,30 @@
                     A2.3 2.3 0 0 1 12 22.9
                     A2.3 2.3 0 0 1 9.7 20.6
                     A2.3 2.3 0 0 1 12 18.3
-                    Z" 
-                      stroke="black" 
-                      stroke-width="2" 
-                      fill="none"/>
-                  </svg>
+                    Z" stroke="black" stroke-width="2" fill="none" />
+                            </svg>
                             <span data-t-key="note"></span>
                         </th>
                         <th id="info_header" class="info"><i data-feather="info"></i>
                             <span data-t-key="info"></span>
                         </th>
-                        <th id="pic_header" class="imager" data-t-key="picture"><i data-feather="eye"></i></th>
+                        <th id="pic_header" class="imager">
+                            <svg width="94" height="24" viewBox="38 53 124 100" ><!--camera icon-->
+                                <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
+                                    stroke-width="8" />
+                                <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
+                                <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
+                                <rect x="140" y="70" width="20" height="15" fill="black" />
+                            </svg>
+                            <span data-t-key="picture"></span>
+                        </th>
                         <th id="action_header" class="action" data-t-key="action">Action פעולה</th>
                     </tr>
                     <!--  Input Row of the form  -->
                     <tr id="tInputForm">
                         <th class="timing">
-                            <label for="timing_header" class="label-select" title="timing" data-t-key="timing">
-                                <i data-feather="clock"></i></label>
-                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required
-                                data-t-key="timingInstructions">
+                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required>
+                                <span data-t-key="timingInstructions"></span>
                                 <option value="">&#x1F553?</option>
                                 <option value="As needed">&#x1F6A8 SOS</option>
                                 <option value="Morning">&#x1F413;&#xFE0F AM</option>
@@ -651,17 +680,6 @@
                             <small class="form-text text-muted" data-t-key="timing">Timing מתי</small>
                         </th>
                         <th class="medName">
-                            <label for="medicineName"> <!-- Sticker svg as label -->
-                                <svg viewBox="0 0 400 120">
-                                    <!-- Main sticker body -->
-                                    <path
-                                        d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="4" filter="url(#shadow)" />
-                                    <!-- Peeled corner with updated path -->
-                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="#e9ecef"
-                                        stroke="black" stroke-width="1" />
-                                </svg>
-                            </label>
                             <input id="medicineName" type="text" name="medicineName"
                                 placeholder="Medicine Name שם תרופה" required>
                             <small class="form-text text-muted">שם התרופה</small>
@@ -673,19 +691,29 @@
                         <th class="note"><input type="text" name="note" placeholder="Note הערה"></th>
                         <th class="info">
                             <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
-                                <i data-feather="clipboard"></i>
+                                <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
+                                    <defs>
+                                        <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
+                                            gradientUnits="objectBoundingBox">
+                                            <stop offset="0" stop-color="#fdf6fe" />
+                                            <stop offset="1" stop-color="#7151cb" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path data-name="Path 3"
+                                        d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
+                                        transform="translate(-5 -2)" style="fill:url(#a)" />
+                                </svg>
                             </button>
                         </th>
                         <th class="imager">
                             <label for="take_pic" class="label-pointer">
                                 <!--      <i data-feather="camera"></i>-->
-                                <button id="take_pic" class="take_pic" type="button" onclick="img_handler(true)">
-                                    <i data-feather="camera" style="color:#0f3883"></i>
-                                </button>
+                                <button id="take_pic" style="background:none;" type="button" onclick="img_handler(true)">
+
                                 <canvas id="formThumbCnv" name="thumb" width="100" height="50"
                                     style="border:1px solid grey">
                                 </canvas>
-                            </label>
+                            </label>                                </button>
                             <!-- <input type="file" id="picture" name="picture" style="display:none" onchange="thumbnailing(event)"
                     accept="image/*"> -->
                         </th>
@@ -750,8 +778,7 @@
                     </button>
                     <button onclick="document.getElementById('imageInput').click()"
                         style="padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
-                        <svg viewBox="0 0 200 200" width="100" height="100"
-                            xmlns="http://www.w3.org/2000/svg"><!--camera icon-->
+                        <svg viewBox="0 0 200 200" width="100" height="100"><!--camera icon-->
                             <rect x="40" y="60" width="120" height="80" rx="10" fill="#3b82f6" stroke="white"
                                 stroke-width="4" />
                             <circle cx="100" cy="100" r="30" fill="#3b82f6" stroke="white" stroke-width="4" />
@@ -1149,13 +1176,15 @@
             language: 'Language',
             open: 'Open',
             save: 'Save',
-            export: 'export',
+            export: 'Export',
             paste: 'Paste',
             timing: 'Timing',
             medicineName: 'Medicine Name',
+            medicineName1: 'Medicine',
+            medicineName2: 'Name',
             dose: 'Dose',
             quantity: 'Quantity',
-            info: 'Leaflet',	
+            info: 'Leaflet',
             action: 'Action',
             delete: 'Delete',
             confirmDelete: 'Confirm Delete',
@@ -1176,7 +1205,7 @@
             loadedMedicationData: 'Loaded medication data for patient:',
             noSavedDataFound: 'No saved data found for patient:',
             deleteMedication: 'Are you sure you want to delete',
-            camera: 'Camera',
+            picture: 'Picture',
             importMedicationData: 'Import Medication Data',
             pasteMedicationData: 'Paste Medication Data',
             confirmDeleteMedication: 'Confirm Delete Medication',
@@ -1191,6 +1220,8 @@
             paste: 'הדבק',
             timing: 'מתי',
             medicineName: 'שם תרופה',
+            medicineName1: 'שם',
+            medicineName2: 'התרופה',
             dose: 'מינון',
             quantity: 'כמות',
             info: 'עלון',
@@ -1214,7 +1245,7 @@
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             noSavedDataFound: 'לא נמצאו נתונים עבור המטופל:',
             deleteMedication: 'האם אתה בטוח שברצונך למחוק',
-            camera: 'מצלמה',
+            picture: 'תמונה',
             importMedicationData: 'ייבוא נתוני תרופות',
             pasteMedicationData: 'הדבק נתוני תרופות',
             confirmDeleteMedication: 'אשר מחיקת תרופה',
@@ -1232,8 +1263,11 @@
     function handleLanguageChange(event) {
         currentLang = event.target.value;
         const isRTL = rtlLanguages.includes(currentLang);
-        document.documentElement.lang = currentLang;
-        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+        document.documentElement.setAttribute('lang', currentLang);
+        document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+        // Update text position in drugName input label svg according to language direction
+        const text_x = isRTL ? 240 : 40;
+        document.getElementById('t-text').setAttribute('x', text_x);
 
         // Get all elements with an id attribute
         const elementsWithDTK = document.querySelectorAll('[data-t-key]');
@@ -1242,35 +1276,10 @@
         for (let i = 0; i < elementDTKArray.length; i++) {
             const element = elementsWithDTK[i];
             console.log('elementDTKArray[i] = ' + elementDTKArray[i]);
-            // ****
-            // Instead of directly setting textContent (which removes HTML elements)
-            // We need to handle the HTML content more carefully
-            console.log("element.tagName=" + element.tagName + " .innerHTML=" + element.innerHTML + " .querySelector('svg')=" + element.querySelector('svg')); // Should print "BUTTON"
-
-            if (element.querySelector('svg')) {
-                // Store the feather icon element
-                const featherIcon = element.querySelector('svg, option');
-                const newText = t(elementDTKArray[i]) || element.textContent.trim();
-
-                // Clear the element but keep the icon
-                element.innerHTML = '';
-                element.appendChild(featherIcon);
-                // Add the new text after the icon
-                element.appendChild(document.createTextNode(' ' + newText));
-            } else {
-                element.textContent = t(elementDTKArray[i]) || element.textContent;
-            }
-            // ****
-            // Update text content if element has this property
-            //    element.textContent = t(elementDTKArray[i]) || element.textContent;
-
-            // Update placeholder if element has this attribute
-            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-                element.placeholder = t(element.id) || element.placeholder;
-            }
-        }
-        TitleLayoutPerfection();
-    };
+            element.textContent = t(elementDTKArray[i]) || element.textContent;
+            TitleLayoutPerfection();
+        };
+    }
     function TitleLayoutPerfection() {
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
@@ -1288,12 +1297,6 @@
         //console.log( properSpaceWidth(document.getElementById('spacer'))+'.spacerWidth =' + properSpaceWidth(document.getElementById('spacer')).spacerWidth);
     }
 
-    // Initialize the content
-    /*   document.addEventListener('DOMContentLoaded', () => {
-          document.getElementById('title').textContent = t('title');
-          document.getElementById('patientName').placeHolder.textContent = t('patientNamePlaceholder');
-      }); */
-    // Function to trigger change event programmatically
     function triggerInitialLanguage() {
         const selectElement = document.getElementById('language');
         // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
@@ -1310,8 +1313,6 @@
         TitleLayoutPerfection();
     }
 
-    // Call this function when the DOM is ready
-    document.addEventListener('DOMContentLoaded', triggerInitialLanguage);
     //#endregion Translation
 
 
@@ -1647,19 +1648,19 @@
 
     //#region Initialize 
     console.log("Script re/start");// js start point
-
-    updateTable();
-
     // Ensure width of patient-controls is same as form
     document.addEventListener('DOMContentLoaded', function () {
-        ensurePatientControlsWidthLessThanTable();
         triggerInitialLanguage();
-
+        updateTable();
+        init();
     });
     window.addEventListener('resize', function () {
+        init();
+    });
+    function init() {
         TitleLayoutPerfection();
         ensurePatientControlsWidthLessThanTable();
-    });
+    }
     function ensurePatientControlsWidthLessThanTable() {
         const table = document.querySelector('.table-container');
         const patientControls = document.querySelector('.patient-controls');
