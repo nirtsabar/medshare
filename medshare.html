@@ -23,7 +23,7 @@
         }
 
         .app-title {
-            color: #adc5f7;
+            color: #cbd9f7;
             order: 3;
             white-space: nowrap;
             min-width: fit-content;
@@ -39,13 +39,14 @@
         #language {
             width: fit-content;
             margin: 10px;
+            background-color: #cbd9f7;
         }
 
         #lang-and-title {
             display: flex;
             align-items: center;
             /* Vertical center alignment */
-            flex-direction: row-reverse;
+            flex-direction: row;
 
         }
 
@@ -244,13 +245,6 @@
             scrollbar-width: thick;
         }
 
-        .form-grid {
-            gap: 5px;
-            margin: 0;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
         .table-container {
             table-layout: fixed;
             border-radius: 8px;
@@ -374,13 +368,25 @@
         .action {
             width: 40px;
         }
-
+        .select option {
+           text-align-last: right;
+        }
+        .selected-text {
+            text-align: right;
+        }
+        .left-align {
+            text-align: left;
+        }
+        .right-align {
+            text-align: right;
+        }        
         th,
         td {
             background-color: #d8e5f8;
             border: 1px solid #ddd;
             margin: auto;
             padding: 3px;
+            width:fit-content;
         }
 
         th {
@@ -527,15 +533,17 @@
             border-color: #b1c4e2;
             background-color: #fff;
         }
+
     </style>
 </head>
 
 <body>
-    <div id="lang-and-title">
+    <!-- MARK: Body -->
+    <div id="lang-and-title" title data-t-key="xplainAppT">
         <span data-t-key="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
-        <span id="languageSelector">
-            <!---<label for="language" data-t-key="language" class="label-language">Language:</label> --->
+        <span id="languageSelector" title data-t-key="languageT">
+            <label for="language" data-t-key="language" class="label-language">Language:</label>
             <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -552,7 +560,13 @@
     <div class="container">
         <div class="patient-controls">
             <div class="patient-input">
-                <i data-feather="user"></i> <input type="text" id="patientName" required>
+                <!-- 'user' svg icon-->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input type="text" id="patientName" required>
             </div>
             <div class="pt-btn">
                 <button class="btn-open" onclick="openPatientData()">
@@ -576,16 +590,19 @@
         <!-- Medications table   -->
         <div class="scroll-wrapper" style="overflow-x: auto">
             <form id="medicationForm">
-                <!-- <div class="form-grid" style="display: flex; flex-direction: column"> -->
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
                         <th id="timing_header" onclick="sortTable()" class="timing">
-                            <label for="timing_header" class="label-select" title="timing">
-                                <i data-feather="clock"></i>
+                            <label for="timing_header" class="label-select" title="t" data-t-key="timingT">
+                                <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span data-t-key="timing"></span>
                             </label>
                         </th>
-                        <th id="medName_header" class="medName">
+                        <th id="medName_header" class="medName" title data-t-key="medicineNameT">
                             <label for="medicineName"> <!-- Sticker svg as label -->
                                 <svg height="24" viewBox="0 0 400 120">
                                     <!-- Add drop shadow filter -->
@@ -624,8 +641,7 @@
                                 <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
                             </svg>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="feather feather-database">
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                                 <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
                                 <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
@@ -651,11 +667,16 @@
                             </svg>
                             <span data-t-key="note"></span>
                         </th>
-                        <th id="info_header" class="info"><i data-feather="info"></i>
+                        <th id="info_header" class="info">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                             <span data-t-key="info"></span>
                         </th>
                         <th id="pic_header" class="imager">
-                            <svg width="94" height="24" viewBox="38 53 124 100" ><!--camera icon-->
+                            <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
                                 <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
                                     stroke-width="8" />
                                 <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
@@ -669,13 +690,8 @@
                     <!--  Input Row of the form  -->
                     <tr id="tInputForm">
                         <th class="timing">
-                            <select name="timing" title="יש לבחור זמן נטילת התרופה" required>
-                                <span data-t-key="timingInstructions"></span>
-                                <option value="">&#x1F553?</option>
-                                <option value="As needed">&#x1F6A8 SOS</option>
-                                <option value="Morning">&#x1F413;&#xFE0F AM</option>
-                                <option value="Noon">&#x2600;&#xFE0F Noon</option>
-                                <option value="Evening">&#x1F319 PM</option>
+                            <select name="timing" id="timingSelect" title data-t-key="timingInstructions" required>
+                                <option value="">🕓</option>
                             </select>
                             <small class="form-text text-muted" data-t-key="timing">Timing מתי</small>
                         </th>
@@ -708,12 +724,13 @@
                         <th class="imager">
                             <label for="take_pic" class="label-pointer">
                                 <!--      <i data-feather="camera"></i>-->
-                                <button id="take_pic" style="background:none;" type="button" onclick="img_handler(true)">
+                                <button id="take_pic" style="background:none;" type="button"
+                                    onclick="img_handler(true)">
 
-                                <canvas id="formThumbCnv" name="thumb" width="100" height="50"
-                                    style="border:1px solid grey">
-                                </canvas>
-                            </label>                                </button>
+                                    <canvas id="formThumbCnv" name="thumb" width="100" height="50"
+                                        style="border:1px solid grey">
+                                    </canvas>
+                            </label> </button>
                             <!-- <input type="file" id="picture" name="picture" style="display:none" onchange="thumbnailing(event)"
                     accept="image/*"> -->
                         </th>
@@ -812,10 +829,11 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
 <!-- Your React code goes here  [not any more...]-->
-<script>
 
-    //#region main script !!!
-    //#region initializations
+<script>
+    // MARK: Translation Constants
+    /* #region main script !!!*/
+    /* #region initializations*/
     // Initialize Feather icons
     feather.replace();
     let medications = [];
@@ -831,13 +849,13 @@
 
     // Define timing order
     const timingOrder = {
-        'As needed': 0,
+        'As_needed': 0,
         'Morning': 1,
         'Noon': 2,
         'Evening': 3
     };
-    //#endregion initializations
-    //#region major table / form functions
+    /* #endregion initializations */
+    /* #region major table / form functions */
     // Update table with medications
     function updateTable() {
         // deleting old table data, from last data row to first data row
@@ -890,7 +908,7 @@
 
         if (field === 'timing') {
             if (!Object.keys(timingOrder).includes(value)) {
-                alert('Invalid timing value. Please use: As needed, Morning, Noon, or Evening');
+                alert('Invalid timing value. Please use: As_needed, Morning, Noon, or Evening');
                 updateTable();
                 return;
             }
@@ -940,7 +958,7 @@
         }
     });
 
-    // Add medication function
+    // MARK: Add Medication
     function addMedication(formData, picDataUrl) {
         const newPic = new Image();
         newPic
@@ -964,7 +982,7 @@
         saveCurrentState();
     }
 
-    // export via WhatsApp
+    // MARK: Export via WhatsApp
     function exportViaWhatsApp() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
@@ -1166,89 +1184,137 @@
         }
     }
     // Switch to Thumbnail if QuotaExceededError (just idea...)
-    //#endregion major table / form functions
-    //#endregion main script
-    //#region Translation
+    /* #endregion major table / form functions */
+    /* #endregion main script */
+    /* #region Translation */
     const translations = {
         en: {
-            title: 'My Medication List',
-            note: 'Note',
-            language: 'Language',
-            open: 'Open',
-            save: 'Save',
+            action: 'Action',
+            cancel: 'Cancel',
+            confirmDelete: 'Confirm Delete',
+            confirmDeleteMedication: 'Confirm Delete Medication',
+            delete: 'Delete',
+            deleteMedication: 'Are you sure you want to delete',
+            dose: 'Dose',
+            doseT: 'Medication dose  of 1 tablet in mg, syrup in ml etc. (optional)',
+            errorProcessingPastedData: 'Error processing pasted data. Please make sure the format is correct',
+            errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
             export: 'Export',
-            paste: 'Paste',
-            timing: 'Timing',
+            exportT: 'Exports medications list to WhatsApp',
+            import: 'Import',
+            importMedicationData: 'Import Medication Data',
+            info: 'Leaflet',
+            infoT: 'Medication information leaflet lookup',
+            invalidQuantity: 'Please enter a valid number for quantity',
+            invalidTiming: 'Invalid timing value. Please use: As_needed, Morning, Noon, or Evening',
+            languageT: 'Choose Language',
+            loadedMedicationData: 'Loaded medication data for patient:',
+            medicationDataImported: 'Medication data imported successfully',
+            medicationDataSaved: 'Medication data saved for patient:',
+            medicationScheduleFor: 'Medication Schedule for',
             medicineName: 'Medicine Name',
             medicineName1: 'Medicine',
             medicineName2: 'Name',
-            dose: 'Dose',
-            quantity: 'Quantity',
-            info: 'Leaflet',
-            action: 'Action',
-            delete: 'Delete',
-            confirmDelete: 'Confirm Delete',
-            cancel: 'Cancel',
-            import: 'Import',
+            medicineNameT: 'Name of the medication (required)',
+            morningShort: 'AM',
+            noon: 'Noon',
+            eveningShort: 'PM',
+            noSavedDataFound: 'No saved data found for patient:',
+            note: 'Note',
+            noValidMedicationData: 'No valid medication data found in the pasted text',
+            open: 'Open',
+            openT: 'Opens medications list from local storage (cookies)',
+            paste: 'Paste',
+            pastedTextA: 'Please paste medication data first',
+            pasteMedicationData: 'Paste Medication Data',
+            pasteT: 'Pastes medications list from clipboard',
             patientName: 'Patient Name',
+            patientNameA: 'Please enter patient name',
             patientNamePlaceholder: 'Patient Name',
             patientNameRequired: 'Please enter patient name',
-            timingInstructions: 'Please select medication intake time',
-            invalidTiming: 'Invalid timing value. Please use: As needed, Morning, Noon, or Evening',
-            invalidQuantity: 'Please enter a valid number for quantity',
-            medicationScheduleFor: 'Medication Schedule for',
-            medicationDataImported: 'Medication data imported successfully',
-            noValidMedicationData: 'No valid medication data found in the pasted text',
-            errorProcessingPastedData: 'Error processing pasted data. Please make sure the format is correct',
-            errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
-            medicationDataSaved: 'Medication data saved for patient:',
-            loadedMedicationData: 'Loaded medication data for patient:',
-            noSavedDataFound: 'No saved data found for patient:',
-            deleteMedication: 'Are you sure you want to delete',
+            patientNameT: 'Name of the patient',
+            pictueT: 'Medication picture. (optional)',
             picture: 'Picture',
-            importMedicationData: 'Import Medication Data',
-            pasteMedicationData: 'Paste Medication Data',
-            confirmDeleteMedication: 'Confirm Delete Medication',
+            quantity: 'Quantity',
+            quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
+            quantityA: 'Please enter a valid number for quantity',
+            quantityT: 'Number of medication units to take each time. (optional)',
+            save: 'Save',
+            saveT: 'Saves name and medications list to local storage (cookies)',
+            timing: 'Timing',
+            As_needed: '🚨 As needed',
+            Morning: '🐓 Morning',
+            Noon: '☀️ Noon',
+            Evening: '🌙 Evening',
+            timingA: 'Please select medication intake time',
+            timingInstructions: 'Please select medication intake time',
+            timingOrderA: 'Invalid timing value. Please use: As_needed, Morning, Noon, or Evening',
+            timingT: 'When to take the medication',
+            title: 'Medication list of',
+            xplainAppT: 'Medication list manager for patients',
         },
         he: {
-            title: 'רשימת התרופות שלי',
-            note: 'הערה',
-            language: 'שפה',
-            open: 'פתח',
-            save: 'שמור',
+            action: 'עולה',
+            cancel: 'ביטול',
+            confirmDelete: 'אשר מחיקה',
+            confirmDeleteMedication: 'אשר מחיקת תרופה',
+            delete: 'מחק',
+            deleteMedication: 'האם אתה בטוח שברצונך למחוק',
+            dose: 'מינון',
+            doseT: 'מינון התרופה של טבליה אחת במ"ג, סירופ במ"ל וכו\' (אופציונלי)',
+            errorProcessingPastedData: 'שגיאה בעיבוד הנתונים שהודבקו. אנא ודא שהפורמט נכון',
+            errorQuotaExceeded: 'חריגה מהמכסה. שגיאה בשמירת הנתונים עבור ',
             export: 'יצוא',
-            paste: 'הדבק',
-            timing: 'מתי',
+            exportT: 'מייצא את רשימת התרופות ל-WhatsApp',
+            import: 'ייבא',
+            importMedicationData: 'ייבא נתוני תרופות',
+            info: 'עלון',
+            infoT: 'חיפוש עלון מידע על התרופה',
+            invalidQuantity: 'אנא הכנס מספר חוקי לכמות',
+            invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי הצורך, בוקר, צהריים או ערב',
+            languageT: 'לבחירת שפה',
+            loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
+            medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
+            medicationDataSaved: 'נתוני התרופות נשמרו עבור המטופל:',
+            medicationScheduleFor: 'תכנית תרופות עבור',
             medicineName: 'שם תרופה',
             medicineName1: 'שם',
             medicineName2: 'התרופה',
-            dose: 'מינון',
-            quantity: 'כמות',
-            info: 'עלון',
-            action: 'פעולה',
-            delete: 'מחק',
-            confirmDelete: 'אשר מחיקה',
-            cancel: 'ביטול',
-            import: 'ייבא',
-            patientName: 'שם המטופל',
-            patientNamePlaceholder: 'שם המטופל',
-            patientNameRequired: 'יש להזין את שם המטופל',
-            timingInstructions: 'יש לבחור זמן נטילת התרופה',
-            invalidTiming: 'ערך זמן לא חוקי. יש להשתמש ב: לפי הצורך, בוקר, צהריים, או ערב',
-            invalidQuantity: 'יש להזין מספר תקין לכמות',
-            medicationScheduleFor: 'סידור התרופות של',
-            medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
-            noValidMedicationData: 'לא נמצאו נתוני תרופות תקינים בטקסט שהודבק',
-            errorProcessingPastedData: 'שגיאה בעיבוד הנתונים שהודבקו. יש לוודא שהפורמט נכון',
-            errorQuotaExceeded: ' חריגת גודל. שגיאה בשמירת הנתונים עבור',
-            medicationDataSaved: 'נתוני התרופות נשמרו עבור המטופל:',
-            loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
-            noSavedDataFound: 'לא נמצאו נתונים עבור המטופל:',
-            deleteMedication: 'האם אתה בטוח שברצונך למחוק',
-            picture: 'תמונה',
-            importMedicationData: 'ייבוא נתוני תרופות',
+            medicineNameT: 'שם התרופה (נדרש)',
+            morningShort: 'בקר',
+            noon: 'צהרים',
+            eveningShort: 'ערב',
+            noSavedDataFound: 'לא נמצאו נתונים שמורים עבור המטופל:',
+            note: 'הערה',
+            noValidMedicationData: 'לא נמצאו נתוני תרופות חוקיים בטקסט שהודבק',
+            open: 'פתח',
+            openT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
+            paste: 'הדבק',
+            pastedTextA: 'אנא להדביק תחילה נתוני תרופות',
             pasteMedicationData: 'הדבק נתוני תרופות',
-            confirmDeleteMedication: 'אשר מחיקת תרופה',
+            pasteT: 'מדביק את רשימת התרופות מהלוח',
+            patientName: 'שם המטופל',
+            patientNameA: 'אנא להכניס כעת שם מטופל',
+            patientNamePlaceholder: 'שם המטופל',
+            patientNameRequired: 'אנא הכנס שם מטופל',
+            patientNameT: 'שם המטופל',
+            pictueT: 'תמונת התרופה. (אופציונלי)',
+            picture: 'תמונה',
+            quantity: 'כמות',
+            quantityA: 'אנא להכניס מספר חוקי של כמות (לדוגמה: 0.25, 1, 1.5, 4)',
+            quantityT: 'מספר יחידות התרופה לקחת בכל פעם. (אופציונלי)',
+            save: 'שמור',
+            saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
+            timing: 'מתי',
+            As_needed: '🚨 לפי הצורך',
+            Morning: '🐓 בוקר',
+            Noon: '☀️ צהריים',
+            Evening: '🌙 ערב',
+            timingA: 'אנא לבחור כעת זמן נטילת התרופה',
+            timingInstructions: 'אנא בחר זמן נטילת התרופה',
+            timingOrderA: 'ערך זמן לא חוקי. אנא להשתמש ב: לפי הצורך, בוקר, צהריים או ערב',
+            timingT: 'מתי לקחת את התרופה',
+            xplainAppT: 'מנהל רשימת תרופות עבור מטופלים',
         }
     };
 
@@ -1268,18 +1334,24 @@
         // Update text position in drugName input label svg according to language direction
         const text_x = isRTL ? 240 : 40;
         document.getElementById('t-text').setAttribute('x', text_x);
-
-        // Get all elements with an id attribute
-        const elementsWithDTK = document.querySelectorAll('[data-t-key]');
-        // Convert NodeList to Array and map to get just the ids
-        elementDTKArray = Array.from(elementsWithDTK).map(element => element.getAttribute('data-t-key'));
-        for (let i = 0; i < elementDTKArray.length; i++) {
-            const element = elementsWithDTK[i];
-            console.log('elementDTKArray[i] = ' + elementDTKArray[i]);
-            element.textContent = t(elementDTKArray[i]) || element.textContent;
-            TitleLayoutPerfection();
-        };
+        // Update text content in data-t-key containing elements that are not titles.
+        document.querySelectorAll('[data-t-key]:not([title])').forEach(el => el.textContent = t(el.getAttribute('data-t-key')) || el.textContent);
+        // Update titles (popup text) content if have data-t-key attribute.
+        document.querySelectorAll('[data-t-key][title]').forEach(el => el.title = t(el.getAttribute('data-t-key')) || el.title);
+        // Function to populate the timing select based on selected language
+        const selector = document.getElementById('timingSelect')
+        const align = isRTL ? 'right-align' : 'left-align';
+        selector.innerHTML = `<option value="" class=`+align+`>🕓</option>`;
+        Object.keys(timingOrder).forEach(timingKey => {
+            const option = document.createElement('option');
+            option.value = timingKey;
+            option.textContent = t(timingKey);
+            option.classList.add(align);
+            selector.appendChild(option);
+        });
     }
+
+
     function TitleLayoutPerfection() {
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
@@ -1313,11 +1385,11 @@
         TitleLayoutPerfection();
     }
 
-    //#endregion Translation
+    /* #endregion Translation */
 
 
-    //#region  Image Handler Modal
-    // #region Initialize img_handler global elements
+    /* #region  Image Handler Modal */
+    /*  #region Initialize img_handler global elements */
     const img_handler_mdl = document.getElementById('img_handler_modal');
     // Call img_handler once to set up the initial state
     const mdlCanvas = document.getElementById('mdlCanvas');
@@ -1343,7 +1415,7 @@
         startY: 0
     };
     const handlers = img_handler(false); // call img_handler to set up the initial state
-    //#endregion
+    /* #endregion */
 
     function img_handler(show) {
         if (show) { img_handler_mdl.style.display = 'block'; } // show the modal
@@ -1488,7 +1560,7 @@
             clntX = e_.clientX;
             clntY = e_.clientY;
         }
-        //#endregion
+        /* #endregion */
 
         function startDragging() {
             if (!pictureIn) return;
@@ -1644,9 +1716,9 @@
     function closeImgHandlerModal() {
         document.getElementById('img_handler_modal').style.display = 'none';
     }
-    //#endregion Image Handler Modal
+    /* #endregion Image Handler Modal */
 
-    //#region Initialize 
+    /* #region Initialize */
     console.log("Script re/start");// js start point
     // Ensure width of patient-controls is same as form
     document.addEventListener('DOMContentLoaded', function () {
@@ -1670,7 +1742,7 @@
             patientControls.style.maxWidth = `${tableWidth}px`;
         }
     };
-    //#endregion Initialize
+    /* #endregion Initialize */
 </script>
 
 </html>
