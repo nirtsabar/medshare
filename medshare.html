@@ -539,11 +539,10 @@
 
 <body>
     <!-- MARK: Body -->
-    <div id="lang-and-title" title data-t-key="xplainAppT">
-        <span data-t-key="title" class="app-title"></span>
+    <div id="lang-and-title"  data-title="xplainAppT">
+        <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
-        <span id="languageSelector" title data-t-key="languageT">
-            <label for="language" data-t-key="language" class="label-language">Language:</label>
+        <span id="languageSelector" data-title="languageT">
             <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -560,29 +559,29 @@
     <div class="container">
         <div class="patient-controls">
             <div class="patient-input">
-                <!-- 'user' svg icon-->
+                <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <input type="text" id="patientName" required>
+                <input type="text" id="patientName" data-title="patientNameT" required>
             </div>
             <div class="pt-btn">
                 <button class="btn-open" onclick="openPatientData()">
-                    <i data-feather="folder"></i>
+                    <i data-feather="folder"></i><!-- From Feather Icons (MIT) -->
                     <span data-t-key="open"></span>
                 </button>
                 <button class="btn-save" onclick="savePatientData()">
-                    <i data-feather="save"></i>
+                    <i data-feather="save"></i><!-- From Feather Icons (MIT) -->
                     <span data-t-key="save"></span>
                 </button>
                 <button class="export-button" onclick="exportViaWhatsApp()">
-                    <i data-feather="share-2"></i>
+                    <i data-feather="share-2"></i><!-- From Feather Icons (MIT) -->
                     <span data-t-key="export"></span>
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
-                    <i data-feather="clipboard"></i>
+                    <i data-feather="clipboard"></i><!-- From Feather Icons (MIT) -->
                     <span data-t-key="paste"></span>
                 </button>
             </div>
@@ -593,7 +592,8 @@
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
                         <th id="timing_header" onclick="sortTable()" class="timing">
-                            <label for="timing_header" class="label-select" title="t" data-t-key="timingT">
+                            <label for="timing_header" class="label-select" title data-t-key="timingT">
+                                <!-- From Feather Icons (MIT) -->
                                 <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
@@ -605,23 +605,14 @@
                         <th id="medName_header" class="medName" title data-t-key="medicineNameT">
                             <label for="medicineName"> <!-- Sticker svg as label -->
                                 <svg height="24" viewBox="0 0 400 120">
-                                    <!-- Add drop shadow filter -->
-                                    <defs>
-                                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3" />
-                                        </filter>
-                                    </defs>
-
                                     <!-- Main sticker body -->
                                     <path
                                         d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="4" filter="url(#shadow)" />
-
+                                        fill="white" stroke="black" stroke-width="8"/>
                                     <!-- Peeled corner -->
-                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="#e9ecef"
-                                        stroke="black" stroke-width="1" />
-
-                                    <!-- Added text element -->
+                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray"
+                                        stroke="black" stroke-width="5" />
+                                    <!-- Added text element. Note that x attribute may change in handleLanguageChange() --> 
                                     <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
                                         fill="black" data-t-key="medicineName1"></text>
                                 </svg>
@@ -636,6 +627,7 @@
                             <span data-t-key="dose"></span>
                         </th>
                         <th id="quantity_header" class="quantity">
+                            <!-- From Feather Icons (MIT) -->
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
@@ -650,24 +642,16 @@
                         </th>
                         <th id="note_header" class="note">
                             <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
-                                <path d="M12 2 
-                    A2.3 2.3 0 0 1 14.3 4.3
-                    L14.3 15
-                    A2.3 2.3 0 0 1 12 17.3
-                    A2.3 2.3 0 0 1 9.7 15
-                    L9.7 4.3
-                    A2.3 2.3 0 0 1 12 2
-                    
-                    M12 18.3
-                    A2.3 2.3 0 0 1 14.3 20.6
-                    A2.3 2.3 0 0 1 12 22.9
-                    A2.3 2.3 0 0 1 9.7 20.6
-                    A2.3 2.3 0 0 1 12 18.3
-                    Z" stroke="black" stroke-width="2" fill="none" />
+                                <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
+                                        A2.3 2.3 0 0 1 9.7 15 L9.7 4.3 A2.3 2.3 0 0 1 12 2 M12 18.3
+                                        A2.3 2.3 0 0 1 14.3 20.6 A2.3 2.3 0 0 1 12 22.9 A2.3 2.3 0 0 1 9.7 20.6
+                                        A2.3 2.3 0 0 1 12 18.3 Z"
+                                        stroke="black" stroke-width="2" fill="none" />
                             </svg>
                             <span data-t-key="note"></span>
                         </th>
                         <th id="info_header" class="info">
+                            <!-- From Feather Icons (MIT) -->
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -693,14 +677,12 @@
                             <select name="timing" id="timingSelect" title data-t-key="timingInstructions" required>
                                 <option value="">🕓</option>
                             </select>
-                            <small class="form-text text-muted" data-t-key="timing">Timing מתי</small>
                         </th>
                         <th class="medName">
                             <input id="medicineName" type="text" name="medicineName"
-                                placeholder="Medicine Name שם תרופה" required>
-                            <small class="form-text text-muted">שם התרופה</small>
+                                title data-t-key="medicineNameT" required>
                         </th>
-                        <th class="dose"><input type="text" name="dose" placeholder="Dose מינון"></th>
+                        <th class="dose"><input type="text" name="dose" placeholder data-t-key="dosePH"></th>
                         <th class="quantity"><input type="number" name="quantity" step="0.25"
                                 placeholder="Quantity כמות" min="0">
                         </th>
@@ -735,7 +717,7 @@
                     accept="image/*"> -->
                         </th>
                         <th class="action"><button type="submit" class="btn-add">
-                                <i data-feather="check"></i>
+                                <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
                             </button></th>
                     </tr id="tInputForm">
                     <!-- Data rows will be added here via the script -->
@@ -752,11 +734,11 @@
             <p>Are you sure you want to delete this medication?</p>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeDeleteModal()">
-                    <i data-feather="x"></i>
+                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
                     Cancel
                 </button>
                 <button class="btn-confirm-delete" id="confirmDelete">
-                    <i data-feather="trash-2"></i>
+                    <i data-feather="trash-2"></i><!-- From Feather Icons (MIT) -->
                     Delete
                 </button>
             </div>
@@ -771,11 +753,11 @@
                 placeholder="Paste medication schedule here..."></textarea>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closePasteModal()">
-                    <i data-feather="x"></i>
+                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
                     Cancel
                 </button>
                 <button class="btn-confirm-paste" onclick="processePastedData()">
-                    <i data-feather="check"></i>
+                    <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
                     Import
                 </button>
             </div>
@@ -785,13 +767,13 @@
     <div id="img_handler_modal" class="modal">
         <div class="modal-content">
             <header>
-                <h2 style="margin-top: 0;">Taking Medication Picture</h2>
+                <h2 style="margin-top: 0;" data-content="TakingMedicationPicture">Taking Medication Picture</h2>
             </header>
 
             <div class="modal-body-vertical">
                 <menu id="img_menu" class="modal-buttons">
                     <button class="btn-cancel" onclick="closeImgHandlerModal()">
-                        <i data-feather="x"></i>
+                        <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
                     </button>
                     <button onclick="document.getElementById('imageInput').click()"
                         style="padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
@@ -804,10 +786,10 @@
                         </svg>
                     </button>
                     <button id="frame_to_thumb" style="padding: 20px;"> <!--onclick="frame_to_thumb()"-->
-                        <i data-feather="airplay"></i>
+                        <i data-feather="airplay"></i><!-- From Feather Icons (MIT) -->
                     </button>
                     <button id="ok_thumb" class="btn-confirm" style="padding: 20px;">
-                        <i data-feather="check-circle"></i>
+                        <i data-feather="check-circle"></i><!-- From Feather Icons (MIT) -->
                     </button>
                     <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 </menu>
@@ -824,11 +806,6 @@
         </div>
     </div>
 </body>
-
-<!-- <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
-<!-- Your React code goes here  [not any more...]-->
 
 <script>
     // MARK: Translation Constants
@@ -1197,6 +1174,7 @@
             deleteMedication: 'Are you sure you want to delete',
             dose: 'Dose',
             doseT: 'Medication dose  of 1 tablet in mg, syrup in ml etc. (optional)',
+            dosePH: 'Dose in mg, ml etc.',
             errorProcessingPastedData: 'Error processing pasted data. Please make sure the format is correct',
             errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
             export: 'Export',
@@ -1247,9 +1225,8 @@
             Noon: '☀️ Noon',
             Evening: '🌙 Evening',
             timingA: 'Please select medication intake time',
-            timingInstructions: 'Please select medication intake time',
             timingOrderA: 'Invalid timing value. Please use: As_needed, Morning, Noon, or Evening',
-            timingT: 'When to take the medication',
+            timingT: 'When is the medication taken?',
             title: 'Medication list of',
             xplainAppT: 'Medication list manager for patients',
         },
@@ -1262,6 +1239,7 @@
             deleteMedication: 'האם אתה בטוח שברצונך למחוק',
             dose: 'מינון',
             doseT: 'מינון התרופה של טבליה אחת במ"ג, סירופ במ"ל וכו\' (אופציונלי)',
+            dosePH: 'מינון במג, מל וכד',
             errorProcessingPastedData: 'שגיאה בעיבוד הנתונים שהודבקו. אנא ודא שהפורמט נכון',
             errorQuotaExceeded: 'חריגה מהמכסה. שגיאה בשמירת הנתונים עבור ',
             export: 'יצוא',
@@ -1311,9 +1289,9 @@
             Noon: '☀️ צהריים',
             Evening: '🌙 ערב',
             timingA: 'אנא לבחור כעת זמן נטילת התרופה',
-            timingInstructions: 'אנא בחר זמן נטילת התרופה',
             timingOrderA: 'ערך זמן לא חוקי. אנא להשתמש ב: לפי הצורך, בוקר, צהריים או ערב',
-            timingT: 'מתי לקחת את התרופה',
+            timingT: 'מתי נטילת התרופה?',
+            title: 'רשימת התרופות של',
             xplainAppT: 'מנהל רשימת תרופות עבור מטופלים',
         }
     };
@@ -1322,7 +1300,9 @@
     const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
     console.log('defaultLang = ' + defaultLang);
+
     function t(key) {
+        console.log('translations[',currentLang,'][',key,']=', translations[currentLang][key]);  
         return translations[currentLang][key];
     }
 
@@ -1338,6 +1318,8 @@
         document.querySelectorAll('[data-t-key]:not([title])').forEach(el => el.textContent = t(el.getAttribute('data-t-key')) || el.textContent);
         // Update titles (popup text) content if have data-t-key attribute.
         document.querySelectorAll('[data-t-key][title]').forEach(el => el.title = t(el.getAttribute('data-t-key')) || el.title);
+        // Update all placeholders
+        document.querySelectorAll('[placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-t-key'))||el.placeholder);
         // Function to populate the timing select based on selected language
         const selector = document.getElementById('timingSelect')
         const align = isRTL ? 'right-align' : 'left-align';
