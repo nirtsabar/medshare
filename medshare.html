@@ -555,7 +555,7 @@
         }
     </style>
 </head>
-
+// MARK: Body
 <body>
     <!-- MARK: Body -->
     <div id="lang-and-title" data-title="xplainAppT">
@@ -589,14 +589,16 @@
             <div class="pt-btn">
                 <button class="btn-open" onclick="openPatientData()">
                     <!-- From Feather Icons (MIT) -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                     </svg>
                     <span data-content="open"></span>
                 </button>
                 <button class="btn-save" onclick="savePatientData()">
                     <!-- From Feather Icons (MIT) -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                         <polyline points="17 21 17 13 7 13 7 21"></polyline>
                         <polyline points="7 3 7 8 15 8"></polyline>
@@ -605,7 +607,8 @@
                 </button>
                 <button class="export-button" onclick="exportViaWhatsApp()">
                     <!-- From Feather Icons (MIT) -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="18" cy="5" r="3"></circle>
                         <circle cx="6" cy="12" r="3"></circle>
                         <circle cx="18" cy="19" r="3"></circle>
@@ -616,7 +619,8 @@
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
                     <!-- From Feather Icons (MIT) -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                     </svg>
@@ -695,7 +699,7 @@
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
-                            <br><data-content="info"></span>
+                            <br><span data-content="info"></span>
                         </th>
                         <th id="pic_header" class="imager">
                             <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
@@ -707,7 +711,7 @@
                             </svg>
                             <br><span data-content="picture"></span>
                         </th>
-                        <th id="action_header" class="action" data-content="action">Action פעולה</th>
+                        <th id="action_header" class="action" data-content="action"></th>
                     </tr>
                     <!--  Input Row of the form  -->
                     <tr id="tInputForm">
@@ -717,15 +721,15 @@
                             </select>
                         </th>
                         <th class="medName">
-                            <input id="medicineName" type="text" name="medicineName" data-title="medicineNameT"
+                            <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH" data-title="medicineNameT"
                                 required>
                         </th>
                         <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
                         <th class="quantity"><input type="number" name="quantity" step="0.25"
-                            data-placeholder="QuantityPH" min="0">
+                                data-placeholder="QuantityPH" min="0">
                         </th>
-                        <th class="note"><input type="text" name="note" placeholder="Note הערה"></th>
-                        <th class="info">
+                        <th class="note"><input type="text" name="note" data-placeholder="Note הערה"></th>
+                        <th class="info" data-title="infoT">
                             <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
                                 <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
                                     <defs>
@@ -751,8 +755,6 @@
                                         style="border:1px solid grey">
                                     </canvas>
                             </label> </button>
-                            <!-- <input type="file" id="picture" name="picture" style="display:none" onchange="thumbnailing(event)"
-                    accept="image/*"> -->
                         </th>
                         <th class="action"><button type="submit" class="btn-add">
                                 <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
@@ -788,7 +790,7 @@
             <h2 style="margin-top: 0;">Paste Medication Data</h2>
             <p>Paste the exportd medication data below:</p>
             <textarea id="pasteArea" class="paste-area" rows="10"
-                placeholder="Paste medication schedule here..."></textarea>
+                data-placeholder="Paste medication schedule here..."></textarea>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closePasteModal()">
                     <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
@@ -844,7 +846,7 @@
         </div>
     </div>
 </body>
-
+// MARK: Scripts
 <script>
     // MARK: Translation Constants
     /* #region main script !!!*/
@@ -891,7 +893,19 @@
                     <td contenteditable="true" onblur="updateCell(${med.id}, 'note', this.textContent)">${med.note}</td>
                     <td>
                         <button class="btn-lookup" type="button" onclick="openMedLookup('${med.medicineName}')">
-                            <i data-feather="clipboard"></i>
+                            <svg data-name="Group 2" width="30" height="37" viewBox="0 0 141.721 192.336">
+                                <defs>
+                                    <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
+                                        gradientUnits="objectBoundingBox">
+                                        <stop offset="0" stop-color="#fdf6fe" />
+                                        <stop offset="1" stop-color="#7151cb" />
+                                    </linearGradient>
+                                    </defs>
+                                    <path data-name="Path 3"
+                                        d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
+                                        transform="translate(-5 -2)" style="fill:url(#a)" />
+                                </svg>
+
                         </button>
                     </td>
                     <td>${med.thumb ? `<img src="${med.thumb}" class="med-image" style="width:${formThumbCnv.clientWidth}px; height:${formThumbCnv.clientHeight}px" alt="${med.medicineName}">` : ''}</td>
@@ -1232,6 +1246,7 @@
             medicineName1: 'Medicine',
             medicineName2: 'Name',
             medicineNameT: 'Name of the medication (required)',
+            medicineNamePH: 'Medicine Name',
             morningShort: 'AM',
             noon: 'Noon',
             eveningShort: 'PM',
@@ -1269,7 +1284,7 @@
             xplainAppT: 'Medication list manager for patients',
         },
         he: {
-            action: 'עולה',
+            action: 'פעולה',
             cancel: 'ביטול',
             confirmDelete: 'אשר מחיקה',
             confirmDeleteMedication: 'אשר מחיקת תרופה',
@@ -1287,7 +1302,7 @@
             info: 'עלון',
             infoT: 'חיפוש עלון מידע על התרופה',
             invalidQuantity: 'אנא הכנס מספר חוקי לכמות',
-            invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי הצורך, בוקר, צהריים או ערב',
+            invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי צורך, בוקר, צהריים או ערב',
             languageT: 'לבחירת שפה',
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
@@ -1297,6 +1312,7 @@
             medicineName1: 'שם',
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
+            medicineNamePH: 'שם התרופה',
             morningShort: 'בקר',
             noon: 'צהרים',
             eveningShort: 'ערב',
@@ -1322,7 +1338,7 @@
             save: 'שמור',
             saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
             timing: 'מתי',
-            As_needed: '🚨 לפי הצורך',
+            As_needed: '🚨 לפי צורך',
             Morning: '🐓 בוקר',
             Noon: '☀️ צהריים',
             Evening: '🌙 ערב',
@@ -1372,7 +1388,8 @@
             option.classList.add(align);
             selector.appendChild(option);
         });
-        selector.value = selectedTiming;//**new^***
+        selector.value = selectedTiming;
+        adjustInputWidth(selector, "select_type");
     }
 
     // Add this function to your JavaScript
@@ -1391,11 +1408,13 @@
 
         // Update width based on content
         span.textContent = input_element.value || input_element.placeholder || '';
-        let contentWidth = span.offsetWidth;
         if (type == "select_type") {
-            contentWidth += 60; // Add space for the dropdown arrow
+            if (input_element.value) {
+                span.textContent = t(input_element.value) + "##"; // Add space for the dropdown arrow
+            }
         }
-            console.log('select_type val. = ' + input_element.value, ' contentWidth = ' + contentWidth);
+        let contentWidth = span.offsetWidth;
+        console.log('input_e span = ' + span.textContent + ' contentWidth = ' + contentWidth);
 
         // Convert em to pixels (assuming base font size)
         const fontSize = parseFloat(inputStyle.fontSize);
@@ -1412,15 +1431,15 @@
 
     // Add event listeners to all inputs in the table
     document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
-        input.addEventListener('input', () => adjustInputWidth(input,"input_text_type"));
+        input.addEventListener('input', () => adjustInputWidth(input, "input_text_type"));
         // Initial adjustment
-        adjustInputWidth(input);
+        adjustInputWidth(input, "input_text_type");
     });
 
     document.querySelectorAll('.table-container select').forEach(select => {
-        select.addEventListener('change', () => adjustInputWidth(select,"select_type"));
+        select.addEventListener('change', () => adjustInputWidth(select, "select_type"));
         // Initial adjustment
-        adjustInputWidth(select);
+        adjustInputWidth(select, "select_type");
     });
 
     function TitleLayoutPerfection() {
