@@ -4,542 +4,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-t-key="title">תכנית תרופות</title>
-    <link rel="icon" href="https://medlookup.org/img/group_2.svg">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
-    <style>
-        * {
-            font-size: x-large;
-            text-align: center;
-            box-sizing: border-box;
-            /*border-color: #fff;
+    <data-title="title">תכנית תרופות</title>
+        <link rel="icon" href="https://medlookup.org/img/group_2.svg">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+        <style>
+            * {
+                font-size: x-large;
+                text-align: center;
+                box-sizing: border-box;
+                /*border-color: #fff;
             border-radius: 3px;
             border-width: 1px;
             border-style: solid; */
-        }
-
-        html {
-            max-width: 100%;
-        }
-
-        .app-title {
-            color: #cbd9f7;
-            order: 3;
-            white-space: nowrap;
-            min-width: fit-content;
-            /* position: absolute; */
-            width: fit-content;
-            font-weight: bold;
-        }
-
-        #spacer {
-            order: 2;
-        }
-
-        #language {
-            width: fit-content;
-            margin: 10px;
-            background-color: #cbd9f7;
-        }
-
-        #lang-and-title {
-            display: flex;
-            align-items: center;
-            /* Vertical center alignment */
-            flex-direction: row;
-
-        }
-
-        #languageSelector {
-            padding: 10px;
-            box-sizing: border-box;
-            align-items: center;
-            display: flex;
-            flex-wrap: wrap;
-            order: 1;
-            gap: 8px;
-            max-width: 35%;
-            min-width: 20%;
-            flex-direction: row-reverse;
-        }
-
-        ::-webkit-scrollbar {
-            width: 20px;
-            height: 20px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #646b91;
-            border-radius: 6px;
-        }
-
-        #medicationForm::-webkit-scrollbar {
-            height: 30px;
-        }
-
-        /* For Firefox */
-        #medicationForm {
-            scrollbar-width: thick;
-        }
-
-        .container::-webkit-scrollbar {
-            height: 30px;
-            /* Adjust the height to make it thicker */
-        }
-
-        .container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-
-        .container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .inline-block {
-            float: inline-start;
-            /*display: inline-block;*/
-        }
-
-        small {
-            font-size: small;
-        }
-
-        muted-text {
-            color: #6c757d;
-        }
-
-        .modal-body-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 90vh;
-            overflow: auto;
-        }
-
-        #imageInput {
-            touch-action: auto;
-            /* Explicit default touch behavior for file input */
-            font-size: xx-large;
-            line-height: 50%;
-            padding: 40px;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            cursor: pointer;
-        }
-
-        #data_text {
-            white-space: pre;
-        }
-
-        figure,
-        menu,
-        #img_menu,
-        #deetails {
-            border-style: solid;
-            border-color: rgb(46, 43, 226);
-            border-radius: 10px;
-            padding: 1%;
-            justify-content: center;
-        }
-
-        menu {
-            touch-action: auto !important;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        }
-
-        canvas {
-            touch-action: none;
-            /* Initially prevents touch actions on canvas */
-        }
-
-        /* The thumbnail picked - shown here (details) */
-        #mdlThumbCnv {
-            visibility: hidden;
-            position: relative;
-            border: 2px solid rgb(131, 2, 156);
-            cursor: move;
-            top: 0;
-            left: 0;
-            pointer-events: all;
-            box-sizing: border-box;
-            /*   box-shadow: 20px 20px 50px 50px #8888888c, -20px -20px 50px 50px #88888873; */
-        }
-
-        .label-pointer {
-            cursor: pointer;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #000000;
-            min-height: 100vh;
-            max-width: fit-content;
-            max-height: 100%;
-        }
-
-        .patient-controls {
-            border-radius: 6px;
-            display: flex;
-            flex-wrap: wrap;
-            -ms-flex-align: center;
-            /* min-width: fit-content; */
-            max-width: fit-content;
-            margin: 0;
-            margin-bottom: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .patient-input {
-            color: white;
-            display: flex;
-            align-items: left;
-            width: 100%;
-        }
-
-        #patientName {
-            width: 100%;
-            margin: 5px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 20px;
-
-            min-width: 300px;
-        }
-
-        .container {
-            max-width: fit-content;
-            margin: auto;
-            background: rgb(35, 36, 36);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
-            overflow: auto;
-        }
-
-        .container>div {
-            background-color: #3e3e3f;
-            padding: 0;
-            font-size: 30px;
-            align-items: center;
-            /* Center align items vertically within the #lang-and-title container */
-        }
-
-
-        form {
-            scrollbar-color: #adc5f7 #6366f1;
-            background-color: #f9fafb;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: fit-content;
-        }
-
-        #medicationForm::-webkit-scrollbar {
-            height: 60px;
-        }
-
-        /* For Firefox */
-        #medicationForm {
-            scrollbar-width: thick;
-        }
-
-        .table-container {
-            table-layout: fixed;
-            border-radius: 8px;
-            background-color: #52d1f8;
-            padding: 10px;
-            gap: 1px;
-            align-items: center;
-        }
-
-        .input-group {
-            display: flex;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 4em;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 20px;
-            align-items: center;
-        }
-
-        button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 16px;
-            margin: 6px;
-            border: 1px solid #020f83;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.486);
-            cursor: pointer;
-            font-size: 14px;
-            color: white;
-            background-color: #3b82f6;
-            height: 100%;
-        }
-
-        .btn-add {
-            background-color: #029e0f;
-            border-radius: 20px;
-            margin-top: 8px;
-        }
-
-        .btn-delete {
-            background-color: #757474;
-            padding: 6px;
-        }
-
-        .btn-open {
-            background-color: #6366f1;
-        }
-
-        .btn-save {
-            background-color: #10b981;
-        }
-
-        .export-button {
-            background-color: #037c30;
-        }
-
-        .paste-button {
-            background-color: #8B5CF6;
-        }
-
-        .btn-confirm-paste {
-            background-color: #8B5CF6;
-        }
-
-        .btn-lookup {
-            background-color: #594b8b;
-            padding: 6px;
-        }
-
-        .btn-lookup:hover {
-            background-color: #475569;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        table {
-            border-collapse: collapse;
-            background: white;
-            flex: left;
-            align-items: center;
-        }
-
-        .timing {
-            width: 90px;
-        }
-
-        .medName {
-            width: 120px;
-        }
-
-        .dose {
-            width: 50px;
-        }
-
-        .quantity {
-            width: 60px;
-        }
-
-        .note {
-            width: 50px;
-        }
-
-        .info {
-            width: 30px;
-        }
-
-        .imager {
-            width: 40px;
-        }
-
-        .action {
-            width: 40px;
-        }
-        .select option {
-           text-align-last: right;
-        }
-        .selected-text {
-            text-align: right;
-        }
-        .left-align {
-            text-align: left;
-        }
-        .right-align {
-            text-align: right;
-        }        
-        th,
-        td {
-            background-color: #d8e5f8;
-            border: 1px solid #ddd;
-            margin: auto;
-            padding: 3px;
-            width:fit-content;
-        }
-
-        th {
-            background-color: #f9fafb;
-        }
-
-        tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .med-image {
-            width: 100px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 96%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-
-        }
-
-        .modal-buttons {
-            height: 60px;
-            display: flex;
-            justify-content: space-around;
-            vertical-align: middle;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-cancel {
-            background-color: #4b638b;
-        }
-
-        .btn-confirm-delete {
-            background-color: #ef4444;
-        }
-
-        .sorting-icon {
-            cursor: pointer;
-            vertical-align: middle;
-            margin-left: 5px;
-        }
-
-        .paste-area {
-            width: 100%;
-            min-height: 200px;
-            margin: 10px 0;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        /* Specific styles for img_handler modal */
-        #img_handler_modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #img_handler_modal .modal-content {
-            background-color: white;
-            padding: 7px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            /*            width: 95%; /* for smartphone screen */
-            text-align: center;
-        }
-
-        #img_handler_modal .modal-buttons {
-            /*             display: flex;
+            }
+
+            html {
+                max-width: 100%;
+            }
+
+            .app-title {
+                color: #cbd9f7;
+                order: 3;
+                white-space: nowrap;
+                min-width: fit-content;
+                /* position: absolute; */
+                width: fit-content;
+                font-weight: bold;
+            }
+
+            #spacer {
+                order: 2;
+            }
+
+            #language {
+                width: fit-content;
+                margin: 10px;
+                background-color: #cbd9f7;
+            }
+
+            #lang-and-title {
+                display: flex;
+                align-items: center;
+                /* Vertical center alignment */
+                flex-direction: row;
+
+            }
+
+            #languageSelector {
+                padding: 10px;
+                box-sizing: border-box;
+                align-items: center;
+                display: flex;
+                flex-wrap: wrap;
+                order: 1;
+                gap: 8px;
+                max-width: 35%;
+                min-width: 20%;
+                flex-direction: row-reverse;
+            }
+
+            ::-webkit-scrollbar {
+                width: 20px;
+                height: 20px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #646b91;
+                border-radius: 6px;
+            }
+
+            #medicationForm::-webkit-scrollbar {
+                height: 30px;
+            }
+
+            /* For Firefox */
+            #medicationForm {
+                scrollbar-width: thick;
+            }
+
+            .container::-webkit-scrollbar {
+                height: 30px;
+                /* Adjust the height to make it thicker */
+            }
+
+            .container::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            .container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+
+            .inline-block {
+                float: inline-start;
+                /*display: inline-block;*/
+            }
+
+            small {
+                font-size: small;
+            }
+
+            muted-text {
+                color: #6c757d;
+            }
+
+            .modal-body-vertical {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                max-height: 90vh;
+                overflow: auto;
+            }
+
+            #imageInput {
+                touch-action: auto;
+                /* Explicit default touch behavior for file input */
+                font-size: xx-large;
+                line-height: 50%;
+                padding: 40px;
+                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                cursor: pointer;
+            }
+
+            #data_text {
+                white-space: pre;
+            }
+
+            figure,
+            menu,
+            #img_menu,
+            #deetails {
+                border-style: solid;
+                border-color: rgb(46, 43, 226);
+                border-radius: 10px;
+                padding: 1%;
+                justify-content: center;
+            }
+
+            menu {
+                touch-action: auto !important;
+                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            }
+
+            canvas {
+                touch-action: none;
+                /* Initially prevents touch actions on canvas */
+            }
+
+            /* The thumbnail picked - shown here (details) */
+            #mdlThumbCnv {
+                visibility: hidden;
+                position: relative;
+                border: 2px solid rgb(131, 2, 156);
+                cursor: move;
+                top: 0;
+                left: 0;
+                pointer-events: all;
+                box-sizing: border-box;
+                /*   box-shadow: 20px 20px 50px 50px #8888888c, -20px -20px 50px 50px #88888873; */
+            }
+
+            .label-pointer {
+                cursor: pointer;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 10px;
+                background-color: #000000;
+                min-height: 100vh;
+                max-width: fit-content;
+                max-height: 100%;
+            }
+
+            .patient-controls {
+                border-radius: 6px;
+                display: flex;
+                flex-wrap: wrap;
+                -ms-flex-align: center;
+                /* min-width: fit-content; */
+                max-width: fit-content;
+                margin: 0;
+                margin-bottom: 6px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .patient-input {
+                color: white;
+                display: flex;
+                align-items: left;
+                width: 100%;
+            }
+
+            #patientName {
+                width: 100%;
+                margin: 5px;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 20px;
+
+                min-width: 300px;
+            }
+
+            .container {
+                max-width: min-content;
+                margin: auto;
+                background: rgb(35, 36, 36);
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
+                overflow: auto;
+            }
+
+            .container>div {
+                background-color: #3e3e3f;
+                padding: 0;
+                font-size: 30px;
+                align-items: center;
+                /* Center align items vertically within the #lang-and-title container */
+            }
+
+
+            form {
+                scrollbar-color: #adc5f7 #6366f1;
+                background-color: #f9fafb;
+                border-radius: 6px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                max-width: min-content;
+            }
+
+            #medicationForm::-webkit-scrollbar {
+                height: 60px;
+            }
+
+            /* For Firefox */
+            #medicationForm {
+                scrollbar-width: thick;
+            }
+
+            .table-container {
+                border-radius: 8px;
+                background-color: #52d1f8;
+                padding: 10px;
+                gap: 1px;
+                align-items: center;
+                width: 100%;
+                table-layout: auto;
+                border-collapse: collapse;
+            }
+
+            .table-container th {
+                white-space: nowrap;
+                padding: 0.5rem;
+
+            }
+
+            .table-container input {
+                width: 6em;
+                box-sizing: border-box;
+            }
+
+            .table-container svg {
+                width: auto;
+                height: 24px;
+                vertical-align: middle;
+            }
+
+            .input-group {
+                display: flex;
+            }
+
+            input,
+            select,
+            textarea {
+                /* width: 4em; */
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 20px;
+                align-items: center;
+            }
+
+            button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 8px 16px;
+                margin: 6px;
+                border: 1px solid #020f83;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.486);
+                cursor: pointer;
+                font-size: 14px;
+                color: white;
+                background-color: #3b82f6;
+                height: 100%;
+            }
+
+            .btn-add {
+                background-color: #029e0f;
+                border-radius: 20px;
+                margin-top: 8px;
+            }
+
+            .btn-delete {
+                background-color: #757474;
+                padding: 6px;
+            }
+
+            .btn-open {
+                background-color: #6366f1;
+            }
+
+            .btn-save {
+                background-color: #10b981;
+            }
+
+            .export-button {
+                background-color: #037c30;
+            }
+
+            .paste-button {
+                background-color: #8B5CF6;
+            }
+
+            .btn-confirm-paste {
+                background-color: #8B5CF6;
+            }
+
+            .btn-lookup {
+                background-color: #594b8b;
+                padding: 6px;
+            }
+
+            .btn-lookup:hover {
+                background-color: #475569;
+            }
+
+            button:hover {
+                opacity: 0.9;
+            }
+
+            table {
+                border-collapse: collapse;
+                background: white;
+                flex: left;
+                align-items: center;
+            }
+
+            .timing {
+                width: fit-content;
+            }
+
+            .medName {
+                width: min-content;
+            }
+
+            .dose {
+                width: fit-content;
+            }
+
+            .quantity {
+                width: fit-content;
+            }
+
+            .note {
+                width: auto;
+            }
+
+            .info {
+                width: fit-content;
+            }
+
+            .imager {
+                width: fit-content;
+            }
+
+            .action {
+                width: fit-content;
+            }
+
+            .select option {
+                text-align-last: right;
+                width: fit-content;
+            }
+
+            .selected-text {
+                text-align: right;
+            }
+
+            .left-align {
+                text-align: left;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            th,
+            td {
+                background-color: #d8e5f8;
+                border: 1px solid #ddd;
+                margin: auto;
+                padding: 3px;
+            }
+
+            th {
+                background-color: #f9fafb;
+                width: fit-content;
+            }
+
+            tr:hover {
+                background-color: #f9fafb;
+            }
+
+            .med-image {
+                width: 100px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+            }
+
+            .modal-content {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                max-width: 400px;
+                width: 96%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+            }
+
+            .modal-buttons {
+                height: 60px;
+                display: flex;
+                justify-content: space-around;
+                vertical-align: middle;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .btn-cancel {
+                background-color: #4b638b;
+            }
+
+            .btn-confirm-delete {
+                background-color: #ef4444;
+            }
+
+            .sorting-icon {
+                cursor: pointer;
+                vertical-align: middle;
+                margin-left: 5px;
+            }
+
+            .paste-area {
+                width: 100%;
+                min-height: 200px;
+                margin: 10px 0;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-family: inherit;
+                resize: vertical;
+            }
+
+            /* Specific styles for img_handler modal */
+            #img_handler_modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            #img_handler_modal .modal-content {
+                background-color: white;
+                padding: 7px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                max-width: 600px;
+                /*            width: 95%; /* for smartphone screen */
+                text-align: center;
+            }
+
+            #img_handler_modal .modal-buttons {
+                /*             display: flex;
             justify-content: center; */
-            height: 100px;
-            gap: 10px;
-            margin-top: 20px;
-        }
+                height: 100px;
+                gap: 10px;
+                margin-top: 20px;
+            }
 
-        #img_handler_modal button {
-            height: 60px;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+            #img_handler_modal button {
+                height: 60px;
+                padding: 10px 20px;
+                font-size: 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
 
-        #img_handler_modal .modal-buttons .btn-cancel {
-            background-color: #324464;
-        }
+            #img_handler_modal .modal-buttons .btn-cancel {
+                background-color: #324464;
+            }
 
-        #img_handler_modal .modal-buttons .btn-confirm {
-            background-color: #3b82f6;
-            color: white;
-        }
+            #img_handler_modal .modal-buttons .btn-confirm {
+                background-color: #3b82f6;
+                color: white;
+            }
 
-        [contenteditable="true"] {
-            padding: 5px;
-            border: 1px solid;
-            /* transparent */
-            transition: border-color 0.2s;
-        }
+            [contenteditable="true"] {
+                padding: 5px;
+                border: 1px solid;
+                /* transparent */
+                transition: border-color 0.2s;
+            }
 
-        [contenteditable="true"]:hover {
-            border-color: #ddd;
-            background-color: #f8f8f8;
-        }
+            [contenteditable="true"]:hover {
+                border-color: #ddd;
+                background-color: #f8f8f8;
+            }
 
-        [contenteditable="true"]:focus {
-            outline: none;
-            border-color: #b1c4e2;
-            background-color: #fff;
-        }
-
-    </style>
+            [contenteditable="true"]:focus {
+                outline: none;
+                border-color: #b1c4e2;
+                background-color: #fff;
+            }
+        </style>
 </head>
 
 <body>
     <!-- MARK: Body -->
-    <div id="lang-and-title"  data-title="xplainAppT">
+    <div id="lang-and-title" data-title="xplainAppT">
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector" data-title="languageT">
@@ -565,24 +589,25 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <input type="text" id="patientName" data-title="patientNameT" required>
+                <input type="text" id="patientName" data-title="patientNameT" data-placeholder="patientNamePlaceholder"
+                    required>
             </div>
             <div class="pt-btn">
                 <button class="btn-open" onclick="openPatientData()">
                     <i data-feather="folder"></i><!-- From Feather Icons (MIT) -->
-                    <span data-t-key="open"></span>
+                    <span data-content="open"></span>
                 </button>
                 <button class="btn-save" onclick="savePatientData()">
                     <i data-feather="save"></i><!-- From Feather Icons (MIT) -->
-                    <span data-t-key="save"></span>
+                    <span data-content="save"></span>
                 </button>
                 <button class="export-button" onclick="exportViaWhatsApp()">
                     <i data-feather="share-2"></i><!-- From Feather Icons (MIT) -->
-                    <span data-t-key="export"></span>
+                    <span data-content="export"></span>
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
                     <i data-feather="clipboard"></i><!-- From Feather Icons (MIT) -->
-                    <span data-t-key="paste"></span>
+                    <span data-content="paste"></span>
                 </button>
             </div>
         </div>
@@ -592,31 +617,31 @@
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
                         <th id="timing_header" onclick="sortTable()" class="timing">
-                            <label for="timing_header" class="label-select" title data-t-key="timingT">
+                            <label for="timing_header" class="label-select" data-title="timingT">
                                 <!-- From Feather Icons (MIT) -->
                                 <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polyline points="12 6 12 12 16 14"></polyline>
                                 </svg>
-                                <span data-t-key="timing"></span>
+                                <br><span data-content="timing"></span>
                             </label>
                         </th>
-                        <th id="medName_header" class="medName" title data-t-key="medicineNameT">
+                        <th id="medName_header" class="medName" data-title="medicineNameT">
                             <label for="medicineName"> <!-- Sticker svg as label -->
-                                <svg height="24" viewBox="0 0 400 120">
+                                <svg width="80" height="24" viewBox="0 0 400 120">
                                     <!-- Main sticker body -->
                                     <path
                                         d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="8"/>
+                                        fill="white" stroke="black" stroke-width="8" />
                                     <!-- Peeled corner -->
                                     <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray"
                                         stroke="black" stroke-width="5" />
-                                    <!-- Added text element. Note that x attribute may change in handleLanguageChange() --> 
+                                    <!-- Added text element. Note that x attribute may change in handleLanguageChange() -->
                                     <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
-                                        fill="black" data-t-key="medicineName1"></text>
+                                        fill="black" data-content="medicineName1"></text>
                                 </svg>
-                                <span data-t-key="medicineName2"></span>
+                                <br><span data-content="medicineName2"></span>
                             </label>
                         </th>
                         <th id="dose_header" class="dose">
@@ -624,7 +649,7 @@
                                 <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
                                 <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
                             </svg>
-                            <span data-t-key="dose"></span>
+                            <br><span data-content="dose"></span>
                         </th>
                         <th id="quantity_header" class="quantity">
                             <!-- From Feather Icons (MIT) -->
@@ -638,26 +663,26 @@
                                 <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
                                 <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
                             </svg>
-                            <span data-t-key="quantity"></span>
+                            <br><span data-content="quantity"></span>
                         </th>
                         <th id="note_header" class="note">
                             <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
                                 <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
                                         A2.3 2.3 0 0 1 9.7 15 L9.7 4.3 A2.3 2.3 0 0 1 12 2 M12 18.3
                                         A2.3 2.3 0 0 1 14.3 20.6 A2.3 2.3 0 0 1 12 22.9 A2.3 2.3 0 0 1 9.7 20.6
-                                        A2.3 2.3 0 0 1 12 18.3 Z"
-                                        stroke="black" stroke-width="2" fill="none" />
+                                        A2.3 2.3 0 0 1 12 18.3 Z" stroke="black" stroke-width="2" fill="none" />
                             </svg>
-                            <span data-t-key="note"></span>
+                            <span data-content="note"></span>
                         </th>
                         <th id="info_header" class="info">
                             <!-- From Feather Icons (MIT) -->
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
-                            <span data-t-key="info"></span>
+                            <br><span data-content="info"></span>
                         </th>
                         <th id="pic_header" class="imager">
                             <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
@@ -667,29 +692,29 @@
                                 <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
                                 <rect x="140" y="70" width="20" height="15" fill="black" />
                             </svg>
-                            <span data-t-key="picture"></span>
+                            <br><span data-content="picture"></span>
                         </th>
-                        <th id="action_header" class="action" data-t-key="action">Action פעולה</th>
+                        <th id="action_header" class="action" data-content="action">Action פעולה</th>
                     </tr>
                     <!--  Input Row of the form  -->
                     <tr id="tInputForm">
                         <th class="timing">
-                            <select name="timing" id="timingSelect" title data-t-key="timingInstructions" required>
+                            <select name="timing" id="timingSelect" data-title="timingInstructions" required>
                                 <option value="">🕓</option>
                             </select>
                         </th>
                         <th class="medName">
-                            <input id="medicineName" type="text" name="medicineName"
-                                title data-t-key="medicineNameT" required>
+                            <input id="medicineName" type="text" name="medicineName" data-title="medicineNameT"
+                                required>
                         </th>
-                        <th class="dose"><input type="text" name="dose" placeholder data-t-key="dosePH"></th>
+                        <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
                         <th class="quantity"><input type="number" name="quantity" step="0.25"
-                                placeholder="Quantity כמות" min="0">
+                                data-placeholder="QuantityPH" min="0">
                         </th>
-                        <th class="note"><input type="text" name="note" placeholder="Note הערה"></th>
+                        <th class="note"><input type="text" name="note" data-placeholder="NotePH"></th>
                         <th class="info">
                             <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
-                                <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
+                                <svg width="40" height="50" viewBox="0 0 141.721 192.336">
                                     <defs>
                                         <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
                                             gradientUnits="objectBoundingBox">
@@ -697,7 +722,7 @@
                                             <stop offset="1" stop-color="#7151cb" />
                                         </linearGradient>
                                     </defs>
-                                    <path data-name="Path 3"
+                                    <path
                                         d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
                                         transform="translate(-5 -2)" style="fill:url(#a)" />
                                 </svg>
@@ -750,7 +775,7 @@
             <h2 style="margin-top: 0;">Paste Medication Data</h2>
             <p>Paste the exportd medication data below:</p>
             <textarea id="pasteArea" class="paste-area" rows="10"
-                placeholder="Paste medication schedule here..."></textarea>
+                data-placeholder="PasteMmedicationScheduleHerePH"></textarea>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closePasteModal()">
                     <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
@@ -870,6 +895,46 @@
 
         feather.replace();
     }
+
+
+    // Add this function to your JavaScript
+    function adjustInputWidth(input) {
+        // Create a temporary span to measure text width
+        const span = document.createElement('span');
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'pre';
+        // Copy the input's font properties
+        const inputStyle = window.getComputedStyle(input);
+        span.style.font = inputStyle.font;
+        span.style.padding = inputStyle.padding;
+
+        document.body.appendChild(span);
+
+        // Update width based on content
+        span.textContent = input.value || input.placeholder || '';
+        let contentWidth = span.offsetWidth;
+
+        // Convert em to pixels (assuming base font size)
+        const fontSize = parseFloat(inputStyle.fontSize);
+        const minWidth = 4 * fontSize;
+        const maxWidth = 12 * fontSize;
+
+        // Clamp width between min and max
+        contentWidth = Math.max(minWidth, Math.min(maxWidth, contentWidth));
+
+        input.style.width = `${contentWidth}px`;
+
+        document.body.removeChild(span);
+    }
+
+    // Add event listeners to all inputs in the table
+    document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
+        input.addEventListener('input', () => adjustInputWidth(input));
+        // Initial adjustment
+        adjustInputWidth(input);
+    });
+//**new^***//
 
     // Function to open MedLookup
     function openMedLookup(medicineName) {
@@ -1208,7 +1273,7 @@
             pasteT: 'Pastes medications list from clipboard',
             patientName: 'Patient Name',
             patientNameA: 'Please enter patient name',
-            patientNamePlaceholder: 'Patient Name',
+            patientNamePlaceholder: 'Private and family Name',
             patientNameRequired: 'Please enter patient name',
             patientNameT: 'Name of the patient',
             pictueT: 'Medication picture. (optional)',
@@ -1273,7 +1338,7 @@
             pasteT: 'מדביק את רשימת התרופות מהלוח',
             patientName: 'שם המטופל',
             patientNameA: 'אנא להכניס כעת שם מטופל',
-            patientNamePlaceholder: 'שם המטופל',
+            patientNamePlaceholder: 'שם-פרטי שם-משפחה',
             patientNameRequired: 'אנא הכנס שם מטופל',
             patientNameT: 'שם המטופל',
             pictueT: 'תמונת התרופה. (אופציונלי)',
@@ -1302,7 +1367,7 @@
     console.log('defaultLang = ' + defaultLang);
 
     function t(key) {
-        console.log('translations[',currentLang,'][',key,']=', translations[currentLang][key]);  
+        console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
         return translations[currentLang][key];
     }
 
@@ -1314,22 +1379,24 @@
         // Update text position in drugName input label svg according to language direction
         const text_x = isRTL ? 240 : 40;
         document.getElementById('t-text').setAttribute('x', text_x);
-        // Update text content in data-t-key containing elements that are not titles.
-        document.querySelectorAll('[data-t-key]:not([title])').forEach(el => el.textContent = t(el.getAttribute('data-t-key')) || el.textContent);
-        // Update titles (popup text) content if have data-t-key attribute.
-        document.querySelectorAll('[data-t-key][title]').forEach(el => el.title = t(el.getAttribute('data-t-key')) || el.title);
+        // Update text content in elements with data-content attribute.
+        document.querySelectorAll('[data-content]').forEach(el => el.textContent = t(el.getAttribute('data-content')) || el.textContent);
+        // Update titles (popup text) content in elements with data-title attribute.
+        document.querySelectorAll('[data-title]').forEach(el => el.title = t(el.getAttribute('data-title')) || el.title);
         // Update all placeholders
-        document.querySelectorAll('[placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-t-key'))||el.placeholder);
+        document.querySelectorAll('[data-placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-placeholder')) || el.placeholder);
         // Function to populate the timing select based on selected language
         const selector = document.getElementById('timingSelect')
         const align = isRTL ? 'right-align' : 'left-align';
-        selector.innerHTML = `<option value="" class=`+align+`>🕓</option>`;
+        selector.innerHTML = `<option value="" class=` + align + `>🕓</option>`;
+        const currentTiming = Object.keys(timingOrder).find(key => t(key) === selector.value);//**new^***
         Object.keys(timingOrder).forEach(timingKey => {
             const option = document.createElement('option');
             option.value = timingKey;
             option.textContent = t(timingKey);
             option.classList.add(align);
             selector.appendChild(option);
+
         });
     }
 
