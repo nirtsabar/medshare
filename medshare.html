@@ -975,7 +975,7 @@
     medicationForm.addEventListener('submit', function (e) {
         e.preventDefault();
         if (!patientNameInput.value.trim()) {
-            alert('Please enter patient name first');
+            alert(t(patientNameA));
             return;
         }
         const formData = new FormData(this);
@@ -1015,7 +1015,7 @@
     function exportViaWhatsApp() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert('Please enter patient name first');
+            alert(t(patientNameA));
             return;
         }
 
@@ -1062,7 +1062,7 @@
     function processePastedData() {
         const pastedText = pasteArea.value.trim();
         if (!pastedText) {
-            alert('Please paste medication data first');
+            alert(t(pastedTextA));
             return;
         }
 
@@ -1121,12 +1121,12 @@
                 updateTable();
                 saveCurrentState();
                 closePasteModal();
-                alert('Medication data imported successfully');
+                alert(t(medicationDataImported));
             } else {
-                alert('No valid medication data found in the pasted text');
+                alert(t(noValidMedicationData));
             }
         } catch (error) {
-            alert('Error processing pasted data. Please make sure the format is correct.');
+            alert(t(errorProcessingPastedData));
             console.error('Error processing pasted data:', error);
         }
     }
@@ -1162,18 +1162,18 @@
     function savePatientData() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert('Please enter patient name');
+            alert(t(patientNameA));
             return;
         }
         saveCurrentState();
-        alert(`Medication data saved for patient: ${patientName}`);
+        alert(t(medicationDataSaved)+`: ${patientName}`);
     }
 
     // Open patient data
     function openPatientData() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert('Please enter patient name');
+            alert(t('patientNameA'));
             return;
         }
 
@@ -1181,9 +1181,9 @@
         if (savedData) {
             medications = JSON.parse(savedData);
             updateTable();
-            alert(`Loaded medication data for patient: ${patientName}`);
+            alert(t('loadedMedicationData')+`Loaded medication data for patient: ${patientName}`);
         } else {
-            alert(`No saved data found for patient: ${patientName}`);
+            alert(t('noSavedDataFound')+`: ${patientName}`);
             medications = [];
             updateTable();
         }
@@ -1198,7 +1198,7 @@
             }
             catch (err) {
                 if (err.message === "Failed to execute 'setItem' on 'Storage': Setting the value of 'patient_e' exceeded the quota") { }
-                alert(t(`errorQuotaExceeded`) + patientName);
+                alert(t('errorQuotaExceeded') + patientName);
             }
         }
     }
