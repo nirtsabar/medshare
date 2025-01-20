@@ -988,7 +988,7 @@
         if (field === 'quantity') {
             const numValue = parseFloat(value);
             if (isNaN(numValue)) {
-                alert('Please enter a valid number for quantity');
+                alert(t('quantityA'));
                 updateTable();
                 return;
             }
@@ -1017,7 +1017,7 @@
     medicationForm.addEventListener('submit', function (e) {
         e.preventDefault();
         if (!patientNameInput.value.trim()) {
-            alert(t(patientNameA));
+            alert(t('patientNameA'));
             return;
         }
         const formData = new FormData(this);
@@ -1057,7 +1057,7 @@
     function exportViaWhatsApp() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert(t(patientNameA));
+            alert(t('patientNameA'));
             return;
         }
 
@@ -1104,7 +1104,7 @@
     function processePastedData() {
         const pastedText = pasteArea.value.trim();
         if (!pastedText) {
-            alert(t(pastedTextA));
+            alert(t('pastedTextA'));
             return;
         }
 
@@ -1163,12 +1163,12 @@
                 updateTable();
                 saveCurrentState();
                 closePasteModal();
-                alert(t(medicationDataImported));
+                alert(t('medicationDataImported'));
             } else {
-                alert(t(noValidMedicationData));
+                alert(t('noValidMedicationData'));
             }
         } catch (error) {
-            alert(t(errorProcessingPastedData));
+            alert(t('errorProcessingPastedData'));
             console.error('Error processing pasted data:', error);
         }
     }
@@ -1204,11 +1204,11 @@
     function savePatientData() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert(t(patientNameA));
+            alert(t('patientNameA'));
             return;
         }
         saveCurrentState();
-        alert(t(medicationDataSaved) + `: ${patientName}`);
+        alert(t('medicationDataSaved') + ': ' + patientName);
     }
 
     // Open patient data
@@ -1310,7 +1310,6 @@
             picture: 'Picture',
             quantity: 'Quantity',
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
-            quantityA: 'Please enter a valid number for quantity',
             quantityT: 'Number of medication units to take each time. (optional)',
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
