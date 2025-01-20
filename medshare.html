@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl"> <!-- lang="en" dir="ltr" -->
+<html lang="he" dir="rtl"> 
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-content="title"></title>
     <link rel="icon" href="https://medlookup.org/img/group_2.svg">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <!-- /* other icon credits: https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js">
+            http://www.w3.org/2000/svg -->
     <style>
         * {
             font-size: x-large;
@@ -556,6 +557,7 @@
     </style>
 </head>
 // MARK: Body
+
 <body>
     <!-- MARK: Body -->
     <div id="lang-and-title" data-title="xplainAppT">
@@ -721,8 +723,8 @@
                             </select>
                         </th>
                         <th class="medName">
-                            <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH" data-title="medicineNameT"
-                                required>
+                            <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH"
+                                data-title="medicineNameT" required>
                         </th>
                         <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
                         <th class="quantity"><input type="number" name="quantity" step="0.25"
@@ -757,7 +759,10 @@
                             </label> </button>
                         </th>
                         <th class="action"><button type="submit" class="btn-add">
-                                <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
+                                <!-- check From Feather Icons (MIT) -->
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
                             </button></th>
                     </tr id="tInputForm">
                     <!-- Data rows will be added here via the script -->
@@ -771,14 +776,25 @@
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <h2 style="margin-top: 0;">Confirm Delete</h2>
-            <p>Are you sure you want to delete this medication?</p>
+            <p data-content="">Are you sure you want to delete this medication?</p>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeDeleteModal()">
-                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
-                    Cancel
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
                 </button>
                 <button class="btn-confirm-delete" id="confirmDelete">
-                    <i data-feather="trash-2"></i><!-- From Feather Icons (MIT) -->
+                    <!-- trash-2 From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
                     Delete
                 </button>
             </div>
@@ -793,12 +809,21 @@
                 data-placeholder="Paste medication schedule here..."></textarea>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closePasteModal()">
-                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
-                    Cancel
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
                 </button>
                 <button class="btn-confirm-paste" onclick="processePastedData()">
-                    <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
-                    Import
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span data-content="import"></span>
                 </button>
             </div>
         </div>
@@ -813,7 +838,12 @@
             <div class="modal-body-vertical">
                 <menu id="img_menu" class="modal-buttons">
                     <button class="btn-cancel" onclick="closeImgHandlerModal()">
-                        <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                     <button onclick="document.getElementById('imageInput').click()"
                         style="padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
@@ -826,10 +856,18 @@
                         </svg>
                     </button>
                     <button id="frame_to_thumb" style="padding: 20px;"> <!--onclick="frame_to_thumb()"-->
-                        <i data-feather="airplay"></i><!-- From Feather Icons (MIT) -->
+                        <!-- airplay From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                            <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                        </svg>
                     </button>
                     <button id="ok_thumb" class="btn-confirm" style="padding: 20px;">
-                        <i data-feather="check-circle"></i><!-- From Feather Icons (MIT) -->
+                        <!-- check-circle From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
                     </button>
                     <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 </menu>
@@ -852,7 +890,7 @@
     /* #region main script !!!*/
     /* #region initializations*/
     // Initialize Feather icons
-    feather.replace();
+    //feather.replace();
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
@@ -911,7 +949,13 @@
                     <td>${med.thumb ? `<img src="${med.thumb}" class="med-image" style="width:${formThumbCnv.clientWidth}px; height:${formThumbCnv.clientHeight}px" alt="${med.medicineName}">` : ''}</td>
                     <td>
                         <button class="btn-delete" onclick="showDeleteModal(${med.id}, '${med.medicineName}')">
-                            <i data-feather="trash-2"></i>
+                            <!-- trash-2 From Feather Icons (MIT) -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
                         </button>
                     </td>
                 `;
@@ -919,8 +963,6 @@
                 alert('med.picture ='+med.picture);		*/
                 tbody.appendChild(tr);
             });
-
-        feather.replace();
     }
 
     // Function to open MedLookup
@@ -1166,7 +1208,7 @@
             return;
         }
         saveCurrentState();
-        alert(t(medicationDataSaved)+`: ${patientName}`);
+        alert(t(medicationDataSaved) + `: ${patientName}`);
     }
 
     // Open patient data
@@ -1181,9 +1223,9 @@
         if (savedData) {
             medications = JSON.parse(savedData);
             updateTable();
-            alert(t('loadedMedicationData')+`Loaded medication data for patient: ${patientName}`);
+            alert(t('loadedMedicationData') + `Loaded medication data for patient: ${patientName}`);
         } else {
-            alert(t('noSavedDataFound')+`: ${patientName}`);
+            alert(t('noSavedDataFound') + `: ${patientName}`);
             medications = [];
             updateTable();
         }
@@ -1408,6 +1450,9 @@
 
         // Update width based on content
         span.textContent = input_element.value || input_element.placeholder || '';
+        if (input_element.id == "medicineName") {
+            console.log(input_element.value + ' .placeholder=' + input_element.placeholder)
+        };
         if (type == "select_type") {
             if (input_element.value) {
                 span.textContent = t(input_element.value) + "##"; // Add space for the dropdown arrow
@@ -1473,6 +1518,7 @@
         const event = new Event('change');
         selectElement.dispatchEvent(event);
         TitleLayoutPerfection();
+        handleLanguageChange(event);
     }
 
     /* #endregion Translation */
