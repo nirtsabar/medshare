@@ -65,13 +65,14 @@
         }
 
         ::-webkit-scrollbar {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #646b91;
-            border-radius: 6px;
+            background: #8f98ca;
+            border-radius: 13px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
         }
 
         #medicationForm::-webkit-scrollbar {
@@ -97,7 +98,7 @@
             background: #f1f1f1;
         }
 
-        .inline-block {
+        .inline-start {
             float: inline-start;
             /*display: inline-block;*/
         }
@@ -237,9 +238,7 @@
             max-width: fit-content;
         }
 
-        #medicationForm::-webkit-scrollbar {
-            height: 60px;
-        }
+
 
         /* For Firefox */
         #medicationForm {
@@ -254,6 +253,7 @@
             padding: 0.5rem;
             gap: 1px;
             align-items: center;
+            overflow: hidden;
         }
 
         .table-container input {
@@ -564,7 +564,7 @@
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector" data-title="languageT">
-            <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
+            <select id="language" onchange="handleLanguageChange(event)" class="inline-start"
                 aria-labelledby="languageSelector">
                 <option value="en">English</option>
                 <!--                 <option value="es">Español</option>
@@ -630,8 +630,12 @@
                 </button>
             </div>
         </div>
-        <!-- Medications table   -->
+        <!-- MEDICATIONS TABLE -->
         <div class="scroll-wrapper" style="overflow-x: auto">
+            <div class="scrollbar"style="overflow-x: auto; overflow-y: hidden; height: 20px;">
+                <div style="width: 362px;"></div>
+                <!-- Adjust the width to match the table content -->
+            </div>
             <form id="medicationForm">
                 <table id="medicationTable" class="table-container">
                     <tr id="tHeader">
@@ -1099,7 +1103,6 @@
     function showPasteModal() {
         pasteModal.style.display = 'block';
         pasteArea.value = '';
-        feather.replace();
     }
 
     function closePasteModal() {
@@ -1872,6 +1875,17 @@
         tableAdjustWidths();
         TitleLayoutPerfection();
         ensurePatientControlsWidthLessThanTable();
+        // Sync the scrollbar with the table container
+        const scrollbar = document.querySelector('.scrollbar');
+        const tableContainer = document.querySelector('.table-container');
+        
+        scrollbar.addEventListener('scroll', () => {
+            tableContainer.scrollLeft = scrollbar.scrollLeft;
+        });
+
+        tableContainer.addEventListener('scroll', () => {
+            scrollbar.scrollLeft = tableContainer.scrollLeft;
+        });
     }
     function ensurePatientControlsWidthLessThanTable() {
         const table = document.querySelector('.table-container');
