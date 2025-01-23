@@ -8,6 +8,7 @@
     <link rel="icon" href="https://medlookup.org/img/group_2.svg">
     <!-- /* other icon credits: https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js">
             http://www.w3.org/2000/svg -->
+    <!-- MARK: CSS -->
     <style>
         * {
             font-size: x-large;
@@ -72,7 +73,7 @@
         ::-webkit-scrollbar-thumb {
             background: #8f98ca;
             border-radius: 13px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
         }
 
         #medicationForm::-webkit-scrollbar {
@@ -218,7 +219,6 @@
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
-            overflow: auto;
         }
 
         .container>div {
@@ -253,7 +253,6 @@
             padding: 0.5rem;
             gap: 1px;
             align-items: center;
-            overflow: hidden;
         }
 
         .table-container input {
@@ -556,10 +555,10 @@
         }
     </style>
 </head>
-// MARK: Body
+<!-- MARK: Body -->
 
 <body>
-    <!-- MARK: Body -->
+
     <div id="lang-and-title" data-title="xplainAppT">
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
@@ -630,153 +629,156 @@
                 </button>
             </div>
         </div>
-        <!-- MEDICATIONS TABLE -->
-        <div class="scroll-wrapper" style="overflow-x: auto">
-            <div class="scrollbar"style="overflow-x: auto; overflow-y: hidden; height: 20px;">
-                <div style="width: 362px;"></div>
-                <!-- Adjust the width to match the table content -->
-            </div>
-            <form id="medicationForm">
-                <table id="medicationTable" class="table-container">
-                    <tr id="tHeader">
-                        <th id="timing_header" onclick="sortTable()" class="timing">
-                            <label for="timing_header" class="label-select" data-title="timingT">
-                                <!-- From Feather Icons (MIT) -->
-                                <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <br><span data-content="timing"></span>
-                            </label>
-                        </th>
-                        <th id="medName_header" class="medName" data-title="medicineNameT">
-                            <label for="medicineName"> <!-- Sticker svg as label -->
-                                <svg height="24" viewBox="0 0 400 120">
-                                    <!-- Main sticker body -->
-                                    <path
-                                        d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="8" />
-                                    <!-- Peeled corner -->
-                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray"
-                                        stroke="black" stroke-width="5" />
-                                    <!-- Added text element. Note that x attribute may change in handleLanguageChange() -->
-                                    <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
-                                        fill="black" data-content="medicineName1"></text>
-                                </svg>
-                                <br><span data-content="medicineName2"></span>
-                            </label>
-                        </th>
-                        <th id="dose_header" class="dose">
-                            <svg height="24" viewBox="0 0 80 25">
-                                <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
-                                <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
-                            </svg>
-                            <br><span data-content="dose"></span>
-                        </th>
-                        <th id="quantity_header" class="quantity">
+</body>
+<!-- MARK: TABLE -->
+
+<body>
+    <div class="scroll-wrapper" style="overflow-x: auto">
+        <div class="scrollbar" style="overflow-x: auto; overflow-y: hidden; height: 30px;">
+            <div id="scrollbarDiv" style="height: 10px;"></div>
+            <!-- Adjust the width to match the table content -->
+        </div>
+        <form id="medicationForm">
+            <table id="medicationTable" class="table-container">
+                <tr id="tHeader">
+                    <th id="timing_header" onclick="sortTable()" class="timing">
+                        <label for="timing_header" class="label-select" data-title="timingT">
                             <!-- From Feather Icons (MIT) -->
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
-                                <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
+                            <br><span data-content="timing"></span>
+                        </label>
+                    </th>
+                    <th id="medName_header" class="medName" data-title="medicineNameT">
+                        <label for="medicineName"> <!-- Sticker svg as label -->
+                            <svg height="24" viewBox="0 0 400 120">
+                                <!-- Main sticker body -->
+                                <path
+                                    d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
+                                    fill="white" stroke="black" stroke-width="8" />
+                                <!-- Peeled corner -->
+                                <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray" stroke="black"
+                                    stroke-width="5" />
+                                <!-- Added text element. Note that x attribute may change in handleLanguageChange() -->
+                                <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
+                                    fill="black" data-content="medicineName1"></text>
                             </svg>
-                            <br><span data-content="quantity"></span>
-                        </th>
-                        <th id="note_header" class="note">
-                            <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
-                                <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
+                            <br><span data-content="medicineName2"></span>
+                        </label>
+                    </th>
+                    <th id="dose_header" class="dose">
+                        <svg height="24" viewBox="0 0 80 25">
+                            <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
+                            <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
+                        </svg>
+                        <br><span data-content="dose"></span>
+                    </th>
+                    <th id="quantity_header" class="quantity">
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
+                        </svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
+                            <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
+                        </svg>
+                        <br><span data-content="quantity"></span>
+                    </th>
+                    <th id="note_header" class="note">
+                        <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
+                            <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
                                         A2.3 2.3 0 0 1 9.7 15 L9.7 4.3 A2.3 2.3 0 0 1 12 2 M12 18.3
                                         A2.3 2.3 0 0 1 14.3 20.6 A2.3 2.3 0 0 1 12 22.9 A2.3 2.3 0 0 1 9.7 20.6
                                         A2.3 2.3 0 0 1 12 18.3 Z" stroke="black" stroke-width="2" fill="none" />
+                        </svg>
+                        <br><span data-content="note"></span>
+                    </th>
+                    <th id="info_header" class="info">
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <br><span data-content="info"></span>
+                    </th>
+                    <th id="pic_header" class="imager">
+                        <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
+                            <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
+                                stroke-width="8" />
+                            <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
+                            <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
+                            <rect x="140" y="70" width="20" height="15" fill="black" />
+                        </svg>
+                        <br><span data-content="picture"></span>
+                    </th>
+                    <th id="action_header" class="action" data-content="action"></th>
+                </tr>
+                <!--  Input Row of the form  -->
+                <tr id="tInputForm">
+                    <th class="timing">
+                        <select name="timing" id="timingSelect" data-title="timingInstructions" required>
+                            <option value="">🕓</option>
+                        </select>
+                    </th>
+                    <th class="medName">
+                        <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH"
+                            data-title="medicineNameT" required>
+                    </th>
+                    <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
+                    <th class="quantity"><input type="number" name="quantity" step="0.25" data-placeholder="QuantityPH"
+                            min="0">
+                    </th>
+                    <th class="note"><input type="text" name="note" data-placeholder="Note הערה"></th>
+                    <th class="info" data-title="infoT">
+                        <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
+                            <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
+                                <defs>
+                                    <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
+                                        gradientUnits="objectBoundingBox">
+                                        <stop offset="0" stop-color="#fdf6fe" />
+                                        <stop offset="1" stop-color="#7151cb" />
+                                    </linearGradient>
+                                </defs>
+                                <path data-name="Path 3"
+                                    d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
+                                    transform="translate(-5 -2)" style="fill:url(#a)" />
                             </svg>
-                            <br><span data-content="note"></span>
-                        </th>
-                        <th id="info_header" class="info">
-                            <!-- From Feather Icons (MIT) -->
+                        </button>
+                    </th>
+                    <th class="imager">
+                        <label for="take_pic" class="label-pointer">
+                            <!--      <i data-feather="camera"></i>-->
+                            <button id="take_pic" style="background:none;" type="button" onclick="img_handler(true)">
+
+                                <canvas id="formThumbCnv" name="thumb" width="100" height="50"
+                                    style="border:1px solid grey">
+                                </canvas>
+                        </label> </button>
+                    </th>
+                    <th class="action"><button type="submit" class="btn-add">
+                            <!-- check From Feather Icons (MIT) -->
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
-                            <br><span data-content="info"></span>
-                        </th>
-                        <th id="pic_header" class="imager">
-                            <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
-                                <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
-                                    stroke-width="8" />
-                                <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
-                                <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
-                                <rect x="140" y="70" width="20" height="15" fill="black" />
-                            </svg>
-                            <br><span data-content="picture"></span>
-                        </th>
-                        <th id="action_header" class="action" data-content="action"></th>
-                    </tr>
-                    <!--  Input Row of the form  -->
-                    <tr id="tInputForm">
-                        <th class="timing">
-                            <select name="timing" id="timingSelect" data-title="timingInstructions" required>
-                                <option value="">🕓</option>
-                            </select>
-                        </th>
-                        <th class="medName">
-                            <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH"
-                                data-title="medicineNameT" required>
-                        </th>
-                        <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
-                        <th class="quantity"><input type="number" name="quantity" step="0.25"
-                                data-placeholder="QuantityPH" min="0">
-                        </th>
-                        <th class="note"><input type="text" name="note" data-placeholder="Note הערה"></th>
-                        <th class="info" data-title="infoT">
-                            <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
-                                <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
-                                    <defs>
-                                        <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
-                                            gradientUnits="objectBoundingBox">
-                                            <stop offset="0" stop-color="#fdf6fe" />
-                                            <stop offset="1" stop-color="#7151cb" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path data-name="Path 3"
-                                        d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
-                                        transform="translate(-5 -2)" style="fill:url(#a)" />
-                                </svg>
-                            </button>
-                        </th>
-                        <th class="imager">
-                            <label for="take_pic" class="label-pointer">
-                                <!--      <i data-feather="camera"></i>-->
-                                <button id="take_pic" style="background:none;" type="button"
-                                    onclick="img_handler(true)">
-
-                                    <canvas id="formThumbCnv" name="thumb" width="100" height="50"
-                                        style="border:1px solid grey">
-                                    </canvas>
-                            </label> </button>
-                        </th>
-                        <th class="action"><button type="submit" class="btn-add">
-                                <!-- check From Feather Icons (MIT) -->
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                            </button></th>
-                    </tr id="tInputForm">
-                    <!-- Data rows will be added here via the script -->
-                </table>
-            </form>
-        </div>
-
+                        </button></th>
+                </tr id="tInputForm">
+                <!-- Data rows will be added here via the script -->
+            </table>
+        </form>
     </div>
-    </div>
+</body>
+<!-- MARK: MODALS -->
+
+<body>
 
     <div id="deleteModal" class="modal">
         <div class="modal-content">
@@ -892,14 +894,10 @@
         </div>
     </div>
 </body>
+<!-- MARK: Scripts -->
 <script>
-    // ANCHOR: Scripts
-
-    // MARK: Translation Constants
     /* #region main script !!!*/
     /* #region initializations*/
-    // Initialize Feather icons
-    //feather.replace();
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
@@ -1264,7 +1262,7 @@
     // Switch to Thumbnail if QuotaExceededError (just idea...)
     /* #endregion major table / form functions */
     /* #endregion main script */
-    /* #region Translation */
+    //region Translation */
     const translations = {
         en: {
             action: 'Action',
@@ -1513,7 +1511,7 @@
         handleLanguageChange(event);
     }
 
-    /* #endregion Translation */
+    //endregion Translation */
 
     /* #region  Image Handler Modal */
     /*  #region Initialize_img_handler global elements */
@@ -1871,21 +1869,31 @@
             adjustInputWidth(select, "select_type");
         });
     }
+
+    const scrollbar = document.querySelector('.scrollbar');
+    const scrollWrap = document.querySelector('.scroll-wrapper');
+    scrollbar.addEventListener('scroll', () => {
+        console.log('1#scrollbar.scrollLeft = ' + scrollbar.scrollLeft);
+        scrollWrap.scrollLeft = scrollbar.scrollLeft;
+        console.log('1#scrollWrap.scrollLeft = ' + scrollWrap.scrollLeft);
+    });
+
+    scrollWrap.addEventListener('scroll', () => {
+        if(!scrollbar){
+            console.log('2# no scrollbar');
+            scrollbar.parentElement.style="white-space: nowrap;overflow:scroll;";
+        }
+        scrollbar.scrollLeft = scrollWrap.scrollLeft;
+        console.log('2#scrollbar.scrollLeft = ' + scrollbar.scrollLeft);
+        });
     function init() {
         tableAdjustWidths();
         TitleLayoutPerfection();
         ensurePatientControlsWidthLessThanTable();
         // Sync the scrollbar with the table container
-        const scrollbar = document.querySelector('.scrollbar');
-        const tableContainer = document.querySelector('.table-container');
-        
-        scrollbar.addEventListener('scroll', () => {
-            tableContainer.scrollLeft = scrollbar.scrollLeft;
-        });
 
-        tableContainer.addEventListener('scroll', () => {
-            scrollbar.scrollLeft = tableContainer.scrollLeft;
-        });
+
+
     }
     function ensurePatientControlsWidthLessThanTable() {
         const table = document.querySelector('.table-container');
@@ -1894,6 +1902,10 @@
             const tableWidth = table.offsetWidth;
             //console.log("tableWidth = " + tableWidth);
             patientControls.style.maxWidth = `${tableWidth}px`;
+        }
+        if (scrollWrap && scrollbar) {
+            scrollbar.style.width = scrollWrap.offsetWidth + 'px';
+            document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
         }
     };
     /* #endregion Initialize */
