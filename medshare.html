@@ -14,14 +14,34 @@
             font-size: x-large;
             text-align: center;
             box-sizing: border-box;
-            /*border-color: #fff;
+            /*show white boxes - for debugging*
+            border-color: #fff;
             border-radius: 3px;
             border-width: 1px;
-            border-style: solid; */
+            border-style: solid;
+            /**/
         }
 
         html {
             max-width: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #000000;
+            min-height: 100vh;
+            max-width: fit-content;
+            max-height: 100%;
+        }
+
+        /* #region: language and title css */
+        #lang-and-title {
+            display: flex;
+            align-items: center;
+            /* Vertical center alignment */
+            flex-direction: row;
         }
 
         .app-title {
@@ -38,20 +58,6 @@
             order: 2;
         }
 
-        #language {
-            width: fit-content;
-            margin: 10px;
-            background-color: #cbd9f7;
-        }
-
-        #lang-and-title {
-            display: flex;
-            align-items: center;
-            /* Vertical center alignment */
-            flex-direction: row;
-
-        }
-
         #languageSelector {
             padding: 10px;
             box-sizing: border-box;
@@ -65,8 +71,31 @@
             flex-direction: row-reverse;
         }
 
+        #language {
+            width: fit-content;
+            margin: 10px;
+            background-color: #cbd9f7;
+            float: inline-start;
+        }
+
+        /* #endregion */
+
+        .scroll-container {
+            position: relative;
+            margin: 0 auto;
+            width: 100;
+        }
+
+        .scrollbar {
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+            height: 30px;
+            position:absolute;
+        }
+
         ::-webkit-scrollbar {
-            width: 30px;
+            /*  width: 30px; */
             height: 30px;
         }
 
@@ -74,10 +103,6 @@
             background: #8f98ca;
             border-radius: 13px;
             -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
-        }
-
-        #medicationForm::-webkit-scrollbar {
-            height: 30px;
         }
 
         /* For Firefox */
@@ -97,11 +122,6 @@
 
         .container::-webkit-scrollbar-track {
             background: #f1f1f1;
-        }
-
-        .inline-start {
-            float: inline-start;
-            /*display: inline-block;*/
         }
 
         small {
@@ -172,15 +192,7 @@
             cursor: pointer;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #000000;
-            min-height: 100vh;
-            max-width: fit-content;
-            max-height: 100%;
-        }
+
 
         .patient-controls {
             border-radius: 6px;
@@ -348,8 +360,8 @@
         table {
             border-collapse: collapse;
             background: white;
-            flex: left;
             align-items: center;
+            width: 100%;
         }
 
         .timing {
@@ -563,8 +575,7 @@
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
         <span id="languageSelector" data-title="languageT">
-            <select id="language" onchange="handleLanguageChange(event)" class="inline-start"
-                aria-labelledby="languageSelector">
+            <select id="language" onchange="handleLanguageChange(event)" aria-labelledby="languageSelector">
                 <option value="en">English</option>
                 <!--                 <option value="es">Español</option>
                 <option value="fr">Français</option>
@@ -576,7 +587,7 @@
     </div>
 
     <!-- Patient name and info-control buttons   -->
-    <div class="container">
+    <div class="container" class="scroll-container">
         <div class="patient-controls">
             <div class="patient-input">
                 <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
@@ -634,15 +645,16 @@
 
 <body>
     <div class="scroll-wrapper" style="overflow-x: auto">
-        <div class="scrollbar" style="overflow-x: auto; overflow-y: hidden; height: 30px;">
-            <div id="scrollbarDiv" style="height: 10px;"></div>
+        <div class="scrollbar" style="overflow-x: auto; overflow-y: hidden; width:100% ;height: 30px;">
+            <div id="scrollbarDiv" style="height: 1px;"></div>
             <!-- Adjust the width to match the table content -->
         </div>
+        <div style="height:30px"></div> <!-- for scrollbar space-->
         <form id="medicationForm">
             <table id="medicationTable" class="table-container">
                 <tr id="tHeader">
                     <th id="timing_header" onclick="sortTable()" class="timing">
-                        <label for="timing_header" class="label-select" data-title="timingT">
+                        <label for="timingSelect" class="label-select" data-title="timingT">
                             <!-- From Feather Icons (MIT) -->
                             <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -896,8 +908,8 @@
 </body>
 <!-- MARK: Scripts -->
 <script>
-    /* #region main script !!!*/
-    /* #region initializations*/
+    /* #region main script !!! */
+    /* #region initializations */
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
@@ -1262,7 +1274,7 @@
     // Switch to Thumbnail if QuotaExceededError (just idea...)
     /* #endregion major table / form functions */
     /* #endregion main script */
-    //region Translation */
+    // #region Translation */
     const translations = {
         en: {
             action: 'Action',
@@ -1511,10 +1523,10 @@
         handleLanguageChange(event);
     }
 
-    //endregion Translation */
+    // #endregion Translation */
 
-    /* #region  Image Handler Modal */
-    /*  #region Initialize_img_handler global elements */
+    /* #region Image Handler Modal */
+    /* #region Initialize_img_handler global elements */
     const img_handler_mdl = document.getElementById('img_handler_modal');
     // Call img_handler once to set up the initial state
     const mdlCanvas = document.getElementById('mdlCanvas');
@@ -1540,7 +1552,7 @@
         startY: 0
     };
     const handlers = img_handler(false); // call img_handler to set up the initial state
-    /* #endregion */
+    /* #endregion Initialize_img_handler global elements */
 
     function img_handler(show) {
         if (show) { img_handler_mdl.style.display = 'block'; } // show the modal
@@ -1851,7 +1863,9 @@
         updateTable();
         init();
     });
-    window.addEventListener('resize', function () {
+    window.addEventListener('load', function () {
+        init();
+    });   window.addEventListener('resize', function () {
         init();
     });
 
@@ -1872,30 +1886,28 @@
 
     const scrollbar = document.querySelector('.scrollbar');
     const scrollWrap = document.querySelector('.scroll-wrapper');
+
     scrollbar.addEventListener('scroll', () => {
-        console.log('1#scrollbar.scrollLeft = ' + scrollbar.scrollLeft);
+        console.log('1#scrollbar .scrollLeft = ' + scrollbar.scrollLeft);
         scrollWrap.scrollLeft = scrollbar.scrollLeft;
-        console.log('1#scrollWrap.scrollLeft = ' + scrollWrap.scrollLeft);
     });
 
     scrollWrap.addEventListener('scroll', () => {
-        if(!scrollbar){
-            console.log('2# no scrollbar');
-            scrollbar.parentElement.style="white-space: nowrap;overflow:scroll;";
-        }
         scrollbar.scrollLeft = scrollWrap.scrollLeft;
-        console.log('2#scrollbar.scrollLeft = ' + scrollbar.scrollLeft);
-        });
+        console.log('2#scrollWrap.scrollLeft = ' + scrollWrap.scrollLeft);
+        document.getElementById("medicationForm").style.width = scrollWrap.width + 'px';
+        
+    });
     function init() {
         tableAdjustWidths();
         TitleLayoutPerfection();
-        ensurePatientControlsWidthLessThanTable();
+        adjustControlsWidthsToTable();
         // Sync the scrollbar with the table container
 
 
 
     }
-    function ensurePatientControlsWidthLessThanTable() {
+    function adjustControlsWidthsToTable() {
         const table = document.querySelector('.table-container');
         const patientControls = document.querySelector('.patient-controls');
         if (table && patientControls) {
@@ -1903,12 +1915,16 @@
             //console.log("tableWidth = " + tableWidth);
             patientControls.style.maxWidth = `${tableWidth}px`;
         }
-        if (scrollWrap && scrollbar) {
+        SyncUpScrollWidth()
+    }
+    // Sync the upper scrollbar width with the table container
+    function SyncUpScrollWidth() {
             scrollbar.style.width = scrollWrap.offsetWidth + 'px';
             document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
+            console.log('scrollbarDiv.style.width = ' + scrollbarDiv.style.width);
         }
-    };
-    /* #endregion Initialize */
+    
+    /* #endregion */
 </script>
 
 </html>
