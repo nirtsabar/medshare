@@ -89,9 +89,9 @@
         .scrollbar {
             overflow-x: auto;
             overflow-y: hidden;
-            width: 100%;
+            /*     width: 100%; */
             height: 30px;
-            position:absolute;
+            position: absolute;
         }
 
         ::-webkit-scrollbar {
@@ -194,7 +194,7 @@
 
 
 
-        .patient-controls {
+        #patient-controls {
             border-radius: 6px;
             display: flex;
             flex-wrap: wrap;
@@ -270,7 +270,6 @@
         .table-container input {
             min-width: 4em;
             max-width: 12em;
-            width: 100%;
             transition: width 0.2s ease;
             box-sizing: border-box;
         }
@@ -588,7 +587,7 @@
 
     <!-- Patient name and info-control buttons   -->
     <div class="container" class="scroll-container">
-        <div class="patient-controls">
+        <div id="patient-controls">
             <div class="patient-input">
                 <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -910,6 +909,7 @@
 <script>
     /* #region main script !!! */
     /* #region initializations */
+    const patientControls = document.getElementById('.patient-controls');
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
@@ -1409,13 +1409,13 @@
     };
 
     const rtlLanguages = ['ar', 'he'];
-    const defaultLang =  navigator.language.split('-')[0];//to avoid regional dialects
+    const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
     console.log('defaultLang = ' + defaultLang);
     if ('keyboard' in navigator) {
-  navigator.keyboard.getLayoutMap()
-    .then(layout => console.log(layout));
-}
+        navigator.keyboard.getLayoutMap()
+            .then(layout => console.log(layout));
+    }
 
     function t(key) {
         //console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
@@ -1423,7 +1423,12 @@
     }
 
     function handleLanguageChange(event) {
-        console.log('handleLanguageChange ('+event+')');
+        /*/debugging
+        const err = new Error();
+        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
+        console.log('handleLanguageChange (' + event.target.value + ') <' + callerName);
+        //end of debugging/*/
+
         currentLang = event.target.value;
         const isRTL = rtlLanguages.includes(currentLang);
         document.documentElement.setAttribute('lang', currentLang);
@@ -1451,6 +1456,7 @@
         });
         selector.value = selectedTiming;
         adjustInputWidth(selector, "select_type");
+        SyncUpScrollWidth();
 
     }
 
@@ -1486,13 +1492,12 @@
         // Convert em to pixels (assuming base font size)
         const fontSize = parseFloat(inputStyle.fontSize);
         // Clamp width between min (4 fontSize) and max (12 fontSize)
-        contentWidth = Math.max(4 * fontSize, Math.min( 12 * fontSize, contentWidth));
+        contentWidth = Math.max(4 * fontSize, Math.min(12 * fontSize, contentWidth));
         input_element.style.width = `${contentWidth}px`;
-        SyncUpScrollWidth();
     }
 
-    function TitleLayoutPerfection() {
-        console.log('TitleLayoutPerfection');
+    function titlePlaceMiddle() {
+        console.log('titlePlaceMiddle');
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
             const containerWidth = titleE.parentElement.offsetWidth;
@@ -1510,7 +1515,12 @@
     }
 
     function triggerInitialLanguage() {
-        console.log('triggerInitialLanguage');
+        /*/debugging
+        const err = new Error();
+        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
+        console.log("triggerInitialLanguage <" + callerName);
+        //end of debugging/*/
+
         const selectElement = document.getElementById('language');
         // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
         const browserLang = navigator.language.slice(0, 2);
@@ -1519,12 +1529,8 @@
         if (Array.from(selectElement.options).some(option => option.value === browserLang)) {
             selectElement.value = browserLang;
         }
-
         // Create and dispatch change event
-        const event = new Event('change');
-        selectElement.dispatchEvent(event);
-        TitleLayoutPerfection();
-        handleLanguageChange(event);
+        selectElement.dispatchEvent(new Event('change'));
     }
 
     // #endregion Translation */
@@ -1861,17 +1867,15 @@
 
     /* #region Initialize */
     console.log("Script re/start");// js start point
-    // Ensure width of patient-controls is same as form
     document.addEventListener('DOMContentLoaded', function () {
-        triggerInitialLanguage();
-        updateTable();
-        init();
+        initialize();
     });
-    window.addEventListener('load', function () {
-        init();
-    });   window.addEventListener('resize', function () {
+    /*     window.addEventListener('load', function () {
+            initialize();
+        });  */
+    window.addEventListener('resize', function () {
         console.log("resize");
-        init();
+        initialize();
     });
 
     function tableAdjustWidths() {
@@ -1882,55 +1886,68 @@
             // Initial adjustment
             adjustInputWidth(input, "input_text_type");
         });
-
+        // Same to all select inputs in the table
         document.querySelectorAll('.table-container select').forEach(select => {
             select.addEventListener('change', () => adjustInputWidth(select, "select_type"));
             // Initial adjustment
             adjustInputWidth(select, "select_type");
+
         });
-        
+        SyncUpScrollWidth();
     }
 
-    const scrollbar = document.querySelector('.scrollbar');
+    const scrollbar = document.querySelector('.scrollbar');//Upper horizontal scrollbar container
     const scrollWrap = document.querySelector('.scroll-wrapper');
 
     scrollbar.addEventListener('scroll', () => {
+        console.log("scrollbar scroll");
         scrollWrap.scrollLeft = scrollbar.scrollLeft;
     });
 
     scrollWrap.addEventListener('scroll', () => {
         scrollbar.scrollLeft = scrollWrap.scrollLeft;
-        document.getElementById("medicationForm").style.width = scrollWrap.width + 'px';
-        
     });
-    function init() {
-        console.log("init");
-        tableAdjustWidths();
-        TitleLayoutPerfection();
-        adjustControlsWidthsToTable();
-        // Sync the scrollbar with the table container
 
-
-
+    function initialize() {
+        /*debugging
+        const err = new Error();
+        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
+        console.log("initialize <" + callerName);
+        //end of debugging*/
+        triggerInitialLanguage();
+        updateTable();
+        overallAllign();
     }
+    function overallAllign() {
+        //console.log("overallAllign");
+        tableAdjustWidths();
+        // Force pc browser re-render
+        medicationTable.style.display = 'none';
+        medicationTable.offsetHeight; // Trigger reflow
+        medicationTable.style.display = '';
+        // Force mobile browser re-render
+        setTimeout(() => {
+            medicationTable.style.opacity = '0.99';
+            setTimeout(() => medicationTable.style.opacity = '1', 20);
+        }, 0);
+        titlePlaceMiddle();
+        adjustControlsWidthsToTable();
+    }
+
     function adjustControlsWidthsToTable() {
         console.log("adjustControlsWidthsToTable");
-        const table = document.querySelector('.table-container');
-        const patientControls = document.querySelector('.patient-controls');
-        if (table && patientControls) {
-            const tableWidth = table.offsetWidth;
+        if (medicationTable && patientControls) {
             //console.log("tableWidth = " + tableWidth);
-            patientControls.style.maxWidth = `${tableWidth}px`;
+            patientControls.style.maxWidth = `${medicationTable.offsetWidth}px`;
         }
         SyncUpScrollWidth();
     }
     // Sync the upper scrollbar width with the table container
     function SyncUpScrollWidth() {
-        console.log("SyncUpScrollWidth ");
-            scrollbar.style.width = scrollWrap.offsetWidth + 'px';
-            document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
-        }
-    
+        //    console.log("SyncUpScrollWidth ");
+        document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
+        scrollbar.style.width = scrollWrap.offsetWidth + 'px';
+    }
     /* #endregion */
 </script>
 
