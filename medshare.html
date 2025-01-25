@@ -932,6 +932,7 @@
     /* #region major table / form functions */
     // Update table with medications
     function updateTable() {
+        console.log('UpdateTable');
         // deleting old table data, from last data row to first data row
         for (var i = medicationTable.rows.length - 1; i > 1; i--) {
             medicationTable.deleteRow(i);
@@ -986,9 +987,8 @@
 
     // Function to open MedLookup
     function openMedLookup(medicineName) {
-        const url = `https://medlookup.org/he/index.html#${encodeURIComponent(medicineName)}`;
         localStorage.setItem("freeze_mode", "freeze");
-        window.open(url, '_blank');
+        window.open(`https://medlookup.org/he/index.html#${encodeURIComponent(medicineName)}`, '_blank');
     }
 
     // Update cell content
@@ -1409,9 +1409,13 @@
     };
 
     const rtlLanguages = ['ar', 'he'];
-    const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
+    const defaultLang =  navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
     console.log('defaultLang = ' + defaultLang);
+    if ('keyboard' in navigator) {
+  navigator.keyboard.getLayoutMap()
+    .then(layout => console.log(layout));
+}
 
     function t(key) {
         //console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
@@ -1419,6 +1423,7 @@
     }
 
     function handleLanguageChange(event) {
+        console.log('handleLanguageChange ('+event+')');
         currentLang = event.target.value;
         const isRTL = rtlLanguages.includes(currentLang);
         document.documentElement.setAttribute('lang', currentLang);
@@ -1446,10 +1451,12 @@
         });
         selector.value = selectedTiming;
         adjustInputWidth(selector, "select_type");
+
     }
 
     // Add this function to your JavaScript
     function adjustInputWidth(input_element, type) {
+        console.log('adjustInputWidth');
         // Create a temporary span to measure text width
         // Reuse a single span element for all adjustments
         if (!window.adjustmentSpan) {
@@ -1476,20 +1483,16 @@
             }
         }
         let contentWidth = span.offsetWidth;
-        //        console.log('input_e span = ' + span.textContent + ' contentWidth = ' + contentWidth);
-
         // Convert em to pixels (assuming base font size)
         const fontSize = parseFloat(inputStyle.fontSize);
-        const minWidth = 4 * fontSize;
-        const maxWidth = 12 * fontSize;
-
-        // Clamp width between min and max
-        contentWidth = Math.max(minWidth, Math.min(maxWidth, contentWidth));
-
+        // Clamp width between min (4 fontSize) and max (12 fontSize)
+        contentWidth = Math.max(4 * fontSize, Math.min( 12 * fontSize, contentWidth));
         input_element.style.width = `${contentWidth}px`;
+        SyncUpScrollWidth();
     }
 
     function TitleLayoutPerfection() {
+        console.log('TitleLayoutPerfection');
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
             const containerWidth = titleE.parentElement.offsetWidth;
@@ -1507,6 +1510,7 @@
     }
 
     function triggerInitialLanguage() {
+        console.log('triggerInitialLanguage');
         const selectElement = document.getElementById('language');
         // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
         const browserLang = navigator.language.slice(0, 2);
@@ -1866,10 +1870,12 @@
     window.addEventListener('load', function () {
         init();
     });   window.addEventListener('resize', function () {
+        console.log("resize");
         init();
     });
 
     function tableAdjustWidths() {
+        console.log("tableAdjustWidths");
         // Add event listeners to all inputs in the table
         document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
             input.addEventListener('input', () => adjustInputWidth(input, "input_text_type"));
@@ -1882,23 +1888,23 @@
             // Initial adjustment
             adjustInputWidth(select, "select_type");
         });
+        
     }
 
     const scrollbar = document.querySelector('.scrollbar');
     const scrollWrap = document.querySelector('.scroll-wrapper');
 
     scrollbar.addEventListener('scroll', () => {
-        console.log('1#scrollbar .scrollLeft = ' + scrollbar.scrollLeft);
         scrollWrap.scrollLeft = scrollbar.scrollLeft;
     });
 
     scrollWrap.addEventListener('scroll', () => {
         scrollbar.scrollLeft = scrollWrap.scrollLeft;
-        console.log('2#scrollWrap.scrollLeft = ' + scrollWrap.scrollLeft);
         document.getElementById("medicationForm").style.width = scrollWrap.width + 'px';
         
     });
     function init() {
+        console.log("init");
         tableAdjustWidths();
         TitleLayoutPerfection();
         adjustControlsWidthsToTable();
@@ -1908,6 +1914,7 @@
 
     }
     function adjustControlsWidthsToTable() {
+        console.log("adjustControlsWidthsToTable");
         const table = document.querySelector('.table-container');
         const patientControls = document.querySelector('.patient-controls');
         if (table && patientControls) {
@@ -1915,13 +1922,13 @@
             //console.log("tableWidth = " + tableWidth);
             patientControls.style.maxWidth = `${tableWidth}px`;
         }
-        SyncUpScrollWidth()
+        SyncUpScrollWidth();
     }
     // Sync the upper scrollbar width with the table container
     function SyncUpScrollWidth() {
+        console.log("SyncUpScrollWidth ");
             scrollbar.style.width = scrollWrap.offsetWidth + 'px';
             document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
-            console.log('scrollbarDiv.style.width = ' + scrollbarDiv.style.width);
         }
     
     /* #endregion */
