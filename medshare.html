@@ -932,7 +932,7 @@
     /* #region major table / form functions */
     // Update table with medications
     function updateTable() {
-        console.log('UpdateTable');
+        //console.log('UpdateTable');
         // deleting old table data, from last data row to first data row
         for (var i = medicationTable.rows.length - 1; i > 1; i--) {
             medicationTable.deleteRow(i);
@@ -1081,11 +1081,10 @@
         }
 
         let message = `Medication Schedule for ${patientName}:\n\n`;
-
+        shareTable();
+        /*
         const groupedMeds = medications.reduce((acc, med) => {
-            if (!acc[med.timing]) {
-                acc[med.timing] = [];
-            }
+            acc[med.timing] = acc[med.timing] ?? [];
             acc[med.timing].push(med);
             return acc;
         }, {});
@@ -1107,7 +1106,91 @@
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
         window.open(whatsappUrl, '_blank');
+        */
     }
+
+    // whatsapp dataURL image share (export) //*new*
+    async function shareTable() {
+        try {
+            console.log('Share API supported:', 'share' in navigator);
+            console.log('Share files supported:', 'canShare' in navigator && navigator.canShare({ files: [] }));
+
+            const table = medicationTable;
+            const canvas = await tableToCanvas(table);
+
+            const blob = await new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        console.log('Blob created:', blob.size, 'bytes');
+                        resolve(blob);
+                    } else reject(new Error('Blob creation failed'));
+                }, 'image/jpeg', 0.8);
+            });
+
+            const file = new File([blob], 'table.jpg', { type: 'image/jpeg' });
+            console.log('File created:', file.size, 'bytes');
+
+            const shareData = { files: [file], title: 'Table Data' };
+            console.log('Can share this data:', navigator.canShare(shareData));
+
+            if (navigator.share && navigator.canShare(shareData)) {
+                await navigator.share(shareData);
+            } else {
+                throw new Error('Share not supported - downloading instead');
+            }
+        } catch (error) {
+            console.error('Full error:', error);
+            downloadCanvas(await tableToCanvas(document.getElementById('dataTable')));
+        }
+    }
+
+    async function tableToCanvas(table) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Create SVG
+        const xmlns = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(xmlns, "svg");
+        const foreignObject = document.createElementNS(xmlns, "foreignObject");
+
+        // Set dimensions
+        canvas.width = table.offsetWidth * 2;
+        canvas.height = table.offsetHeight * 2;
+        svg.setAttribute("width", table.offsetWidth);
+        svg.setAttribute("height", table.offsetHeight);
+        foreignObject.setAttribute("width", "100%");
+        foreignObject.setAttribute("height", "100%");
+
+        // Clone table into foreignObject
+        foreignObject.appendChild(table.cloneNode(true));
+        svg.appendChild(foreignObject);
+
+        // Convert to data URL
+        const svgString = new XMLSerializer().serializeToString(svg);
+        const encoded = encodeURIComponent(svgString);
+
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                ctx.scale(2, 2);
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas);
+            };
+            img.onerror = reject;
+            img.src = `data:image/svg+xml;charset=utf-8,${encoded}`;
+        });
+    }
+
+    function downloadCanvas(canvas) {
+        console.log('Download Canvas');
+        const link = document.createElement('a');
+        link.download = 'Medication_Table.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.8);
+        link.click();
+    }
+    // end of *new* whatsapp dataURL image export
 
     // Paste functionality
     function showPasteModal() {
@@ -1411,7 +1494,7 @@
     const rtlLanguages = ['ar', 'he'];
     const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
-    console.log('defaultLang = ' + defaultLang);
+    //console.log('defaultLang = ' + defaultLang);
     if ('keyboard' in navigator) {
         navigator.keyboard.getLayoutMap()
             .then(layout => console.log(layout));
@@ -1462,7 +1545,7 @@
 
     // Add this function to your JavaScript
     function adjustInputWidth(input_element, type) {
-        console.log('adjustInputWidth');
+        //console.log('adjustInputWidth');
         // Create a temporary span to measure text width
         // Reuse a single span element for all adjustments
         if (!window.adjustmentSpan) {
@@ -1480,9 +1563,9 @@
 
         // Update width based on content
         span.textContent = input_element.value || input_element.placeholder || '';
-        if (input_element.id == "medicineName") {
-            console.log('input_e.value=' + input_element.value + ' .placeholder=' + input_element.placeholder)
-        };
+        /*         if (input_element.id == "medicineName") {
+                    console.log('input_e.value=' + input_element.value + ' .placeholder=' + input_element.placeholder)
+                }; DEBUGGING */
         if (type == "select_type") {
             if (input_element.value) {
                 span.textContent = t(input_element.value) + "##"; // Add space for the dropdown arrow
@@ -1497,7 +1580,7 @@
     }
 
     function titlePlaceMiddle() {
-        console.log('titlePlaceMiddle');
+        //console.log('titlePlaceMiddle');
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
             const containerWidth = titleE.parentElement.offsetWidth;
@@ -1866,7 +1949,7 @@
     /* #endregion Image Handler Modal */
 
     /* #region Initialize */
-    console.log("Script re/start");// js start point
+    //console.log("Script re/start");// js start point
     document.addEventListener('DOMContentLoaded', function () {
         initialize();
     });
@@ -1879,7 +1962,7 @@
     });
 
     function tableAdjustWidths() {
-        console.log("tableAdjustWidths");
+        //console.log("tableAdjustWidths");
         // Add event listeners to all inputs in the table
         document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
             input.addEventListener('input', () => adjustInputWidth(input, "input_text_type"));
@@ -1900,7 +1983,7 @@
     const scrollWrap = document.querySelector('.scroll-wrapper');
 
     scrollbar.addEventListener('scroll', () => {
-        console.log("scrollbar scroll");
+        //console.log("scrollbar scroll");
         scrollWrap.scrollLeft = scrollbar.scrollLeft;
     });
 
@@ -1935,7 +2018,7 @@
     }
 
     function adjustControlsWidthsToTable() {
-        console.log("adjustControlsWidthsToTable");
+        //console.log("adjustControlsWidthsToTable");
         if (medicationTable && patientControls) {
             //console.log("tableWidth = " + tableWidth);
             patientControls.style.maxWidth = `${medicationTable.offsetWidth}px`;
