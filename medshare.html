@@ -79,7 +79,46 @@
         }
 
         /* #endregion */
+        #patient-controls {
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            /* min-width: fit-content; */
+            max-width: fit-content;
+            margin: 0;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            justify-content:space-evenly;
+        }
 
+        .patient-input {
+            border-color: black;
+            color: white;
+            display: flex;
+            align-items:center;
+            width: 100%;
+        }
+
+        #patientName:user-valid {
+            border-width: 0;
+            background-color:#515152;
+            color: #cbd9f7;
+            font-weight: bold;
+        }
+
+        #patientName {
+            color: #cbd9f7;
+            background-color: #01283f;
+            border: 1px solid #427ff2;
+            border-radius: 4px;
+            width: 100%;
+            margin: 5px;
+            padding: 8px;
+
+            font-size: 20px;
+            min-width: 300px;
+        }
         .scroll-container {
             position: relative;
             margin: 0 auto;
@@ -190,50 +229,6 @@
 
         .label-pointer {
             cursor: pointer;
-        }
-
-
-
-        #patient-controls {
-            border-radius: 6px;
-            display: flex;
-            flex-wrap: wrap;
-            -ms-flex-align: center;
-            /* min-width: fit-content; */
-            max-width: fit-content;
-            margin: 0;
-            margin-bottom: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .patient-input {
-            border-color: black;
-            color: white;
-            display: flex;
-            align-items: left;
-            width: 100%;
-        }
-
-        #patientName:user-valid {
-            border-color: black;
-            background-color: black;
-            color: #cbd9f7;
-            font-weight: bold;
-        }
-
-        #patientName {
-            width: 100%;
-            margin: 5px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 20px;
-
-            min-width: 300px;
-        }
-
-        .pt-btn {
-            justify-content: space-evenly;
         }
 
         .container {
@@ -597,8 +592,8 @@
                 </svg>
                 <input type="text" id="patientName" data-placeholder="patientNamePH" data-title="patientNameT" required>
             </div>
-            <div class="pt-btn">
-                <button name="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
+            <div id="pt-btn">
+                <button id="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -606,7 +601,7 @@
                     </svg>
                     <span data-content="open"></span>
                 </button>
-                <button name="btn-memo" style="background-color:#546d24"; onclick="memorizePatientData()">
+                <button id="btn-memo" style="background-color:#546d24"; onclick="memorizePatientData()">
                     <svg width="24" height="24" viewBox="7 7 16 16">
                         <!-- Cookie (half size: r=4.5 instead of 9) -->
                         <circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="1" />
@@ -626,7 +621,7 @@
                     </svg>
                     <span data-content="memorize"></span>
                 </button>
-                <button name="btn-save" style="background-color:#10b981;" onclick="saveAsJson()">
+                <button id="btn-save" style="background-color:#10b981;" onclick="saveAsJson()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
