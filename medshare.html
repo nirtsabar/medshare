@@ -207,10 +207,18 @@
         }
 
         .patient-input {
+            border-color: black;
             color: white;
             display: flex;
             align-items: left;
             width: 100%;
+        }
+
+        #patientName:user-valid {
+            border-color: black;
+            background-color: black;
+            color: #cbd9f7;
+            font-weight: bold;
         }
 
         #patientName {
@@ -222,6 +230,10 @@
             font-size: 20px;
 
             min-width: 300px;
+        }
+
+        .pt-btn {
+            justify-content: space-evenly;
         }
 
         .container {
@@ -280,10 +292,6 @@
             width: auto;
         }
 
-        .input-group {
-            display: flex;
-        }
-
         input,
         select,
         textarea {
@@ -323,15 +331,7 @@
             padding: 6px;
         }
 
-        .btn-open {
-            background-color: #6366f1;
-        }
-
-        .btn-save {
-            background-color: #10b981;
-        }
-
-        .export-button {
+        .share-button {
             background-color: #037c30;
         }
 
@@ -598,7 +598,7 @@
                 <input type="text" id="patientName" data-placeholder="patientNamePH" data-title="patientNameT" required>
             </div>
             <div class="pt-btn">
-                <button class="btn-open" onclick="openPatientData()">
+                <button name="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -606,7 +606,27 @@
                     </svg>
                     <span data-content="open"></span>
                 </button>
-                <button class="btn-save" onclick="savePatientData()">
+                <button name="btn-memo" style="background-color:#546d24"; onclick="memorizePatientData()">
+                    <svg width="24" height="24" viewBox="7 7 16 16">
+                        <!-- Cookie (half size: r=4.5 instead of 9) -->
+                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="1" />
+                        <circle cx="10" cy="10" r="0.75" fill="white" />
+                        <circle cx="13.5" cy="10.5" r="0.75" fill="white" />
+                        <circle cx="10.5" cy="13.5" r="0.75" fill="white" />
+                        <circle cx="14" cy="13" r="0.75" fill="#7E5539" />
+                        <!-- Pin (📌 style) - moved to place sharp point at 12,12 -->
+                        <g transform="translate(12, 12) rotate(135) translate(-12, -14)">
+                            <!-- Pin head (round flat style) -->
+                            <circle cx="12" cy="5" r="3" fill="#CCCCCC" />
+                            <!-- Pin shaft (trapezium) -->
+                            <path d="M11.25 8 L12 14 L12.75 8 Z" fill="white" />
+                            <!-- Highlight on pin head -->
+                            <circle cx="11" cy="4" r="1" fill="white" />
+                        </g>
+                    </svg>
+                    <span data-content="memorize"></span>
+                </button>
+                <button name="btn-save" style="background-color:#10b981;" onclick="saveAsJson()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -616,7 +636,7 @@
                     </svg>
                     <span data-content="save"></span>
                 </button>
-                <button class="export-button" onclick="exportViaWhatsApp()">
+                <button class="share-button" onclick="shareAsJson()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -626,7 +646,7 @@
                         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                     </svg>
-                    <span data-content="export"></span>
+                    <span data-content="share"></span>
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
                     <!-- From Feather Icons (MIT) -->
@@ -914,6 +934,7 @@
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
     const patientNameInput = document.getElementById('patientName');
+    let patientName;
     const pasteModal = document.getElementById('pasteModal');
     const pasteArea = document.getElementById('pasteArea');
     const formThumbCnv = document.getElementById('formThumbCnv');
@@ -1073,15 +1094,14 @@
     }
 
     // MARK: Export via WhatsApp
-    function exportViaWhatsApp() {
-        const patientName = patientNameInput.value.trim();
+    function shareAsJson() {
+        patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
             return;
         }
-
         let message = `Medication Schedule for ${patientName}:\n\n`;
-        shareTable();
+        saveAsJson();
         /*
         const groupedMeds = medications.reduce((acc, med) => {
             acc[med.timing] = acc[med.timing] ?? [];
@@ -1108,8 +1128,48 @@
         window.open(whatsappUrl, '_blank');
         */
     }
+    async function saveAsJson() {
+        const dataFile = new File(
+            [JSON.stringify(medications)],
+            'table-data.json',
+            { type: 'application/json' }
+        );
 
-    // whatsapp dataURL image share (export) //*new*
+        try {
+            if (navigator.share && navigator.canShare({ files: [dataFile] })) {
+                await navigator.share({
+                    files: [dataFile],
+                    title: 'Table Data'
+                });
+            } else {
+                downloadFile(dataFile);
+            }
+        } catch (error) {
+            console.error(error);
+            downloadFile(dataFile);
+        }
+    }
+
+    function downloadFile(file) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = file.name;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    function loadData(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            tableData = JSON.parse(e.target.result);
+            updateTable();
+        };
+        reader.readAsText(file);
+    }
+
+
+    // whatsapp dataURL image share (export) //works
     async function shareTable() {
         try {
             console.log('Share API supported:', 'share' in navigator);
@@ -1301,14 +1361,14 @@
     });
 
     // Save patient data
-    function savePatientData() {
+    function memorizePatientData() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
             return;
         }
         saveCurrentState();
-        alert(t('medicationDataSaved') + ': ' + patientName);
+        alert(t('medicationDataSaved') + ' ' + patientName);
     }
 
     // Open patient data
@@ -1323,9 +1383,9 @@
         if (savedData) {
             medications = JSON.parse(savedData);
             updateTable();
-            alert(t('loadedMedicationData') + `Loaded medication data for patient: ${patientName}`);
+            alert(t('loadedMedicationData') + ` ${patientName}`);
         } else {
-            alert(t('noSavedDataFound') + `: ${patientName}`);
+            alert(t('noSavedDataFound') + ` ${patientName}`);
             medications = [];
             updateTable();
         }
@@ -1382,7 +1442,7 @@
             languageT: 'Choose Language',
             loadedMedicationData: 'Loaded medication data for patient:',
             medicationDataImported: 'Medication data imported successfully',
-            medicationDataSaved: 'Medication data saved for patient:',
+            medicationDataSaved: 'Medication data memorized (as cookies) for patient:',
             medicationScheduleFor: 'Medication Schedule for',
             medicineName: 'Medicine Name',
             medicineName1: 'Medicine',
@@ -1411,8 +1471,10 @@
             quantity: 'Quantity',
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
             quantityT: 'Number of medication units to take each time. (optional)',
+            memorize: 'Memorize',
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
+            share: 'Share',
             timing: 'Timing',
             As_needed: '🚨 As needed',
             Morning: '🐓 Morning',
@@ -1447,13 +1509,14 @@
             languageT: 'לבחירת שפה',
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
-            medicationDataSaved: 'נתוני התרופות נשמרו עבור המטופל:',
+            medicationDataSaved: 'נתוני התרופות נרשמו (כ"עוגיות") עבור המטופל:',
             medicationScheduleFor: 'תכנית תרופות עבור',
             medicineName: 'שם תרופה',
             medicineName1: 'שם',
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
             medicineNamePH: 'שם התרופה',
+            memorize: 'זכור',
             morningShort: 'בקר',
             noon: 'צהרים',
             eveningShort: 'ערב',
@@ -1478,6 +1541,7 @@
             quantityT: 'מספר יחידות התרופה לקחת בכל פעם. (אופציונלי)',
             save: 'שמור',
             saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
+            share: 'שתף',
             timing: 'מתי',
             As_needed: '🚨 לפי צורך',
             Morning: '🐓 בוקר',
@@ -1598,21 +1662,14 @@
     }
 
     function triggerInitialLanguage() {
-        /*/debugging
-        const err = new Error();
-        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
-        console.log("triggerInitialLanguage <" + callerName);
-        //end of debugging/*/
-
         const selectElement = document.getElementById('language');
         // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
         const browserLang = navigator.language.slice(0, 2);
-
         // Set the value if it exists in options
         if (Array.from(selectElement.options).some(option => option.value === browserLang)) {
             selectElement.value = browserLang;
         }
-        // Create and dispatch change event
+        // Create and dispatch change event (calls handleLanguageChange)
         selectElement.dispatchEvent(new Event('change'));
     }
 
@@ -1990,14 +2047,14 @@
     scrollWrap.addEventListener('scroll', () => {
         scrollbar.scrollLeft = scrollWrap.scrollLeft;
     });
-
+    
+    triggerInitialLanguage();
     function initialize() {
         /*debugging
         const err = new Error();
         const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
         console.log("initialize <" + callerName);
         //end of debugging*/
-        triggerInitialLanguage();
         updateTable();
         overallAllign();
     }
