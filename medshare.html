@@ -14,7 +14,7 @@
             font-size: x-large;
             text-align: center;
             box-sizing: border-box;
-            /*show white boxes - for debugging*
+            /* End this line with "/" to show white boxes (debugging)*
             border-color: #fff;
             border-radius: 3px;
             border-width: 1px;
@@ -29,7 +29,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 5px;
             background-color: #000000;
             min-height: 100vh;
             max-width: fit-content;
@@ -38,10 +38,12 @@
 
         /* #region: language and title css */
         #lang-and-title {
+            background: rgb(35, 36, 36);
             display: flex;
             align-items: center;
             /* Vertical center alignment */
             flex-direction: row;
+            padding: 10px;
         }
 
         .app-title {
@@ -58,8 +60,13 @@
             order: 2;
         }
 
-        #languageSelector {
+        #langIcon {
+            order: 0;
             padding: 10px;
+        }
+
+        #languageSelector {
+            padding: 5px;
             box-sizing: border-box;
             align-items: center;
             display: flex;
@@ -68,12 +75,11 @@
             gap: 8px;
             max-width: 35%;
             min-width: 20%;
-            flex-direction: row-reverse;
         }
 
         #language {
             width: fit-content;
-            margin: 10px;
+            margin: 0;
             background-color: #cbd9f7;
             float: inline-start;
         }
@@ -89,20 +95,22 @@
             margin: 0;
             margin-bottom: 6px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            justify-content:space-evenly;
+            justify-content: space-evenly;
         }
 
         .patient-input {
+            margin: 10px;
+            gap: 8px;
             border-color: black;
             color: white;
             display: flex;
-            align-items:center;
+            align-items: center;
             width: 100%;
         }
 
         #patientName:user-valid {
             border-width: 0;
-            background-color:#515152;
+            background-color: #515152;
             color: #cbd9f7;
             font-weight: bold;
         }
@@ -119,6 +127,7 @@
             font-size: 20px;
             min-width: 300px;
         }
+
         .scroll-container {
             position: relative;
             margin: 0 auto;
@@ -568,6 +577,15 @@
     <div id="lang-and-title" data-title="xplainAppT">
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
+        <span id="langIcon"><svg width="24" height="24" viewBox="0 0 345 267">
+            <!-- Languages icon -->
+            <path
+                d="M105 0 V45 M0 45 H180
+                M160 45 C136 81 119 106 12 172 M52 45 C119 139 142 148 173 155
+                M330 266 L266 86 L248 86 L177 266 M301 210 H215"
+                stroke="white" fill="none" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"
+                shape-rendering="geometricPrecision" />
+        </svg></span>
         <span id="languageSelector" data-title="languageT">
             <select id="language" onchange="handleLanguageChange(event)" aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -585,7 +603,7 @@
         <div id="patient-controls">
             <div class="patient-input">
                 <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <svg width="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -601,7 +619,7 @@
                     </svg>
                     <span data-content="open"></span>
                 </button>
-                <button id="btn-memo" style="background-color:#546d24"; onclick="memorizePatientData()">
+                <button id="btn-memo" style="background-color:#546d24" ; onclick="memorizePatientData()">
                     <svg width="24" height="24" viewBox="7 7 16 16">
                         <!-- Cookie (half size: r=4.5 instead of 9) -->
                         <circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="1" />
@@ -1642,10 +1660,10 @@
         //console.log('titlePlaceMiddle');
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
-            const containerWidth = titleE.parentElement.offsetWidth;
+            const containerWidth = titleE.parentElement.parentElement.offsetWidth;
             const titleWidth = titleE.offsetWidth;
             //let spacerWidth = document.getElementById('spacer');
-            const langWidth = document.getElementById('languageSelector').offsetWidth;
+            const langWidth = document.getElementById('languageSelector').offsetWidth +document.getElementById('langIcon').offsetWidth;
             spacerWidthPx = Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth * 0.5)) + "px";
             //console.log('width= ' + width+ 'contWidth' + containerWidth); 
             return {
@@ -2042,7 +2060,7 @@
     scrollWrap.addEventListener('scroll', () => {
         scrollbar.scrollLeft = scrollWrap.scrollLeft;
     });
-    
+
     triggerInitialLanguage();
     function initialize() {
         /*debugging
