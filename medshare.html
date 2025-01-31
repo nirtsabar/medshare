@@ -62,7 +62,7 @@
 
         #langIcon {
             order: 0;
-            padding: 10px;
+            padding: 3px;
         }
 
         #languageSelector {
@@ -79,9 +79,27 @@
 
         #language {
             width: fit-content;
+            padding: 0.4em 0;
             margin: 0;
             background-color: #cbd9f7;
             float: inline-start;
+        }
+
+        .container {
+            max-width: fit-content;
+            margin: auto;
+            background: rgb(35, 36, 36);
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
+        }
+
+        .container>div {
+            background-color: #3e3e3f;
+            padding: 0;
+            font-size: 30px;
+            align-items: center;
+            /* Center align items vertically within the #lang-and-title container */
         }
 
         /* #endregion */
@@ -121,55 +139,15 @@
             border: 1px solid #427ff2;
             border-radius: 4px;
             width: 100%;
-            margin: 5px;
+            margin: 0;
             padding: 8px;
 
             font-size: 20px;
             min-width: 300px;
         }
 
-        .scroll-container {
-            position: relative;
-            margin: 0 auto;
-            width: 100;
-        }
-
-        .scrollbar {
-            overflow-x: auto;
-            overflow-y: hidden;
-            /*     width: 100%; */
-            height: 30px;
-            position: absolute;
-        }
-
-        ::-webkit-scrollbar {
-            /*  width: 30px; */
-            height: 30px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #8f98ca;
-            border-radius: 13px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
-        }
-
-        /* For Firefox */
-        #medicationForm {
-            scrollbar-width: thick;
-        }
-
-        .container::-webkit-scrollbar {
-            height: 30px;
-            /* Adjust the height to make it thicker */
-        }
-
-        .container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-
-        .container::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        #pt-btn {
+            visibility: hidden;
         }
 
         small {
@@ -240,23 +218,49 @@
             cursor: pointer;
         }
 
-        .container {
-            max-width: fit-content;
-            margin: auto;
-            background: rgb(35, 36, 36);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
+        .scroll-container {
+            position: relative;
+            margin: 0 auto;
+            width: 100;
         }
 
-        .container>div {
-            background-color: #3e3e3f;
-            padding: 0;
-            font-size: 30px;
-            align-items: center;
-            /* Center align items vertically within the #lang-and-title container */
+        .scrollbar {
+            overflow-x: auto;
+            overflow-y: hidden;
+            /*     width: 100%; */
+            height: 30px;
+            position: absolute;
         }
 
+        ::-webkit-scrollbar {
+            /*  width: 30px; */
+            height: 30px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #8f98ca;
+            border-radius: 13px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
+        }
+
+        /* For Firefox */
+        #medicationForm {
+            scrollbar-width: thick;
+        }
+
+        .container::-webkit-scrollbar {
+            height: 30px;
+            /* Adjust the height to make it thicker */
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
 
         form {
             scrollbar-color: #adc5f7 #6366f1;
@@ -577,15 +581,14 @@
     <div id="lang-and-title" data-title="xplainAppT">
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
-        <span id="langIcon"><svg width="24" height="24" viewBox="0 0 345 267">
-            <!-- Languages icon -->
-            <path
-                d="M105 0 V45 M0 45 H180
+        <span id="langIcon"> <!-- Multy Language icon -->
+            <svg width="22" viewBox="0 0 345 267">
+                <path d="M105 0 V45 M0 45 H180
                 M160 45 C136 81 119 106 12 172 M52 45 C119 139 142 148 173 155
-                M330 266 L266 86 L248 86 L177 266 M301 210 H215"
-                stroke="white" fill="none" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"
-                shape-rendering="geometricPrecision" />
-        </svg></span>
+                M330 266 L266 86 L248 86 L177 266 M301 210 H215" stroke="white" fill="none" stroke-width="30"
+                    stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision" />
+            </svg>
+        </span>
         <span id="languageSelector" data-title="languageT">
             <select id="language" onchange="handleLanguageChange(event)" aria-labelledby="languageSelector">
                 <option value="en">English</option>
@@ -603,12 +606,12 @@
         <div id="patient-controls">
             <div class="patient-input">
                 <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
-                <svg width="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2"
+                <svg width="22" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <input type="text" id="patientName" data-placeholder="patientNamePH" data-title="patientNameT" required>
+                <input oninput="handlePatientNameInput()" type="text" id="patientName" data-placeholder="patientNamePH" data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
                 <button id="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
@@ -954,7 +957,6 @@
     const formThumbCtx = formThumbCnv.getContext("2d");
     formThumbCnv.clientWidth = "100px";
     formThumbCnv.clientHeight = "50px";
-
     // Define timing order
     const timingOrder = {
         'As_needed': 0,
@@ -965,6 +967,14 @@
     /* #endregion initializations */
     /* #region major table / form functions */
     // Update table with medications
+
+function handlePatientNameInput() {
+    patientName = patientNameInput.value;
+    console.log('Patient Name:', patientName);
+    document.getElementById('pt-btn').style.visibility = 'visible';
+
+}
+
     function updateTable() {
         //console.log('UpdateTable');
         // deleting old table data, from last data row to first data row
@@ -1663,7 +1673,7 @@
             const containerWidth = titleE.parentElement.parentElement.offsetWidth;
             const titleWidth = titleE.offsetWidth;
             //let spacerWidth = document.getElementById('spacer');
-            const langWidth = document.getElementById('languageSelector').offsetWidth +document.getElementById('langIcon').offsetWidth;
+            const langWidth = document.getElementById('languageSelector').offsetWidth + document.getElementById('langIcon').offsetWidth;
             spacerWidthPx = Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth * 0.5)) + "px";
             //console.log('width= ' + width+ 'contWidth' + containerWidth); 
             return {
