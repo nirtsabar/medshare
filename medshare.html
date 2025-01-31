@@ -262,6 +262,48 @@
             background: #f1f1f1;
         }
 
+        /* Hide scrollbars on smartphones */
+        @media (pointer: coarse) {
+            .touch {
+                display: block;
+            }
+
+            .no-touch {
+                display: none;
+            }
+
+            ::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* For WebKit browsers */
+
+            * {
+                scrollbar-width: none;
+                /* For Firefox */
+                -ms-overflow-style: none;
+                /* For Internet Explorer and Edge */
+            }
+        }
+
+        .dotted-background {
+           /*  width: inherit ; */
+            background:seagreen;
+            background-image: radial-gradient(#000 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0;
+        }
+
+        @media (pointer: fine) {
+            .touch {
+                display: none;
+            }
+
+            .no-touch {
+                display: block;
+            }
+        }
+
         form {
             scrollbar-color: #adc5f7 #6366f1;
             background-color: #f9fafb;
@@ -611,7 +653,8 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <input oninput="handlePatientNameInput()" type="text" id="patientName" data-placeholder="patientNamePH" data-title="patientNameT" required>
+                <input oninput="handlePatientNameInput()" type="text" id="patientName" data-placeholder="patientNamePH"
+                    data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
                 <button id="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
@@ -680,11 +723,13 @@
 
 <body>
     <div class="scroll-wrapper" style="overflow-x: auto">
-        <div class="scrollbar" style="overflow-x: auto; overflow-y: hidden; width:100% ;height: 30px;">
+        <div class="scrollbar" class="no-touch" style="overflow-x: auto; overflow-y: hidden; width:100% ;height: 30px;">
             <div id="scrollbarDiv" style="height: 1px;"></div>
             <!-- Adjust the width to match the table content -->
         </div>
-        <div style="height:30px"></div> <!-- for scrollbar space-->
+        <div style="height:30px">
+            <span class="touch" class="dotted-background"> |   |   | </span>
+        </div> <!-- for scrollbar space-->
         <form id="medicationForm">
             <table id="medicationTable" class="table-container">
                 <tr id="tHeader">
@@ -968,12 +1013,12 @@
     /* #region major table / form functions */
     // Update table with medications
 
-function handlePatientNameInput() {
-    patientName = patientNameInput.value;
-    console.log('Patient Name:', patientName);
-    document.getElementById('pt-btn').style.visibility = 'visible';
-
-}
+    function handlePatientNameInput() {
+        patientName = patientNameInput.value;
+        console.log('Patient Name:', patientName);
+        document.getElementById('pt-btn').style.visibility = 'visible';
+        // Alternatively ... = patientName ? 'visible' : 'hidden';
+    }
 
     function updateTable() {
         //console.log('UpdateTable');
