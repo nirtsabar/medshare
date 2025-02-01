@@ -1222,10 +1222,10 @@
         const dataFile = newJsonQA();
         if (dataFile) {
             try {
-                if (navigator.share && navigator.canShare({ files: [dataFile] })) {
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [dataFile] })) {
                     await navigator.share({
                         files: [dataFile],
-                        title: 'Table Data'
+                        title: t('title')
                     });
                 } else {
                     console.log('Share not supported - downloading instead');
@@ -1237,7 +1237,6 @@
                 downloadFile(dataFile);
             }
             console.log('save as Json file:', dataFile);
-            //saveAsJson();  maybe not needed
         }
     }
     function saveAsJson() {
