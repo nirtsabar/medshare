@@ -284,14 +284,13 @@
                 -ms-overflow-style: none;
                 /* For Internet Explorer and Edge */
             }
-        }
 
-        .dotted-background {
-           /*  width: inherit ; */
-            background:seagreen;
-            background-image: radial-gradient(#000 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-position: 0 0;
+            .dotted-background {
+                background: seagreen;
+                background-image: radial-gradient(#535353 1px, transparent 1px);
+                background-size: 10px 10px;
+                background-position: 0 0;
+            }
         }
 
         @media (pointer: fine) {
@@ -625,8 +624,8 @@
         <span id="spacer" style="height: 5px;"></span>
         <span id="langIcon"> <!-- Multy Language icon -->
             <svg width="22" viewBox="0 0 345 267">
-                <path d="M105 0 V45 M0 45 H180
-                M160 45 C136 81 119 106 12 172 M52 45 C119 139 142 148 173 155
+                <path d="M105 15 V45 M20 45 H180
+                M160 45 C136 81 119 106 20 172 M52 65 C119 139 142 148 173 155
                 M330 266 L266 86 L248 86 L177 266 M301 210 H215" stroke="white" fill="none" stroke-width="30"
                     stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision" />
             </svg>
@@ -722,13 +721,13 @@
 <!-- MARK: TABLE -->
 
 <body>
-    <div class="scroll-wrapper" style="overflow-x: auto">
+    <div class="scroll-wrapper dotted-background" style="overflow-x: auto">
         <div class="scrollbar" class="no-touch" style="overflow-x: auto; overflow-y: hidden; width:100% ;height: 30px;">
             <div id="scrollbarDiv" style="height: 1px;"></div>
             <!-- Adjust the width to match the table content -->
         </div>
-        <div style="height:30px">
-            <span class="touch" class="dotted-background"> |   |   | </span>
+        <div style="height:30px" class="">
+            <span class="touch "></span>
         </div> <!-- for scrollbar space-->
         <form id="medicationForm">
             <table id="medicationTable" class="table-container">
@@ -2155,6 +2154,7 @@
         //    console.log("SyncUpScrollWidth ");
         document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
         scrollbar.style.width = scrollWrap.offsetWidth + 'px';
+        //document.getElementsByClassName("dotted-background")[0].style.width = medicationTable.offsetWidth + 'px';
     }
     /* #endregion */
 </script>

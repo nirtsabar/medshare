@@ -1,0 +1,4 @@
+CMD
+ipconfig
+netstat -ano | findstr LISTEN
+python -m http.server 8000
