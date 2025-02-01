@@ -656,7 +656,16 @@
                     data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
-                <button id="btn-restore" style="background-color:#6366f1" onclick="restorePatientData()">
+                <button id="btn-open" style="background-color:#6366f1">
+                    <input type="file" id="jsonLoad" accept="json/*" onchange="loadData(event)" style="display: none;">
+                    <!-- Open/Folder - From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span data-content="open"></span>
+                </button>
+                <button id="btn-restore" style="background-color:#2a2b6a" onclick="restorePatientData()">
                     <svg width="24" height="24" viewBox="0 0 65 65">
                         <g transform="translate(8,-50)" fill="white">
                             <circle cx="25" cy="86" r="21" fill="none" stroke="white" stroke-width="4" />
@@ -669,21 +678,6 @@
                         </g>
                     </svg>
                     <span data-content="restore"></span>
-                </button>
-                <button id="btn-open" style="background-color:#6366f1" onclick="loadData()">
-
-
-
-                    <input type="file" id="jsonLoad" accept="image/*" style="display: none;">
-
-
-                    <!-- Open/Folder - From Feather Icons (MIT) -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
-
-                    <span data-content="open"></span>
                 </button>
                 <button id="btn-memo" style="background-color:#546d24" ; onclick="memorizePatientData()">
                     <svg width="24" height="24" viewBox="7 7 16 16">
@@ -889,6 +883,7 @@
     </div>
 </body>
 <!-- MARK: MODALS -->
+
 <body>
 
     <div id="deleteModal" class="modal">
@@ -1181,68 +1176,82 @@
     }
 
     // MARK: Export via WhatsApp
-    function shareAsJson() {
+    /*
+    const groupedMeds = medications.reduce((acc, med) => {
+        acc[med.timing] = acc[med.timing] ?? [];
+        acc[med.timing].push(med);
+        return acc;
+    }, {});
+
+    Object.keys(groupedMeds)
+        .sort((a, b) => timingOrder[a] - timingOrder[b])
+        .forEach(timing => {
+            message += `${timing}:\n`;
+            groupedMeds[timing].forEach(med => {
+                message += `- ${med.medicineName}`;
+                if (med.dose) message += ` (${med.dose})`;
+                if (med.quantity) message += ` - ${med.quantity} units`;
+                if (med.note) message += ` - Note: ${med.note}`;
+                message += '\n';
+            });
+            message += '\n';
+        });
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+    */
+
+    // MARK: Export as JSON
+    function newJsonQA() {
         patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
-            return;
+            return null;
         }
-        let message = `Medication Schedule for ${patientName}:\n\n`;
-        saveAsJson();
-        /*
-        const groupedMeds = medications.reduce((acc, med) => {
-            acc[med.timing] = acc[med.timing] ?? [];
-            acc[med.timing].push(med);
-            return acc;
-        }, {});
-
-        Object.keys(groupedMeds)
-            .sort((a, b) => timingOrder[a] - timingOrder[b])
-            .forEach(timing => {
-                message += `${timing}:\n`;
-                groupedMeds[timing].forEach(med => {
-                    message += `- ${med.medicineName}`;
-                    if (med.dose) message += ` (${med.dose})`;
-                    if (med.quantity) message += ` - ${med.quantity} units`;
-                    if (med.note) message += ` - Note: ${med.note}`;
-                    message += '\n';
-                });
-                message += '\n';
-            });
-
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-        window.open(whatsappUrl, '_blank');
-        */
-    }
-    async function saveAsJson() {
+        //    let message = `Medication Schedule for ${patientName}:\n\n`;
         const dataFile = new File(
             [JSON.stringify(medications)],
-            'table-data.json',
+            'medshare_for_' + patientName + '.json',
             { type: 'application/json' }
         );
+        return dataFile;
+    }
 
-        try {
-            if (navigator.share && navigator.canShare({ files: [dataFile] })) {
-                await navigator.share({
-                    files: [dataFile],
-                    title: 'Table Data'
-                });
-            } else {
+    async function shareAsJson() {
+        const dataFile = newJsonQA();
+        if (dataFile) {
+            try {
+                if (navigator.share && navigator.canShare({ files: [dataFile] })) {
+                    await navigator.share({
+                        files: [dataFile],
+                        title: 'Table Data'
+                    });
+                } else {
+                    console.log('Share not supported - downloading instead');
+                    downloadFile(dataFile);
+                }
+            }
+            catch (error) {
+                console.error('Sharing failed', error);
                 downloadFile(dataFile);
             }
-        } catch (error) {
-            console.error(error);
-            downloadFile(dataFile);
+            console.log('save as Json file:', dataFile);
+            //saveAsJson();  maybe not needed
         }
+    }
+    function saveAsJson() {
+        const dataFile = newJsonQA();
+        if (dataFile) { downloadFile(dataFile); }
     }
 
     function downloadFile(file) {
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
+        const objectURL = URL.createObjectURL(file);
+        link.href = objectURL;
         link.download = file.name;
         link.click();
-        URL.revokeObjectURL(link.href);
+        setTimeout(() => URL.revokeObjectURL(objectURL), 100);
     }
 
     function loadData(event) {
@@ -1558,8 +1567,8 @@
             quantity: 'Quantity',
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
             quantityT: 'Number of medication units to take each time. (optional)',
-            memorize: 'Memorize',
-            restore: 'Restore',
+            memorize: 'Keep',
+            restore: 'Recall',
             restoreT: 'Opens medications list from local storage (cookies)',
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
