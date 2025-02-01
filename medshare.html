@@ -656,12 +656,33 @@
                     data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
-                <button id="btn-open" style="background-color:#6366f1" onclick="openPatientData()">
-                    <!-- From Feather Icons (MIT) -->
+                <button id="btn-restore" style="background-color:#6366f1" onclick="restorePatientData()">
+                    <svg width="24" height="24" viewBox="0 0 65 65">
+                        <g transform="translate(8,-50)" fill="white">
+                            <circle cx="25" cy="86" r="21" fill="none" stroke="white" stroke-width="4" />
+                            <path
+                                d="m28 91c0 0-14-4-12-9 7-14 9-11 19-22 1-2-5-3-5-3L45 53 41 65 39 62c-7 9-9 19-11 29z"
+                                stroke="none" />
+                            <path
+                                d="m36 78c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m-2 16c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m-18-16c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m6 21c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2"
+                                stroke="none" />
+                        </g>
+                    </svg>
+                    <span data-content="restore"></span>
+                </button>
+                <button id="btn-open" style="background-color:#6366f1" onclick="loadData()">
+
+
+
+                    <input type="file" id="jsonLoad" accept="image/*" style="display: none;">
+
+
+                    <!-- Open/Folder - From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                     </svg>
+
                     <span data-content="open"></span>
                 </button>
                 <button id="btn-memo" style="background-color:#546d24" ; onclick="memorizePatientData()">
@@ -868,7 +889,6 @@
     </div>
 </body>
 <!-- MARK: MODALS -->
-
 <body>
 
     <div id="deleteModal" class="modal">
@@ -1438,8 +1458,8 @@
         alert(t('medicationDataSaved') + ' ' + patientName);
     }
 
-    // Open patient data
-    function openPatientData() {
+    // Restore patient data (using cookies)
+    function restorePatientData() {
         const patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
@@ -1523,7 +1543,7 @@
             note: 'Note',
             noValidMedicationData: 'No valid medication data found in the pasted text',
             open: 'Open',
-            openT: 'Opens medications list from local storage (cookies)',
+            openT: 'Loads medications list from file (json)',
             paste: 'Paste',
             pastedTextA: 'Please paste medication data first',
             pasteMedicationData: 'Paste Medication Data',
@@ -1539,6 +1559,8 @@
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
             quantityT: 'Number of medication units to take each time. (optional)',
             memorize: 'Memorize',
+            restore: 'Restore',
+            restoreT: 'Opens medications list from local storage (cookies)',
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
             share: 'Share',
@@ -1591,7 +1613,7 @@
             note: 'הערה',
             noValidMedicationData: 'לא נמצאו נתוני תרופות חוקיים בטקסט שהודבק',
             open: 'פתח',
-            openT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
+            openT: 'פותח את רשימת התרופות מקובץ (json)',
             paste: 'הדבק',
             pastedTextA: 'אנא להדביק תחילה נתוני תרופות',
             pasteMedicationData: 'הדבק נתוני תרופות',
@@ -1609,6 +1631,8 @@
             save: 'שמור',
             saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
             share: 'שתף',
+            restore: 'שחזר',
+            restoreT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
             timing: 'מתי',
             As_needed: '🚨 לפי צורך',
             Morning: '🐓 בוקר',
