@@ -656,8 +656,8 @@
                     data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
-                <button id="btn-open" style="background-color:#6366f1">
-                    <input type="file" id="jsonLoad" accept="json/*" onchange="loadData(event)" style="display: none;">
+                <button id="btn-open" onclick="document.getElementById('jsonLoad').click()" style="background-color:#6366f1">
+                    <input type="file" id="jsonLoad" accept="application/json" onchange ="loadData(event)" style="display: none;">
                     <!-- Open/Folder - From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1254,10 +1254,11 @@
     }
 
     function loadData(event) {
+        console.log('Load Data');
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = (e) => {
-            tableData = JSON.parse(e.target.result);
+            medications = JSON.parse(e.target.result);
             updateTable();
         };
         reader.readAsText(file);
