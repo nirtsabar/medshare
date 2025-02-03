@@ -656,8 +656,10 @@
                     data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
-                <button id="btn-open" onclick="document.getElementById('jsonLoad').click()" style="background-color:#6366f1">
-                    <input type="file" id="jsonLoad" accept="application/json" onchange ="loadData(event)" style="display: none;">
+                <button id="btn-open" onclick="document.getElementById('jsonLoad').click()"
+                    style="background-color:#6366f1">
+                    <input type="file" id="jsonLoad" accept="application/json" onchange="loadData(event)"
+                        style="display: none;">
                     <!-- Open/Folder - From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1228,15 +1230,16 @@
                         title: t('title')
                     });
                 } else {
-                    console.log('Share not supported - downloading instead');
+                    alert(t('ShareBlocked'));
                     downloadFile(dataFile);
                 }
             }
             catch (error) {
                 console.error('Sharing failed', error);
                 downloadFile(dataFile);
+                console.log('save as Json file:', dataFile);
+                shareAsJpg();
             }
-            console.log('save as Json file:', dataFile);
         }
     }
     function saveAsJson() {
@@ -1258,15 +1261,28 @@
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = (e) => {
+            fileName = file.name;
+            if (!fileName.endsWith('.json')) {
+                alert(t('jsonFileA'));
+                return;
+            }
+            else if (fileName.startsWith('medshare_for_')) {
+                patientName = fileName.replace('medshare_for_', '').replace('.json', '');
+                patientNameInput.value = patientName;
+            }
+            else {
+                alert(t('medshareFileA'));
+                return;
+            }
             medications = JSON.parse(e.target.result);
-            updateTable();
+            updateTable();            
         };
         reader.readAsText(file);
     }
 
 
     // whatsapp dataURL image share (export) //works
-    async function shareTable() {
+    async function shareAsJpg() {
         try {
             console.log('Share API supported:', 'share' in navigator);
             console.log('Share files supported:', 'canShare' in navigator && navigator.canShare({ files: [] }));
@@ -1292,7 +1308,7 @@
             if (navigator.share && navigator.canShare(shareData)) {
                 await navigator.share(shareData);
             } else {
-                throw new Error('Share not supported - downloading instead');
+                throw new Error(t('ShareBlocked'));
             }
         } catch (error) {
             console.error('Full error:', error);
@@ -1458,7 +1474,7 @@
 
     // Save patient data
     function memorizePatientData() {
-        const patientName = patientNameInput.value.trim();
+        patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
             return;
@@ -1469,7 +1485,7 @@
 
     // Restore patient data (using cookies)
     function restorePatientData() {
-        const patientName = patientNameInput.value.trim();
+        patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
             return;
@@ -1489,7 +1505,7 @@
 
     // Helper function to save current state
     function saveCurrentState() {
-        const patientName = patientNameInput.value.trim();
+        patientName = patientNameInput.value.trim();
         if (patientName) {
             try {
                 localStorage.setItem(`patient_${patientName}`, JSON.stringify(medications));
@@ -1535,6 +1551,7 @@
             infoT: 'Medication information leaflet lookup',
             invalidQuantity: 'Please enter a valid number for quantity',
             invalidTiming: 'Invalid timing value. Please use: As_needed, Morning, Noon, or Evening',
+            jsonFileA: 'Please select a valid json file',
             languageT: 'Choose Language',
             loadedMedicationData: 'Loaded medication data for patient:',
             medicationDataImported: 'Medication data imported successfully',
@@ -1545,6 +1562,7 @@
             medicineName2: 'Name',
             medicineNameT: 'Name of the medication (required)',
             medicineNamePH: 'Medicine Name',
+            medshareFileA: 'Please select a valid medshare file',
             morningShort: 'AM',
             noon: 'Noon',
             eveningShort: 'PM',
@@ -1573,6 +1591,7 @@
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
             share: 'Share',
+            ShareBlocked: 'Share not supported - downloading instead',
             timing: 'Timing',
             As_needed: '🚨 As needed',
             Morning: '🐓 Morning',
@@ -1604,6 +1623,7 @@
             infoT: 'חיפוש עלון מידע על התרופה',
             invalidQuantity: 'אנא הכנס מספר חוקי לכמות',
             invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי צורך, בוקר, צהריים או ערב',
+            jsonFileA: 'נא לבחור קובץ json תקין',
             languageT: 'לבחירת שפה',
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
@@ -1614,6 +1634,7 @@
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
             medicineNamePH: 'שם התרופה',
+            medshareFileA: 'נא לבחור קובץ medshare תקין',
             memorize: 'זכור',
             morningShort: 'בקר',
             noon: 'צהרים',
@@ -1640,6 +1661,7 @@
             save: 'שמור',
             saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
             share: 'שתף',
+            ShareBlocked: 'שיתוף ישיר לא נתמך, לכן שומר קובץ שניתן לשתף',
             restore: 'שחזר',
             restoreT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
             timing: 'מתי',
