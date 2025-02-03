@@ -945,6 +945,35 @@
         </div>
     </div>
 
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top: 0;" data-content="shareMedicineList"></h2>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeShareModal()">
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
+                </button>
+                <button class="btn-confirm-share" onclick="performShare()">
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <span data-content="share"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="img_handler_modal" class="modal">
         <div class="modal-content">
             <header>
@@ -1012,8 +1041,10 @@
     const medicationTable = document.getElementById('medicationTable');
     const patientNameInput = document.getElementById('patientName');
     let patientName;
+    let fileToShare;
     const pasteModal = document.getElementById('pasteModal');
     const pasteArea = document.getElementById('pasteArea');
+    const shareModal = document.getElementById('shareModal');
     const formThumbCnv = document.getElementById('formThumbCnv');
     const formThumbCtx = formThumbCnv.getContext("2d");
     formThumbCnv.clientWidth = "100px";
@@ -1212,7 +1243,7 @@
             return null;
         }
         //    let message = `Medication Schedule for ${patientName}:\n\n`;
-        const dataFile = new File(
+        dataFile = new File(
             [JSON.stringify(medications)],
             'medshare_for_' + patientName + '.json',
             { type: 'application/json' }
@@ -1221,23 +1252,25 @@
     }
 
     async function shareAsJson() {
-        const dataFile = newJsonQA();
-        if (dataFile) {
+        fileToShare = newJsonQA();
+        if (fileToShare) {
+
             try {
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [dataFile] })) {
-                    await navigator.share({
-                        files: [dataFile],
-                        title: t('title')
-                    });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
+                    console.log('navigator.canShare AsJson');
+
+                    showShareModal();
+
+
                 } else {
                     alert(t('ShareBlocked'));
-                    downloadFile(dataFile);
+                    downloadFile(fileToShare);
                 }
             }
             catch (error) {
                 console.error('Sharing failed', error);
-                downloadFile(dataFile);
-                console.log('save as Json file:', dataFile);
+                downloadFile(fileToShare);
+                console.log('save as Json file:', fileToShare);
                 shareAsJpg();
             }
         }
@@ -1275,7 +1308,7 @@
                 return;
             }
             medications = JSON.parse(e.target.result);
-            updateTable();            
+            updateTable();
         };
         reader.readAsText(file);
     }
@@ -1306,6 +1339,7 @@
             console.log('Can share this data:', navigator.canShare(shareData));
 
             if (navigator.share && navigator.canShare(shareData)) {
+                console.log('navigator.canShare as Jpg');
                 await navigator.share(shareData);
             } else {
                 throw new Error(t('ShareBlocked'));
@@ -1445,6 +1479,24 @@
             console.error('Error processing pasted data:', error);
         }
     }
+    //Must be handling a user gesture to perform a share request
+    function showShareModal(dataFile) {
+        shareModal.style.display = 'block';
+    }
+    async function performShare() {
+        try {
+            await navigator.share({
+                files: [fileToShare],
+                title: t('title')
+            });
+        } catch (err) {
+            console.log('performShare failed:', err);
+        }
+    }
+    function closeShareModal() {
+        shareModal.style.display = 'none';
+    }
+
 
     // Delete confirmation modal functionality
     const deleteModal = document.getElementById('deleteModal');
