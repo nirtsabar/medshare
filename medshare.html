@@ -1344,55 +1344,58 @@
     async function encodeToPng(data) {
         try {
             const jsonStr = JSON.stringify(data);
-            console.log('Original JSON length:', jsonStr.length);
             const encodedStr = encodeURIComponent(jsonStr);
-            console.log('Encoded string length:', encodedStr.length);
 
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            const bytesPerPixel = 4;
-            const totalBytes = encodedStr.length;
-            const width = Math.ceil(Math.sqrt(totalBytes / bytesPerPixel));
-            console.log('Canvas dimensions:', width, 'x', width);
+            // Calculate dimensions to ensure we have enough pixels
+            const totalLength = encodedStr.length;
+            const width = Math.ceil(Math.sqrt(totalLength));  // Changed this
             canvas.width = width;
             canvas.height = width;
+
+            console.log('Encoding - Canvas size:', width, 'x', width);
+            console.log('Total data length:', totalLength);
 
             const imageData = ctx.createImageData(width, width);
             const pixelData = imageData.data;
 
-            // Store the length of the encoded string at the beginning
-            const lengthStr = encodedStr.length.toString();
+            // Store length at the start
+            const lengthStr = totalLength.toString();
             for (let i = 0; i < lengthStr.length; i++) {
-                const pixelIndex = i * 4;
-                pixelData[pixelIndex] = lengthStr.charCodeAt(i);
-                pixelData[pixelIndex + 1] = 0;  // Mark length bytes
-                pixelData[pixelIndex + 2] = 0;
-                pixelData[pixelIndex + 3] = 255;
+                pixelData[i * 4] = lengthStr.charCodeAt(i);     // R
+                pixelData[i * 4 + 1] = 0;                       // G = 0 marks length
+                pixelData[i * 4 + 2] = 0;                       // B
+                pixelData[i * 4 + 3] = 255;                     // A
             }
 
-            // Store the actual data starting after the length
+            // Store data
             const dataOffset = lengthStr.length * 4;
             for (let i = 0; i < encodedStr.length; i++) {
                 const pixelIndex = dataOffset + (i * 4);
-                pixelData[pixelIndex] = encodedStr.charCodeAt(i);
-                pixelData[pixelIndex + 1] = 255;
-                pixelData[pixelIndex + 2] = 255;
-                pixelData[pixelIndex + 3] = 255;
+                if (pixelIndex + 3 < pixelData.length) {
+                    pixelData[pixelIndex] = encodedStr.charCodeAt(i);     // R
+                    pixelData[pixelIndex + 1] = 255;                      // G
+                    pixelData[pixelIndex + 2] = 255;                      // B
+                    pixelData[pixelIndex + 3] = 255;                      // A
+                }
             }
 
             ctx.putImageData(imageData, 0, 0);
 
-            const blob = await new Promise((resolve, reject) => {
-                canvas.toBlob((b) => {
-                    if (b) resolve(b);
-                    else reject(new Error('Blob creation failed'));
+            return new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const file = new File([blob], fileNamePrefix + patientName + '.png', { type: 'image/png' });
+                        resolve(file);
+                    } else {
+                        reject(new Error('Blob creation failed'));
+                    }
                 }, 'image/png');
             });
-
-            return new File([blob], fileNamePrefix + patientName + '.png', { type: 'image/png' });
         } catch (err) {
-            console.error('Encoding to PNG failed:', err);
+            console.error('Encoding error:', err);
             throw err;
         }
     }
@@ -1400,7 +1403,6 @@
     async function decodeFromPng(file) {
         try {
             const url = URL.createObjectURL(file);
-
             const img = await new Promise((resolve, reject) => {
                 const img = new Image();
                 img.onload = () => resolve(img);
@@ -1414,57 +1416,50 @@
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
 
+            console.log('Decoding - Canvas size:', canvas.width, 'x', canvas.height);
+
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const pixelData = imageData.data;
 
-            // Read the length first
+            // Read length
             let lengthStr = '';
             let i = 0;
-            while (pixelData[i * 4 + 1] === 0) { // Check G channel for length marker
+            while (i < pixelData.length / 4 && pixelData[i * 4 + 1] === 0) {
                 lengthStr += String.fromCharCode(pixelData[i * 4]);
                 i++;
             }
             const expectedLength = parseInt(lengthStr, 10);
-            console.log('Expected encoded length:', expectedLength);
+            console.log('Length bytes read:', i);
+            console.log('Expected data length:', expectedLength);
 
-            // Read the actual data
-            const dataOffset = i * 4;
+            // Read data
             let encodedStr = '';
+            const dataOffset = i * 4;
+            const totalPixels = (pixelData.length / 4) - i;  // Available pixels for data
+            console.log('Available pixels for data:', totalPixels);
+
             for (let j = 0; j < expectedLength; j++) {
                 const pixelIndex = dataOffset + (j * 4);
-                encodedStr += String.fromCharCode(pixelData[pixelIndex]);
+                if (pixelIndex + 3 < pixelData.length) {
+                    encodedStr += String.fromCharCode(pixelData[pixelIndex]);
+                }
             }
-
-            console.log('Decoded string length:', encodedStr.length);
 
             URL.revokeObjectURL(url);
+            console.log('Actual data length:', encodedStr.length);
 
             const jsonStr = decodeURIComponent(encodedStr);
-            console.log('Decoded JSON length:', jsonStr.length);
+            console.log('JSON string length:', jsonStr.length);
 
-            // Validate JSON before parsing
-            if (!jsonStr.startsWith('{') && !jsonStr.startsWith('[')) {
-                throw new Error('Invalid JSON: Does not start with { or [');
+            if (!jsonStr.endsWith(']')) {
+                throw new Error(`JSON string is truncated. Last 50 chars: ${jsonStr.slice(-50)}`);
             }
 
-            try {
-                const decodedData = JSON.parse(jsonStr);
-                console.log('Decoded data type:', typeof decodedData);
-                console.log('Is array?', Array.isArray(decodedData));
-                console.log('Decoded data structure:', Object.keys(decodedData));
-                console.log('Sample of decoded data:', JSON.stringify(decodedData).substring(0, 200));
-                return decodedData;
-            }
-            catch (parseError) {
-                console.error('JSON Parse Error. First 100 chars:', jsonStr.substring(0, 100));
-                console.error('Last 100 chars:', jsonStr.substring(jsonStr.length - 100));
-                throw parseError;
-            }
+            return JSON.parse(jsonStr);
         } catch (err) {
-            console.error('Decoding from PNG failed:', err);
+            console.error('Decoding error:', err);
             throw err;
         }
-
     }
     async function readPngFile(file) {
         try {
@@ -1509,28 +1504,30 @@
         };
         reader.readAsDataURL(file);
     }
-    function loadPngData(event) {
+
+    async function loadPngData(event) {
         console.log('Load Data');
         const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            fileName = file.name;
-            if (!fileName.endsWith('.png')) {
-                alert(t('pngFileA'));
-                return;
-            }
-            else if (fileName.startsWith(fileNamePrefix)) {
-                patientName = fileName.replace(fileNamePrefix, '').replace('.png', '');
-                patientNameInput.value = patientName;
-            }
-            else {
-                alert(t('medshareFileA'));
-                return;
-            }
-            medications = decodeFromPng(file);
+
+        if (!file.name.endsWith('.png')) {
+            alert(t('pngFileA'));
+            return;
+        }
+
+        if (file.name.startsWith(fileNamePrefix)) {
+            patientName = file.name.replace(fileNamePrefix, '').replace('.png', '');
+            patientNameInput.value = patientName;
+        } else {
+            alert(t('medshareFileA'));
+            return;
+        }
+
+        try {
+            medications = await decodeFromPng(file);
             updateTable();
-        };
-        reader.readAsText(file);
+        } catch (err) {
+            console.error('Failed to load medications:', err);
+        }
     }
 
     // whatsapp dataURL image share (export) //works
