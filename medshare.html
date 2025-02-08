@@ -147,7 +147,8 @@
         }
 
         #pt-btn {
-            visibility: hidden;
+            opacity: 0.5;
+            /*visibility: hidden;*/
         }
 
         small {
@@ -656,9 +657,9 @@
                     data-title="patientNameT" required>
             </div>
             <div id="pt-btn">
-                <button id="btn-open" onclick="document.getElementById('jsonLoad').click()"
+                <button id="btn-open" onclick="document.getElementById('pngLoad').click()"
                     style="background-color:#6366f1">
-                    <input type="file" id="jsonLoad" accept="application/json" onchange="loadData(event)"
+                    <input type="file" id="pngLoad" accept="image/png" onchange="loadPngData(event)"
                         style="display: none;">
                     <!-- Open/Folder - From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -701,7 +702,7 @@
                     </svg>
                     <span data-content="memorize"></span>
                 </button>
-                <button id="btn-save" style="background-color:#10b981;" onclick="saveAsJson()">
+                <button id="btn-save" style="background-color:#10b981;" onclick="saveAsPng()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -711,7 +712,7 @@
                     </svg>
                     <span data-content="save"></span>
                 </button>
-                <button class="share-button" onclick="shareAsJson()">
+                <button class="share-button" onclick="shareAsPng()">
                     <!-- From Feather Icons (MIT) -->
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -1042,6 +1043,7 @@
     const patientNameInput = document.getElementById('patientName');
     let patientName;
     let fileToShare;
+    const fileNamePrefix = 'medshare_for_';
     const pasteModal = document.getElementById('pasteModal');
     const pasteArea = document.getElementById('pasteArea');
     const shareModal = document.getElementById('shareModal');
@@ -1063,7 +1065,7 @@
     function handlePatientNameInput() {
         patientName = patientNameInput.value;
         console.log('Patient Name:', patientName);
-        document.getElementById('pt-btn').style.visibility = 'visible';
+        document.getElementById('pt-btn').style.opacity = 1;
         // Alternatively ... = patientName ? 'visible' : 'hidden';
     }
 
@@ -1235,35 +1237,69 @@
     window.open(whatsappUrl, '_blank');
     */
 
-    // MARK: Export as JSON
-    function newJsonQA() {
+    function validatePtAndNameFile() {
         patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
-            return null;
+            return false;
         }
-        //    let message = `Medication Schedule for ${patientName}:\n\n`;
-        dataFile = new File(
-            [JSON.stringify(medications)],
-            'medshare_for_' + patientName + '.json',
-            { type: 'application/json' }
-        );
-        return dataFile;
+        fileName = fileNamePrefix + patientName + '.json';
+        return true;
     }
 
-    async function shareAsJson() {
-        fileToShare = newJsonQA();
-        if (fileToShare) {
+    // MARK: Export as JSON
+    function newJson() {
+        jsonFile = new File(
+            [JSON.stringify(medications)],
+            fileNamePrefix + patientName + '.json',
+            { type: 'application/json' }
+        );
+        return jsonFile;
+    }
+    //new part//
+    async function shareAsPng() {
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        }
+        if (!validatePtAndNameFile()) { return; }
+        try {
+            const jsonStr = JSON.stringify(medications);
+            const base64 = btoa(jsonStr);
+            const canvas = document.createElement('canvas');
+            canvas.width = 1;
+            canvas.height = 1;
+            const blob = await new Promise(resolve => canvas.toBlob(resolve));
+            const file = new File([blob], `fileNamePrefix` + patientName + base64 + `.png`, { type: 'image/png' });
+            await navigator.share({
+                files: [file],
+                title: 'Data'
+            });
+        } catch (err) {
+            console.log('Share failed:', err);
+        }
+    }
 
+    // To read it back:
+    function getJSONFromPngFile(PngFile) {
+        const base64 = PngFile.slice(4, -4); // remove 'DATA' and '.png'
+        const jsonStr = decodeURIComponent(atob(base64));
+        return JSON.parse(jsonStr);
+    }
+    async function shareAsJson() {
+        if (!validatePtAndNameFile()) { return; };
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        };
+        fileToShare = newJson();
+        if (fileToShare) {
             try {
                 if (navigator.share && navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
                     console.log('navigator.canShare AsJson');
-
-                    showShareModal();
-
-
+                    shareAsPng();
                 } else {
-                    alert(t('ShareBlocked'));
+                    alert('Json ' + t('ShareBlocked'));
                     downloadFile(fileToShare);
                 }
             }
@@ -1271,13 +1307,174 @@
                 console.error('Sharing failed', error);
                 downloadFile(fileToShare);
                 console.log('save as Json file:', fileToShare);
-                shareAsJpg();
+                shareAsPng();
             }
         }
     }
     function saveAsJson() {
-        const dataFile = newJsonQA();
+        if (!validatePtAndNameFile()) { return; }
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        }
+        const dataFile = newJson();
         if (dataFile) { downloadFile(dataFile); }
+    }
+    async function saveAsPng() {
+        if (!validatePtAndNameFile()) { return; }
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        }
+        const pngFile = await newPngFile();
+        if (pngFile) { downloadFile(pngFile); }
+    }
+
+    async function newPngFile() {
+        try {
+            const file = await encodeToPng(medications);
+            console.log('new Png file created:', file);
+            return file;
+        } catch (err) {
+            console.log('new Png file failed:', err);
+            return false;
+        }
+    }
+    // Function to encode JSON data into a PNG file
+    async function encodeToPng(data) {
+        try {
+            const jsonStr = JSON.stringify(data);
+            console.log('Original JSON length:', jsonStr.length);
+            const encodedStr = encodeURIComponent(jsonStr);
+            console.log('Encoded string length:', encodedStr.length);
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const bytesPerPixel = 4;
+            const totalBytes = encodedStr.length;
+            const width = Math.ceil(Math.sqrt(totalBytes / bytesPerPixel));
+            console.log('Canvas dimensions:', width, 'x', width);
+            canvas.width = width;
+            canvas.height = width;
+
+            const imageData = ctx.createImageData(width, width);
+            const pixelData = imageData.data;
+
+            // Store the length of the encoded string at the beginning
+            const lengthStr = encodedStr.length.toString();
+            for (let i = 0; i < lengthStr.length; i++) {
+                const pixelIndex = i * 4;
+                pixelData[pixelIndex] = lengthStr.charCodeAt(i);
+                pixelData[pixelIndex + 1] = 0;  // Mark length bytes
+                pixelData[pixelIndex + 2] = 0;
+                pixelData[pixelIndex + 3] = 255;
+            }
+
+            // Store the actual data starting after the length
+            const dataOffset = lengthStr.length * 4;
+            for (let i = 0; i < encodedStr.length; i++) {
+                const pixelIndex = dataOffset + (i * 4);
+                pixelData[pixelIndex] = encodedStr.charCodeAt(i);
+                pixelData[pixelIndex + 1] = 255;
+                pixelData[pixelIndex + 2] = 255;
+                pixelData[pixelIndex + 3] = 255;
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            const blob = await new Promise((resolve, reject) => {
+                canvas.toBlob((b) => {
+                    if (b) resolve(b);
+                    else reject(new Error('Blob creation failed'));
+                }, 'image/png');
+            });
+
+            return new File([blob], fileNamePrefix + patientName + '.png', { type: 'image/png' });
+        } catch (err) {
+            console.error('Encoding to PNG failed:', err);
+            throw err;
+        }
+    }
+
+    async function decodeFromPng(file) {
+        try {
+            const url = URL.createObjectURL(file);
+
+            const img = await new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixelData = imageData.data;
+
+            // Read the length first
+            let lengthStr = '';
+            let i = 0;
+            while (pixelData[i * 4 + 1] === 0) { // Check G channel for length marker
+                lengthStr += String.fromCharCode(pixelData[i * 4]);
+                i++;
+            }
+            const expectedLength = parseInt(lengthStr, 10);
+            console.log('Expected encoded length:', expectedLength);
+
+            // Read the actual data
+            const dataOffset = i * 4;
+            let encodedStr = '';
+            for (let j = 0; j < expectedLength; j++) {
+                const pixelIndex = dataOffset + (j * 4);
+                encodedStr += String.fromCharCode(pixelData[pixelIndex]);
+            }
+
+            console.log('Decoded string length:', encodedStr.length);
+
+            URL.revokeObjectURL(url);
+
+            const jsonStr = decodeURIComponent(encodedStr);
+            console.log('Decoded JSON length:', jsonStr.length);
+
+            // Validate JSON before parsing
+            if (!jsonStr.startsWith('{') && !jsonStr.startsWith('[')) {
+                throw new Error('Invalid JSON: Does not start with { or [');
+            }
+
+            try {
+                const decodedData = JSON.parse(jsonStr);
+                console.log('Decoded data type:', typeof decodedData);
+                console.log('Is array?', Array.isArray(decodedData));
+                console.log('Decoded data structure:', Object.keys(decodedData));
+                console.log('Sample of decoded data:', JSON.stringify(decodedData).substring(0, 200));
+                return decodedData;
+            }
+            catch (parseError) {
+                console.error('JSON Parse Error. First 100 chars:', jsonStr.substring(0, 100));
+                console.error('Last 100 chars:', jsonStr.substring(jsonStr.length - 100));
+                throw parseError;
+            }
+        } catch (err) {
+            console.error('Decoding from PNG failed:', err);
+            throw err;
+        }
+
+    }
+    async function readPngFile(file) {
+        try {
+            const data = await decodeFromPng(file);
+            console.log('Decoded medications:', data);
+            return data;
+        } catch (err) {
+            console.log('Reading Png file failed:', err);
+            return false;
+        }
     }
 
     function downloadFile(file) {
@@ -1289,7 +1486,7 @@
         setTimeout(() => URL.revokeObjectURL(objectURL), 100);
     }
 
-    function loadData(event) {
+    function loadJsonData(event) {
         console.log('Load Data');
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -1299,8 +1496,8 @@
                 alert(t('jsonFileA'));
                 return;
             }
-            else if (fileName.startsWith('medshare_for_')) {
-                patientName = fileName.replace('medshare_for_', '').replace('.json', '');
+            else if (fileName.startsWith(fileNamePrefix)) {
+                patientName = fileName.replace(fileNamePrefix, '').replace('.json', '');
                 patientNameInput.value = patientName;
             }
             else {
@@ -1310,9 +1507,31 @@
             medications = JSON.parse(e.target.result);
             updateTable();
         };
+        reader.readAsDataURL(file);
+    }
+    function loadPngData(event) {
+        console.log('Load Data');
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            fileName = file.name;
+            if (!fileName.endsWith('.png')) {
+                alert(t('pngFileA'));
+                return;
+            }
+            else if (fileName.startsWith(fileNamePrefix)) {
+                patientName = fileName.replace(fileNamePrefix, '').replace('.png', '');
+                patientNameInput.value = patientName;
+            }
+            else {
+                alert(t('medshareFileA'));
+                return;
+            }
+            medications = decodeFromPng(file);
+            updateTable();
+        };
         reader.readAsText(file);
     }
-
 
     // whatsapp dataURL image share (export) //works
     async function shareAsJpg() {
@@ -1328,7 +1547,10 @@
                     if (blob) {
                         console.log('Blob created:', blob.size, 'bytes');
                         resolve(blob);
-                    } else reject(new Error('Blob creation failed'));
+                    } else {
+                        console.error('Blob creation failed');
+                        reject(new Error('Blob creation failed'));
+                    }
                 }, 'image/jpeg', 0.8);
             });
 
@@ -1342,11 +1564,11 @@
                 console.log('navigator.canShare as Jpg');
                 await navigator.share(shareData);
             } else {
-                throw new Error(t('ShareBlocked'));
+                throw new Error('Jpg ' + t('ShareBlocked'));
             }
         } catch (error) {
             console.error('Full error:', error);
-            downloadCanvas(await tableToCanvas(document.getElementById('dataTable')));
+            downloadCanvas(await tableToCanvas(medicationTable));
         }
     }
 
@@ -1479,7 +1701,7 @@
             console.error('Error processing pasted data:', error);
         }
     }
-    //Must be handling a user gesture to perform a share request
+    // ??? Must be handling a user gesture to perform a share request
     function showShareModal(dataFile) {
         shareModal.style.display = 'block';
     }
@@ -1527,22 +1749,14 @@
     // Save patient data
     function memorizePatientData() {
         patientName = patientNameInput.value.trim();
-        if (!patientName) {
-            alert(t('patientNameA'));
-            return;
-        }
+        if (!validatePtAndNameFile()) { return; }
         saveCurrentState();
-        alert(t('medicationDataSaved') + ' ' + patientName);
+        alert(t('medicationDataMemorized') + ' ' + patientName);
     }
 
     // Restore patient data (using cookies)
     function restorePatientData() {
-        patientName = patientNameInput.value.trim();
-        if (!patientName) {
-            alert(t('patientNameA'));
-            return;
-        }
-
+        if (!validatePtAndNameFile()) { return; }
         const savedData = localStorage.getItem(`patient_${patientName}`);
         if (savedData) {
             medications = JSON.parse(savedData);
@@ -1607,15 +1821,16 @@
             languageT: 'Choose Language',
             loadedMedicationData: 'Loaded medication data for patient:',
             medicationDataImported: 'Medication data imported successfully',
-            medicationDataSaved: 'Medication data memorized (as cookies) for patient:',
+            medicationDataMemorized: 'Medication data memorized (as cookies) for patient:',
             medicationScheduleFor: 'Medication Schedule for',
             medicineName: 'Medicine Name',
             medicineName1: 'Medicine',
             medicineName2: 'Name',
             medicineNameT: 'Name of the medication (required)',
             medicineNamePH: 'Medicine Name',
-            medshareFileA: 'Please select a valid medshare file',
+            medshareFileA: 'Please select a valid file (file name starting with ' + fileNamePrefix + ')',
             morningShort: 'AM',
+            NoMedsInTableA: 'No medications in the table',
             noon: 'Noon',
             eveningShort: 'PM',
             noSavedDataFound: 'No saved data found for patient:',
@@ -1634,6 +1849,7 @@
             patientNameT: 'Name of the patient',
             pictueT: 'Medication picture. (optional)',
             picture: 'Picture',
+            pngFileA: 'Please select a valid .png file',
             quantity: 'Quantity',
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
             quantityT: 'Number of medication units to take each time. (optional)',
@@ -1679,17 +1895,18 @@
             languageT: 'לבחירת שפה',
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
-            medicationDataSaved: 'נתוני התרופות נרשמו (כ"עוגיות") עבור המטופל:',
+            medicationDataMemorized: 'נתוני התרופות נרשמו (כ"עוגיות") עבור המטופל:',
             medicationScheduleFor: 'תכנית תרופות עבור',
             medicineName: 'שם תרופה',
             medicineName1: 'שם',
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
             medicineNamePH: 'שם התרופה',
-            medshareFileA: 'נא לבחור קובץ medshare תקין',
+            medshareFileA: 'נא לבחור קובץ תקין )עם' + fileNamePrefix + ')',
             memorize: 'זכור',
             morningShort: 'בקר',
             noon: 'צהרים',
+            NoMedsInTableA: 'אין תרופות בטבלה',
             eveningShort: 'ערב',
             noSavedDataFound: 'לא נמצאו נתונים שמורים עבור המטופל:',
             note: 'הערה',
@@ -1707,6 +1924,7 @@
             patientNameT: 'שם המטופל',
             pictueT: 'תמונת התרופה. (אופציונלי)',
             picture: 'תמונה',
+            pngFileA: 'נא לבחור קובץ .png תקין',
             quantity: 'כמות',
             quantityA: 'אנא להכניס מספר חוקי של כמות (לדוגמה: 0.25, 1, 1.5, 4)',
             quantityT: 'מספר יחידות התרופה לקחת בכל פעם. (אופציונלי)',
