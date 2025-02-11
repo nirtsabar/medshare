@@ -1043,7 +1043,6 @@
     const patientNameInput = document.getElementById('patientName');
     let patientName;
     let fileToShare;
-    const fileNamePrefix = 'medshare_for_';
     const pasteModal = document.getElementById('pasteModal');
     const pasteArea = document.getElementById('pasteArea');
     const shareModal = document.getElementById('shareModal');
@@ -1210,52 +1209,22 @@
         saveCurrentState();
     }
 
-    // MARK: Export via WhatsApp
-    /*
-    const groupedMeds = medications.reduce((acc, med) => {
-        acc[med.timing] = acc[med.timing] ?? [];
-        acc[med.timing].push(med);
-        return acc;
-    }, {});
-
-    Object.keys(groupedMeds)
-        .sort((a, b) => timingOrder[a] - timingOrder[b])
-        .forEach(timing => {
-            message += `${timing}:\n`;
-            groupedMeds[timing].forEach(med => {
-                message += `- ${med.medicineName}`;
-                if (med.dose) message += ` (${med.dose})`;
-                if (med.quantity) message += ` - ${med.quantity} units`;
-                if (med.note) message += ` - Note: ${med.note}`;
-                message += '\n';
-            });
-            message += '\n';
-        });
-
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-    */
-
     function validatePtAndNameFile() {
         patientName = patientNameInput.value.trim();
         if (!patientName) {
             alert(t('patientNameA'));
             return false;
         }
-        fileName = fileNamePrefix + patientName + '.json';
-        return true;
+        const now = new Date();
+        const timeStamp = '_' + now.getFullYear().toString().slice(2) +
+            (now.getMonth() + 1).toString().padStart(2, '0') +
+            now.getDate().toString().padStart(2, '0') + '.' +
+            now.getHours().toString().padStart(2, '0') +
+            now.getMinutes().toString().padStart(2, '0');
+        const fileName = t('fileNamePrefix') + patientName + timeStamp + '.png';
+        return fileName;
     }
 
-    // MARK: Export as JSON
-    function newJson() {
-        jsonFile = new File(
-            [JSON.stringify(medications)],
-            fileNamePrefix + patientName + '.json',
-            { type: 'application/json' }
-        );
-        return jsonFile;
-    }
     //new part//
     async function shareAsPng() {
         if (!medications.length) {
@@ -1264,62 +1233,16 @@
         }
         if (!validatePtAndNameFile()) { return; }
         try {
-            const jsonStr = JSON.stringify(medications);
-            const base64 = btoa(jsonStr);
-            const canvas = document.createElement('canvas');
-            canvas.width = 1;
-            canvas.height = 1;
-            const blob = await new Promise(resolve => canvas.toBlob(resolve));
-            const file = new File([blob], `fileNamePrefix` + patientName + base64 + `.png`, { type: 'image/png' });
+            const pngFile = await newPngFile();
             await navigator.share({
-                files: [file],
-                title: 'Data'
+                files: [pngFile],
+                title: pngFile.name,
             });
         } catch (err) {
             console.log('Share failed:', err);
         }
     }
 
-    // To read it back:
-    function getJSONFromPngFile(PngFile) {
-        const base64 = PngFile.slice(4, -4); // remove 'DATA' and '.png'
-        const jsonStr = decodeURIComponent(atob(base64));
-        return JSON.parse(jsonStr);
-    }
-    async function shareAsJson() {
-        if (!validatePtAndNameFile()) { return; };
-        if (!medications.length) {
-            alert(t('NoMedsInTableA'));
-            return false;
-        };
-        fileToShare = newJson();
-        if (fileToShare) {
-            try {
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
-                    console.log('navigator.canShare AsJson');
-                    shareAsPng();
-                } else {
-                    alert('Json ' + t('ShareBlocked'));
-                    downloadFile(fileToShare);
-                }
-            }
-            catch (error) {
-                console.error('Sharing failed', error);
-                downloadFile(fileToShare);
-                console.log('save as Json file:', fileToShare);
-                shareAsPng();
-            }
-        }
-    }
-    function saveAsJson() {
-        if (!validatePtAndNameFile()) { return; }
-        if (!medications.length) {
-            alert(t('NoMedsInTableA'));
-            return false;
-        }
-        const dataFile = newJson();
-        if (dataFile) { downloadFile(dataFile); }
-    }
     async function saveAsPng() {
         if (!validatePtAndNameFile()) { return; }
         if (!medications.length) {
@@ -1387,7 +1310,7 @@
             return new Promise((resolve, reject) => {
                 canvas.toBlob((blob) => {
                     if (blob) {
-                        const file = new File([blob], fileNamePrefix + patientName + '.png', { type: 'image/png' });
+                        const file = new File([blob], validatePtAndNameFile(), { type: 'image/png' });
                         resolve(file);
                     } else {
                         reject(new Error('Blob creation failed'));
@@ -1409,7 +1332,6 @@
                 img.onerror = reject;
                 img.src = url;
             });
-
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = img.width;
@@ -1458,6 +1380,7 @@
             return JSON.parse(jsonStr);
         } catch (err) {
             console.error('Decoding error:', err);
+            alert(t('decodingA') + err.message);
             throw err;
         }
     }
@@ -1481,30 +1404,6 @@
         setTimeout(() => URL.revokeObjectURL(objectURL), 100);
     }
 
-    function loadJsonData(event) {
-        console.log('Load Data');
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            fileName = file.name;
-            if (!fileName.endsWith('.json')) {
-                alert(t('jsonFileA'));
-                return;
-            }
-            else if (fileName.startsWith(fileNamePrefix)) {
-                patientName = fileName.replace(fileNamePrefix, '').replace('.json', '');
-                patientNameInput.value = patientName;
-            }
-            else {
-                alert(t('medshareFileA'));
-                return;
-            }
-            medications = JSON.parse(e.target.result);
-            updateTable();
-        };
-        reader.readAsDataURL(file);
-    }
-
     async function loadPngData(event) {
         console.log('Load Data');
         const file = event.target.files[0];
@@ -1514,18 +1413,15 @@
             return;
         }
 
-        if (file.name.startsWith(fileNamePrefix)) {
-            patientName = file.name.replace(fileNamePrefix, '').replace('.png', '');
-            patientNameInput.value = patientName;
-        } else {
-            alert(t('medshareFileA'));
-            return;
-        }
+        patientName = file.name.split('_').slice(2).join('_');
+        patientName = patientName.slice(0, patientName.lastIndexOf('_'));
+        patientNameInput.value = patientName;
 
         try {
             medications = await decodeFromPng(file);
             updateTable();
         } catch (err) {
+            alert(t('decodingA') + err.message);
             console.error('Failed to load medications:', err);
         }
     }
@@ -1799,6 +1695,7 @@
             cancel: 'Cancel',
             confirmDelete: 'Confirm Delete',
             confirmDeleteMedication: 'Confirm Delete Medication',
+            decodingA: 'File decoding error: ',
             delete: 'Delete',
             deleteMedication: 'Are you sure you want to delete',
             dose: 'Dose',
@@ -1808,6 +1705,7 @@
             errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
             export: 'Export',
             exportT: 'Exports medications list to WhatsApp',
+            fileNamePrefix: 'medshare_for_', // Prefix for file names must have two "_" and end with "_"
             import: 'Import',
             importMedicationData: 'Import Medication Data',
             info: 'Leaflet',
@@ -1825,7 +1723,7 @@
             medicineName2: 'Name',
             medicineNameT: 'Name of the medication (required)',
             medicineNamePH: 'Medicine Name',
-            medshareFileA: 'Please select a valid file (file name starting with ' + fileNamePrefix + ')',
+            medshareFileA: 'Please select a valid file (file name starting with ',
             morningShort: 'AM',
             NoMedsInTableA: 'No medications in the table',
             noon: 'Noon',
@@ -1873,6 +1771,7 @@
             cancel: 'ביטול',
             confirmDelete: 'אשר מחיקה',
             confirmDeleteMedication: 'אשר מחיקת תרופה',
+            decodingA: 'שגיאה בפענוח הקובץ: ',
             delete: 'מחק',
             deleteMedication: 'האם אתה בטוח שברצונך למחוק את ',
             dose: 'מינון',
@@ -1882,6 +1781,7 @@
             errorQuotaExceeded: 'חריגה מהמכסה. שגיאה בשמירת הנתונים עבור ',
             export: 'יצוא',
             exportT: 'מייצא את רשימת התרופות ל-WhatsApp',
+            fileNamePrefix: 'התרופות_של_', // תחילית לשם קובץ, חייבת להכיל שני "_" ולהסתיים ב"_" השני
             import: 'ייבא',
             importMedicationData: 'ייבא נתוני תרופות',
             info: 'עלון',
@@ -1899,7 +1799,7 @@
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
             medicineNamePH: 'שם התרופה',
-            medshareFileA: 'נא לבחור קובץ תקין )עם' + fileNamePrefix + ')',
+            medshareFileA: 'נא לבחור קובץ תקין )עם',
             memorize: 'זכור',
             morningShort: 'בקר',
             noon: 'צהרים',
@@ -1947,11 +1847,6 @@
     const rtlLanguages = ['ar', 'he'];
     const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
-    //console.log('defaultLang = ' + defaultLang);
-    if ('keyboard' in navigator) {
-        navigator.keyboard.getLayoutMap()
-            .then(layout => console.log(layout));
-    }
 
     function t(key) {
         //console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
@@ -1959,12 +1854,6 @@
     }
 
     function handleLanguageChange(event) {
-        /*/debugging
-        const err = new Error();
-        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
-        console.log('handleLanguageChange (' + event.target.value + ') <' + callerName);
-        //end of debugging/*/
-
         currentLang = event.target.value;
         const isRTL = rtlLanguages.includes(currentLang);
         document.documentElement.setAttribute('lang', currentLang);
@@ -1993,7 +1882,7 @@
         selector.value = selectedTiming;
         adjustInputWidth(selector, "select_type");
         SyncUpScrollWidth();
-
+        fileNamePrefix = t('fileNamePrefix');
     }
 
     // Add this function to your JavaScript
@@ -2058,8 +1947,10 @@
         if (Array.from(selectElement.options).some(option => option.value === browserLang)) {
             selectElement.value = browserLang;
         }
+        let fileNamePrefix = t('fileNamePrefix');
         // Create and dispatch change event (calls handleLanguageChange)
         selectElement.dispatchEvent(new Event('change'));
+
     }
 
     // #endregion Translation */
@@ -2399,9 +2290,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         initialize();
     });
-    /*     window.addEventListener('load', function () {
-            initialize();
-        });  */
+
     window.addEventListener('resize', function () {
         console.log("resize");
         initialize();
