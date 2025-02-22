@@ -1,770 +1,919 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl"> <!-- lang="en" dir="ltr" -->
+<html lang="he" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <data-title="title">תכנית תרופות</title>
-        <link rel="icon" href="https://medlookup.org/img/group_2.svg">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
-        <style>
-            * {
-                font-size: x-large;
-                text-align: center;
-                box-sizing: border-box;
-                /*border-color: #fff;
+    <title data-content="title"></title>
+    <link rel="icon" href="https://medlookup.org/img/group_2.svg">
+    <!-- /* other icon credits: https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js">
+            http://www.w3.org/2000/svg -->
+    <!-- MARK: CSS -->
+    <style>
+        * {
+            font-size: x-large;
+            text-align: center;
+            box-sizing: border-box;
+            /* End this line with "/" to show white boxes (debugging)*
+            border-color: #fff;
             border-radius: 3px;
             border-width: 1px;
-            border-style: solid; */
+            border-style: solid;
+            /**/
+        }
+
+        html {
+            max-width: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 5px;
+            background-color: #000000;
+            min-height: 100vh;
+            max-width: fit-content;
+            max-height: 100%;
+        }
+
+        /* #region: language and title css */
+        #lang-and-title {
+            background: rgb(35, 36, 36);
+            display: flex;
+            align-items: center;
+            /* Vertical center alignment */
+            flex-direction: row;
+            padding: 10px;
+        }
+
+        .app-title {
+            color: #cbd9f7;
+            order: 3;
+            white-space: nowrap;
+            min-width: fit-content;
+            /* position: absolute; */
+            width: fit-content;
+            font-weight: bold;
+        }
+
+        #spacer {
+            order: 2;
+        }
+
+        #langIcon {
+            order: 0;
+            padding: 3px;
+        }
+
+        #languageSelector {
+            padding: 5px;
+            box-sizing: border-box;
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            order: 1;
+            gap: 8px;
+            max-width: 35%;
+            min-width: 20%;
+        }
+
+        #language {
+            width: fit-content;
+            padding: 0.4em 0;
+            margin: 0;
+            background-color: #cbd9f7;
+            float: inline-start;
+        }
+
+        .container {
+            max-width: fit-content;
+            margin: auto;
+            background: rgb(35, 36, 36);
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
+        }
+
+        .container>div {
+            background-color: #3e3e3f;
+            padding: 0;
+            font-size: 30px;
+            align-items: center;
+            /* Center align items vertically within the #lang-and-title container */
+        }
+
+        /* #endregion */
+        #patient-controls {
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            /* min-width: fit-content; */
+            max-width: fit-content;
+            margin: 0;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            justify-content: space-evenly;
+        }
+
+        .patient-input {
+            margin: 10px;
+            gap: 8px;
+            border-color: black;
+            color: white;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        #patientName:user-valid {
+            border-width: 0;
+            background-color: #515152;
+            color: #cbd9f7;
+            font-weight: bold;
+        }
+
+        #patientName {
+            color: #cbd9f7;
+            background-color: #01283f;
+            border: 1px solid #427ff2;
+            border-radius: 4px;
+            width: 100%;
+            margin: 0;
+            padding: 8px;
+
+            font-size: 20px;
+            min-width: 300px;
+        }
+
+        #pt-btn {
+            opacity: 0.5;
+            /*visibility: hidden;*/
+        }
+
+        small {
+            font-size: small;
+        }
+
+        muted-text {
+            color: #6c757d;
+        }
+
+        .modal-body-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        #imageInput {
+            touch-action: auto;
+            /* Explicit default touch behavior for file input */
+            font-size: xx-large;
+            line-height: 50%;
+            padding: 40px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            cursor: pointer;
+        }
+
+        #data_text {
+            white-space: pre;
+        }
+
+        figure,
+        menu,
+        #img_menu,
+        #deetails {
+            border-style: solid;
+            border-color: rgb(46, 43, 226);
+            border-radius: 10px;
+            padding: 1%;
+            justify-content: center;
+        }
+
+        menu {
+            touch-action: auto !important;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        canvas {
+            touch-action: none;
+            /* Initially prevents touch actions on canvas */
+        }
+
+        /* The thumbnail picked - shown here (details) */
+        #mdlThumbCnv {
+            visibility: hidden;
+            position: relative;
+            border: 2px solid rgb(131, 2, 156);
+            cursor: move;
+            top: 0;
+            left: 0;
+            pointer-events: all;
+            box-sizing: border-box;
+            /*   box-shadow: 20px 20px 50px 50px #8888888c, -20px -20px 50px 50px #88888873; */
+        }
+
+        .label-pointer {
+            cursor: pointer;
+        }
+
+        .scroll-container {
+            position: relative;
+            margin: 0 auto;
+            width: 100;
+        }
+
+        .scrollbar {
+            overflow-x: auto;
+            overflow-y: hidden;
+            /*     width: 100%; */
+            height: 30px;
+            position: absolute;
+        }
+
+        ::-webkit-scrollbar {
+            /*  width: 30px; */
+            height: 30px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #8f98ca;
+            border-radius: 13px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
+        }
+
+        /* For Firefox */
+        #medicationForm {
+            scrollbar-width: thick;
+        }
+
+        .container::-webkit-scrollbar {
+            height: 30px;
+            /* Adjust the height to make it thicker */
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Hide scrollbars on smartphones */
+        @media (pointer: coarse) {
+            .touch {
+                display: block;
             }
 
-            html {
-                max-width: 100%;
-            }
-
-            .app-title {
-                color: #cbd9f7;
-                order: 3;
-                white-space: nowrap;
-                min-width: fit-content;
-                /* position: absolute; */
-                width: fit-content;
-                font-weight: bold;
-            }
-
-            #spacer {
-                order: 2;
-            }
-
-            #language {
-                width: fit-content;
-                margin: 10px;
-                background-color: #cbd9f7;
-            }
-
-            #lang-and-title {
-                display: flex;
-                align-items: center;
-                /* Vertical center alignment */
-                flex-direction: row;
-
-            }
-
-            #languageSelector {
-                padding: 10px;
-                box-sizing: border-box;
-                align-items: center;
-                display: flex;
-                flex-wrap: wrap;
-                order: 1;
-                gap: 8px;
-                max-width: 35%;
-                min-width: 20%;
-                flex-direction: row-reverse;
+            .no-touch {
+                display: none;
             }
 
             ::-webkit-scrollbar {
-                width: 20px;
-                height: 20px;
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: #646b91;
-                border-radius: 6px;
-            }
-
-            #medicationForm::-webkit-scrollbar {
-                height: 30px;
-            }
-
-            /* For Firefox */
-            #medicationForm {
-                scrollbar-width: thick;
-            }
-
-            .container::-webkit-scrollbar {
-                height: 30px;
-                /* Adjust the height to make it thicker */
-            }
-
-            .container::-webkit-scrollbar-thumb {
-                background: #888;
-                border-radius: 10px;
-            }
-
-            .container::-webkit-scrollbar-track {
-                background: #f1f1f1;
-            }
-
-            .inline-block {
-                float: inline-start;
-                /*display: inline-block;*/
-            }
-
-            small {
-                font-size: small;
-            }
-
-            muted-text {
-                color: #6c757d;
-            }
-
-            .modal-body-vertical {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                max-height: 90vh;
-                overflow: auto;
-            }
-
-            #imageInput {
-                touch-action: auto;
-                /* Explicit default touch behavior for file input */
-                font-size: xx-large;
-                line-height: 50%;
-                padding: 40px;
-                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-                cursor: pointer;
-            }
-
-            #data_text {
-                white-space: pre;
-            }
-
-            figure,
-            menu,
-            #img_menu,
-            #deetails {
-                border-style: solid;
-                border-color: rgb(46, 43, 226);
-                border-radius: 10px;
-                padding: 1%;
-                justify-content: center;
-            }
-
-            menu {
-                touch-action: auto !important;
-                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            }
-
-            canvas {
-                touch-action: none;
-                /* Initially prevents touch actions on canvas */
-            }
-
-            /* The thumbnail picked - shown here (details) */
-            #mdlThumbCnv {
-                visibility: hidden;
-                position: relative;
-                border: 2px solid rgb(131, 2, 156);
-                cursor: move;
-                top: 0;
-                left: 0;
-                pointer-events: all;
-                box-sizing: border-box;
-                /*   box-shadow: 20px 20px 50px 50px #8888888c, -20px -20px 50px 50px #88888873; */
-            }
-
-            .label-pointer {
-                cursor: pointer;
-            }
-
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 10px;
-                background-color: #000000;
-                min-height: 100vh;
-                max-width: fit-content;
-                max-height: 100%;
-            }
-
-            .patient-controls {
-                border-radius: 6px;
-                display: flex;
-                flex-wrap: wrap;
-                -ms-flex-align: center;
-                /* min-width: fit-content; */
-                max-width: fit-content;
-                margin: 0;
-                margin-bottom: 6px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-
-            .patient-input {
-                color: white;
-                display: flex;
-                align-items: left;
-                width: 100%;
-            }
-
-            #patientName {
-                width: 100%;
-                margin: 5px;
-                padding: 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 20px;
-
-                min-width: 300px;
-            }
-
-            .container {
-                max-width: min-content;
-                margin: auto;
-                background: rgb(35, 36, 36);
-                padding: 10px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(252, 251, 251, 0.856);
-                overflow: auto;
-            }
-
-            .container>div {
-                background-color: #3e3e3f;
-                padding: 0;
-                font-size: 30px;
-                align-items: center;
-                /* Center align items vertically within the #lang-and-title container */
-            }
-
-
-            form {
-                scrollbar-color: #adc5f7 #6366f1;
-                background-color: #f9fafb;
-                border-radius: 6px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                max-width: min-content;
-            }
-
-            #medicationForm::-webkit-scrollbar {
-                height: 60px;
-            }
-
-            /* For Firefox */
-            #medicationForm {
-                scrollbar-width: thick;
-            }
-
-            .table-container {
-                border-radius: 8px;
-                background-color: #52d1f8;
-                padding: 10px;
-                gap: 1px;
-                align-items: center;
-                width: 100%;
-                table-layout: auto;
-                border-collapse: collapse;
-            }
-
-            .table-container th {
-                white-space: nowrap;
-                padding: 0.5rem;
-
-            }
-
-            .table-container input {
-                width: 6em;
-                box-sizing: border-box;
-            }
-
-            .table-container svg {
-                width: auto;
-                height: 24px;
-                vertical-align: middle;
-            }
-
-            .input-group {
-                display: flex;
-            }
-
-            input,
-            select,
-            textarea {
-                /* width: 4em; */
-                padding: 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 20px;
-                align-items: center;
-            }
-
-            button {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                padding: 8px 16px;
-                margin: 6px;
-                border: 1px solid #020f83;
-                border-radius: 4px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.486);
-                cursor: pointer;
-                font-size: 14px;
-                color: white;
-                background-color: #3b82f6;
-                height: 100%;
-            }
-
-            .btn-add {
-                background-color: #029e0f;
-                border-radius: 20px;
-                margin-top: 8px;
-            }
-
-            .btn-delete {
-                background-color: #757474;
-                padding: 6px;
-            }
-
-            .btn-open {
-                background-color: #6366f1;
-            }
-
-            .btn-save {
-                background-color: #10b981;
-            }
-
-            .export-button {
-                background-color: #037c30;
-            }
-
-            .paste-button {
-                background-color: #8B5CF6;
-            }
-
-            .btn-confirm-paste {
-                background-color: #8B5CF6;
-            }
-
-            .btn-lookup {
-                background-color: #594b8b;
-                padding: 6px;
-            }
-
-            .btn-lookup:hover {
-                background-color: #475569;
-            }
-
-            button:hover {
-                opacity: 0.9;
-            }
-
-            table {
-                border-collapse: collapse;
-                background: white;
-                flex: left;
-                align-items: center;
-            }
-
-            .timing {
-                width: fit-content;
-            }
-
-            .medName {
-                width: min-content;
-            }
-
-            .dose {
-                width: fit-content;
-            }
-
-            .quantity {
-                width: fit-content;
-            }
-
-            .note {
-                width: auto;
-            }
-
-            .info {
-                width: fit-content;
-            }
-
-            .imager {
-                width: fit-content;
-            }
-
-            .action {
-                width: fit-content;
-            }
-
-            .select option {
-                text-align-last: right;
-                width: fit-content;
-            }
-
-            .selected-text {
-                text-align: right;
-            }
-
-            .left-align {
-                text-align: left;
-            }
-
-            .right-align {
-                text-align: right;
-            }
-
-            th,
-            td {
-                background-color: #d8e5f8;
-                border: 1px solid #ddd;
-                margin: auto;
-                padding: 3px;
-            }
-
-            th {
-                background-color: #f9fafb;
-                width: fit-content;
-            }
-
-            tr:hover {
-                background-color: #f9fafb;
-            }
-
-            .med-image {
-                width: 100px;
-                height: 50px;
-                object-fit: cover;
-                border-radius: 4px;
-            }
-
-            .modal {
                 display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
             }
 
-            .modal-content {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                max-width: 400px;
-                width: 96%;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
+            /* For WebKit browsers */
 
+            * {
+                scrollbar-width: none;
+                /* For Firefox */
+                -ms-overflow-style: none;
+                /* For Internet Explorer and Edge */
             }
 
-            .modal-buttons {
-                height: 60px;
-                display: flex;
-                justify-content: space-around;
-                vertical-align: middle;
-                gap: 10px;
-                margin-top: 20px;
+            .dotted-background {
+                background: seagreen;
+                background-image: radial-gradient(#535353 1px, transparent 1px);
+                background-size: 10px 10px;
+                background-position: 0 0;
             }
+        }
 
-            .btn-cancel {
-                background-color: #4b638b;
-            }
-
-            .btn-confirm-delete {
-                background-color: #ef4444;
-            }
-
-            .sorting-icon {
-                cursor: pointer;
-                vertical-align: middle;
-                margin-left: 5px;
-            }
-
-            .paste-area {
-                width: 100%;
-                min-height: 200px;
-                margin: 10px 0;
-                padding: 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-family: inherit;
-                resize: vertical;
-            }
-
-            /* Specific styles for img_handler modal */
-            #img_handler_modal {
+        @media (pointer: fine) {
+            .touch {
                 display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
-                justify-content: center;
-                align-items: center;
             }
 
-            #img_handler_modal .modal-content {
-                background-color: white;
-                padding: 7px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                max-width: 600px;
-                /*            width: 95%; /* for smartphone screen */
-                text-align: center;
+            .no-touch {
+                display: block;
             }
+        }
 
-            #img_handler_modal .modal-buttons {
-                /*             display: flex;
+        form {
+            scrollbar-color: #adc5f7 #6366f1;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: fit-content;
+        }
+
+
+
+        /* For Firefox */
+        #medicationForm {
+            scrollbar-width: thick;
+        }
+
+        .table-container {
+            table-layout: auto;
+            width: auto;
+            border-radius: 8px;
+            background-color: #52d1f8;
+            padding: 0.5rem;
+            gap: 1px;
+            align-items: center;
+        }
+
+        .table-container input {
+            min-width: 4em;
+            max-width: 12em;
+            transition: width 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .table-container th {
+            white-space: nowrap;
+            padding: 0.5rem;
+            width: auto;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 4em;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 20px;
+            align-items: center;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            margin: 6px;
+            border: 1px solid #020f83;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.486);
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            background-color: #3b82f6;
+            height: 100%;
+        }
+
+        .btn-add {
+            background-color: #029e0f;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+
+        .btn-delete {
+            background-color: #757474;
+            padding: 6px;
+        }
+
+        .share-button {
+            background-color: #037c30;
+        }
+
+        .paste-button {
+            background-color: #8B5CF6;
+        }
+
+        .btn-confirm-paste {
+            background-color: #8B5CF6;
+        }
+
+        .btn-lookup {
+            background-color: #594b8b;
+            padding: 6px;
+        }
+
+        .btn-lookup:hover {
+            background-color: #475569;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            border-collapse: collapse;
+            background: white;
+            align-items: center;
+            width: 100%;
+        }
+
+        .timing {
+            width: 90px;
+        }
+
+        .medName {
+            width: 120px;
+        }
+
+        .dose {
+            width: 50px;
+        }
+
+        .quantity {
+            width: 60px;
+        }
+
+        .note {
+            width: 50px;
+        }
+
+        .info {
+            width: 30px;
+        }
+
+        .imager {
+            width: 40px;
+        }
+
+        .action {
+            width: 40px;
+        }
+
+        .select option {
+            text-align-last: right;
+        }
+
+        .selected-text {
+            text-align: right;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        .right-align {
+            text-align: right;
+        }
+
+        th,
+        td {
+            background-color: #d8e5f8;
+            border: 1px solid #b8b7b7;
+            margin: auto;
+            padding: 3px;
+            width: fit-content;
+        }
+
+        th {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .med-image {
+            width: 100px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 96%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+        }
+
+        .modal-buttons {
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            vertical-align: middle;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background-color: #4b638b;
+        }
+
+        .btn-confirm-delete {
+            background-color: #ef4444;
+        }
+
+        .sorting-icon {
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .paste-area {
+            width: 100%;
+            min-height: 200px;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        /* Specific styles for img_handler modal */
+        #img_handler_modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #img_handler_modal .modal-content {
+            background-color: white;
+            padding: 7px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            /*            width: 95%; /* for smartphone screen */
+            text-align: center;
+        }
+
+        #img_handler_modal .modal-buttons {
+            /*             display: flex;
             justify-content: center; */
-                height: 100px;
-                gap: 10px;
-                margin-top: 20px;
-            }
+            height: 100px;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-            #img_handler_modal button {
-                height: 60px;
-                padding: 10px 20px;
-                font-size: 16px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
+        #img_handler_modal button {
+            height: 60px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-            #img_handler_modal .modal-buttons .btn-cancel {
-                background-color: #324464;
-            }
+        #img_handler_modal .modal-buttons .btn-cancel {
+            background-color: #324464;
+        }
 
-            #img_handler_modal .modal-buttons .btn-confirm {
-                background-color: #3b82f6;
-                color: white;
-            }
+        #img_handler_modal .modal-buttons .btn-confirm {
+            background-color: #3b82f6;
+            color: white;
+        }
 
-            [contenteditable="true"] {
-                padding: 5px;
-                border: 1px solid;
-                /* transparent */
-                transition: border-color 0.2s;
-            }
+        [contenteditable="true"] {
+            padding: 5px;
+            /*border: 1px solid;*/
+            /* transparent */
+            transition: border-color 0.2s;
+        }
 
-            [contenteditable="true"]:hover {
-                border-color: #ddd;
-                background-color: #f8f8f8;
-            }
+        [contenteditable="true"]:hover {
+            border-color: #ddd;
+            background-color: #f8f8f8;
+        }
 
-            [contenteditable="true"]:focus {
-                outline: none;
-                border-color: #b1c4e2;
-                background-color: #fff;
-            }
-        </style>
+        [contenteditable="true"]:focus {
+            outline: none;
+            border-color: #b1c4e2;
+            background-color: #fff;
+        }
+    </style>
 </head>
+<!-- MARK: Body -->
 
 <body>
-    <!-- MARK: Body -->
+
     <div id="lang-and-title" data-title="xplainAppT">
         <span data-content="title" class="app-title"></span>
         <span id="spacer" style="height: 5px;"></span>
+        <span id="langIcon"> <!-- Multy Language icon -->
+            <svg width="22" viewBox="0 0 345 267">
+                <path d="M105 15 V45 M20 45 H180
+                M160 45 C136 81 119 106 20 172 M52 65 C119 139 142 148 173 155
+                M330 266 L266 86 L248 86 L177 266 M301 210 H215" stroke="white" fill="none" stroke-width="30"
+                    stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision" />
+            </svg>
+        </span>
         <span id="languageSelector" data-title="languageT">
-            <select id="language" onchange="handleLanguageChange(event)" class="inline-block"
-                aria-labelledby="languageSelector">
+            <select id="language" onchange="handleLanguageChange(event)" aria-labelledby="languageSelector">
                 <option value="en">English</option>
-                <!--                 <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="ar">العربية</option> -->
                 <option value="he">עברית</option>
+                <option value="ar">العربية</option>
+                <option value="ru">Русский</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
             </select>
         </span>
 
     </div>
 
     <!-- Patient name and info-control buttons   -->
-    <div class="container">
-        <div class="patient-controls">
+    <div class="container" class="scroll-container">
+        <div id="patient-controls">
             <div class="patient-input">
                 <!-- 'user' svg icon--><!-- From Feather Icons (MIT) -->
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                <svg width="22" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <input type="text" id="patientName" data-title="patientNameT" data-placeholder="patientNamePlaceholder"
-                    required>
+                <input oninput="handlePatientNameInput()" type="text" id="patientName" data-placeholder="patientNamePH"
+                    data-title="patientNameT" required>
             </div>
-            <div class="pt-btn">
-                <button class="btn-open" onclick="openPatientData()">
-                    <i data-feather="folder"></i><!-- From Feather Icons (MIT) -->
+            <div id="pt-btn">
+                <button id="btn-open" onclick="document.getElementById('pngLoad').click()"
+                    style="background-color:#6366f1">
+                    <input type="file" id="pngLoad" accept="image/png" onchange="loadPngData(event)"
+                        style="display: none;">
+                    <!-- Open/Folder - From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
                     <span data-content="open"></span>
                 </button>
-                <button class="btn-save" onclick="savePatientData()">
-                    <i data-feather="save"></i><!-- From Feather Icons (MIT) -->
+                <button id="btn-restore" style="background-color:#2a2b6a" onclick="restorePatientData()">
+                    <svg width="24" height="24" viewBox="0 0 65 65">
+                        <g transform="translate(8,-50)" fill="white">
+                            <circle cx="25" cy="86" r="21" fill="none" stroke="white" stroke-width="4" />
+                            <path
+                                d="m28 91c0 0-14-4-12-9 7-14 9-11 19-22 1-2-5-3-5-3L45 53 41 65 39 62c-7 9-9 19-11 29z"
+                                stroke="none" />
+                            <path
+                                d="m36 78c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m-2 16c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m-18-16c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2m6 21c0 1.1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2"
+                                stroke="none" />
+                        </g>
+                    </svg>
+                    <span data-content="restore"></span>
+                </button>
+                <button id="btn-memo" style="background-color:#546d24" ; onclick="memorizePatientData()">
+                    <svg width="24" height="24" viewBox="7 7 16 16">
+                        <!-- Cookie (half size: r=4.5 instead of 9) -->
+                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="1" />
+                        <circle cx="10" cy="10" r="0.75" fill="white" />
+                        <circle cx="13.5" cy="10.5" r="0.75" fill="white" />
+                        <circle cx="10.5" cy="13.5" r="0.75" fill="white" />
+                        <circle cx="14" cy="13" r="0.75" fill="#7E5539" />
+                        <!-- Pin (📌 style) - moved to place sharp point at 12,12 -->
+                        <g transform="translate(12, 12) rotate(135) translate(-12, -14)">
+                            <!-- Pin head (round flat style) -->
+                            <circle cx="12" cy="5" r="3" fill="#CCCCCC" />
+                            <!-- Pin shaft (trapezium) -->
+                            <path d="M11.25 8 L12 14 L12.75 8 Z" fill="white" />
+                            <!-- Highlight on pin head -->
+                            <circle cx="11" cy="4" r="1" fill="white" />
+                        </g>
+                    </svg>
+                    <span data-content="memorize"></span>
+                </button>
+                <button id="btn-save" style="background-color:#10b981;" onclick="saveAsPng()">
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
                     <span data-content="save"></span>
                 </button>
-                <button class="export-button" onclick="exportViaWhatsApp()">
-                    <i data-feather="share-2"></i><!-- From Feather Icons (MIT) -->
-                    <span data-content="export"></span>
+                <button class="share-button" onclick="shareAsPng()">
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <span data-content="share"></span>
                 </button>
                 <button class="paste-button" onclick="showPasteModal()">
-                    <i data-feather="clipboard"></i><!-- From Feather Icons (MIT) -->
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
                     <span data-content="paste"></span>
                 </button>
             </div>
         </div>
-        <!-- Medications table   -->
-        <div class="scroll-wrapper" style="overflow-x: auto">
-            <form id="medicationForm">
-                <table id="medicationTable" class="table-container">
-                    <tr id="tHeader">
-                        <th id="timing_header" onclick="sortTable()" class="timing">
-                            <label for="timing_header" class="label-select" data-title="timingT">
-                                <!-- From Feather Icons (MIT) -->
-                                <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <br><span data-content="timing"></span>
-                            </label>
-                        </th>
-                        <th id="medName_header" class="medName" data-title="medicineNameT">
-                            <label for="medicineName"> <!-- Sticker svg as label -->
-                                <svg width="80" height="24" viewBox="0 0 400 120">
-                                    <!-- Main sticker body -->
-                                    <path
-                                        d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
-                                        fill="white" stroke="black" stroke-width="8" />
-                                    <!-- Peeled corner -->
-                                    <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray"
-                                        stroke="black" stroke-width="5" />
-                                    <!-- Added text element. Note that x attribute may change in handleLanguageChange() -->
-                                    <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
-                                        fill="black" data-content="medicineName1"></text>
-                                </svg>
-                                <br><span data-content="medicineName2"></span>
-                            </label>
-                        </th>
-                        <th id="dose_header" class="dose">
-                            <svg viewBox="0 0 80 25">
-                                <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
-                                <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
-                            </svg>
-                            <br><span data-content="dose"></span>
-                        </th>
-                        <th id="quantity_header" class="quantity">
+</body>
+<!-- MARK: TABLE -->
+
+<body>
+    <div class="scroll-wrapper dotted-background" style="overflow-x: auto">
+        <div class="scrollbar" class="no-touch" style="overflow-x: auto; overflow-y: hidden; width:100% ;height: 30px;">
+            <div id="scrollbarDiv" style="height: 1px;"></div>
+            <!-- Adjust the width to match the table content -->
+        </div>
+        <div style="height:30px" class="">
+            <span class="touch "></span>
+        </div> <!-- for scrollbar space-->
+        <form id="medicationForm">
+            <table id="medicationTable" class="table-container">
+                <tr id="tHeader">
+                    <th id="timing_header" onclick="sortTable()" class="timing">
+                        <label for="timingSelect" class="label-select" data-title="timingT">
                             <!-- From Feather Icons (MIT) -->
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            <svg width="50" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
-                                <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
+                            <br><span data-content="timing"></span>
+                        </label>
+                    </th>
+                    <th id="medName_header" class="medName" data-title="medicineNameT">
+                        <label for="medicineName"> <!-- Sticker svg as label -->
+                            <svg height="24" viewBox="0 0 400 120">
+                                <!-- Main sticker body -->
+                                <path
+                                    d="M20,10 Q10,10 10,20 L10,100 Q10,110 20,110 L360,110 Q370,110 370,100 L370,70 L310,10 L20,10"
+                                    fill="white" stroke="black" stroke-width="8" />
+                                <!-- Peeled corner -->
+                                <path d="M310,10 L370,70 L320,70 Q310,70 310,60 L310,10 Z" fill="gray" stroke="black"
+                                    stroke-width="5" />
+                                <!-- Added text element. Note that x attribute may change in handleLanguageChange() -->
+                                <text id="t-text" x="240" y="80" font-family="Arial" style="font-size: 64px;"
+                                    fill="black" data-content="medicineName1"></text>
                             </svg>
-                            <br><span data-content="quantity"></span>
-                        </th>
-                        <th id="note_header" class="note">
-                            <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
-                                <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
+                            <br><span data-content="medicineName2"></span>
+                        </label>
+                    </th>
+                    <th id="dose_header" class="dose">
+                        <svg height="24" viewBox="0 0 80 25">
+                            <circle cx="25" cy="18" r="5" stroke="black" fill="none" stroke-width="2" />
+                            <circle cx="45" cy="12" r="10" stroke="black" fill="none" stroke-width="2" />
+                        </svg>
+                        <br><span data-content="dose"></span>
+                    </th>
+                    <th id="quantity_header" class="quantity">
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 22A10 10 0 0 0 12 12v10z"></path>
+                        </svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"></path>
+                            <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"></path>
+                        </svg>
+                        <br><span data-content="quantity"></span>
+                    </th>
+                    <th id="note_header" class="note">
+                        <svg width="24" height="24" viewBox="0 0 24 24"> <!-- exclamation mark icon  -->
+                            <path d="M12 2 A2.3 2.3 0 0 1 14.3 4.3 L14.3 15 A2.3 2.3 0 0 1 12 17.3
                                         A2.3 2.3 0 0 1 9.7 15 L9.7 4.3 A2.3 2.3 0 0 1 12 2 M12 18.3
                                         A2.3 2.3 0 0 1 14.3 20.6 A2.3 2.3 0 0 1 12 22.9 A2.3 2.3 0 0 1 9.7 20.6
                                         A2.3 2.3 0 0 1 12 18.3 Z" stroke="black" stroke-width="2" fill="none" />
+                        </svg>
+                        <br><span data-content="note"></span>
+                    </th>
+                    <th id="info_header" class="info">
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <br><span data-content="info"></span>
+                    </th>
+                    <th id="pic_header" class="imager">
+                        <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
+                            <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
+                                stroke-width="8" />
+                            <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
+                            <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
+                            <rect x="140" y="70" width="20" height="15" fill="black" />
+                        </svg>
+                        <br><span data-content="picture"></span>
+                    </th>
+                    <th id="action_header" class="action" data-content="action"></th>
+                </tr>
+                <!--  Input Row of the form  -->
+                <tr id="tInputForm">
+                    <th class="timing">
+                        <select name="timing" id="timingSelect" data-title="timingInstructions" required>
+                            <option value="">🕓</option>
+                        </select>
+                    </th>
+                    <th class="medName">
+                        <input id="medicineName" type="text" name="medicineName" data-placeholder="medicineNamePH"
+                            data-title="medicineNameT" required>
+                    </th>
+                    <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
+                    <th class="quantity"><input type="number" name="quantity" step="0.25" data-placeholder="QuantityPH"
+                            min="0">
+                    </th>
+                    <th class="note"><input type="text" name="note" data-placeholder="Note הערה"></th>
+                    <th class="info" data-title="infoT">
+                        <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
+                            <svg data-name="Group 2" width="40" height="50" viewBox="0 0 141.721 192.336">
+                                <defs>
+                                    <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
+                                        gradientUnits="objectBoundingBox">
+                                        <stop offset="0" stop-color="#fdf6fe" />
+                                        <stop offset="1" stop-color="#7151cb" />
+                                    </linearGradient>
+                                </defs>
+                                <path data-name="Path 3"
+                                    d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
+                                    transform="translate(-5 -2)" style="fill:url(#a)" />
                             </svg>
-                            <span data-content="note"></span>
-                        </th>
-                        <th id="info_header" class="info">
-                            <!-- From Feather Icons (MIT) -->
+                        </button>
+                    </th>
+                    <th class="imager">
+                        <label for="take_pic" class="label-pointer">
+                            <!--      <i data-feather="camera"></i>-->
+                            <button id="take_pic" style="background:none;" type="button" onclick="img_handler(true)">
+
+                                <canvas id="formThumbCnv" name="thumb" width="100" height="50"
+                                    style="border:1px solid grey">
+                                </canvas>
+                        </label> </button>
+                    </th>
+                    <th class="action"><button type="submit" class="btn-add">
+                            <!-- check From Feather Icons (MIT) -->
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
-                            <br><span data-content="info"></span>
-                        </th>
-                        <th id="pic_header" class="imager">
-                            <svg width="94" height="24" viewBox="38 53 124 100"><!--camera icon-->
-                                <rect x="40" y="60" width="120" height="80" rx="10" fill="white" stroke="black"
-                                    stroke-width="8" />
-                                <circle cx="100" cy="100" r="30" fill="white" stroke="black" stroke-width="4" />
-                                <circle cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="4" />
-                                <rect x="140" y="70" width="20" height="15" fill="black" />
-                            </svg>
-                            <br><span data-content="picture"></span>
-                        </th>
-                        <th id="action_header" class="action" data-content="action">Action פעולה</th>
-                    </tr>
-                    <!--  Input Row of the form  -->
-                    <tr id="tInputForm">
-                        <th class="timing">
-                            <select name="timing" id="timingSelect" data-title="timingInstructions" required>
-                                <option value="">🕓</option>
-                            </select>
-                        </th>
-                        <th class="medName">
-                            <input id="medicineName" type="text" name="medicineName" data-title="medicineNameT"
-                                required>
-                        </th>
-                        <th class="dose"><input type="text" name="dose" data-placeholder="dosePH"></th>
-                        <th class="quantity"><input type="number" name="quantity" step="0.25"
-                                data-placeholder="QuantityPH" min="0">
-                        </th>
-                        <th class="note"><input type="text" name="note" data-placeholder="NotePH"></th>
-                        <th class="info">
-                            <button class="btn-lookup" type="button" onclick="openMedLookup(medicineName.value)">
-                                <svg width="40" height="50" viewBox="0 0 141.721 192.336">
-                                    <defs>
-                                        <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
-                                            gradientUnits="objectBoundingBox">
-                                            <stop offset="0" stop-color="#fdf6fe" />
-                                            <stop offset="1" stop-color="#7151cb" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path
-                                        d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
-                                        transform="translate(-5 -2)" style="fill:url(#a)" />
-                                </svg>
-                            </button>
-                        </th>
-                        <th class="imager">
-                            <label for="take_pic" class="label-pointer">
-                                <!--      <i data-feather="camera"></i>-->
-                                <button id="take_pic" style="background:none;" type="button"
-                                    onclick="img_handler(true)">
-
-                                    <canvas id="formThumbCnv" name="thumb" width="100" height="50"
-                                        style="border:1px solid grey">
-                                    </canvas>
-                            </label> </button>
-                            <!-- <input type="file" id="picture" name="picture" style="display:none" onchange="thumbnailing(event)"
-                    accept="image/*"> -->
-                        </th>
-                        <th class="action"><button type="submit" class="btn-add">
-                                <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
-                            </button></th>
-                    </tr id="tInputForm">
-                    <!-- Data rows will be added here via the script -->
-                </table>
-            </form>
-        </div>
-
+                        </button></th>
+                </tr id="tInputForm">
+                <!-- Data rows will be added here via the script -->
+            </table>
+        </form>
     </div>
-    </div>
+</body>
+<!-- MARK: MODALS -->
+
+<body>
 
     <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top: 0;">Confirm Delete</h2>
-            <p>Are you sure you want to delete this medication?</p>
+            <h2 style="margin-top: 0;"><span data-content="confirmDelete"></span></h2>
+            <p data-content="">Are you sure you want to delete this medication?</p>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeDeleteModal()">
-                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
-                    Cancel
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
                 </button>
                 <button class="btn-confirm-delete" id="confirmDelete">
-                    <i data-feather="trash-2"></i><!-- From Feather Icons (MIT) -->
-                    Delete
+                    <!-- trash-2 From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                    <span data-content="delete"></span>
                 </button>
             </div>
         </div>
@@ -775,15 +924,53 @@
             <h2 style="margin-top: 0;">Paste Medication Data</h2>
             <p>Paste the exportd medication data below:</p>
             <textarea id="pasteArea" class="paste-area" rows="10"
-                data-placeholder="PasteMmedicationScheduleHerePH"></textarea>
+                data-placeholder="Paste medication schedule here..."></textarea>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closePasteModal()">
-                    <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
-                    Cancel
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
                 </button>
                 <button class="btn-confirm-paste" onclick="processePastedData()">
-                    <i data-feather="check"></i><!-- From Feather Icons (MIT) -->
-                    Import
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span data-content="import"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top: 0;" data-content="shareMedicineList"></h2>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeShareModal()">
+                    <!-- X From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span data-content="cancel"></span>
+                </button>
+                <button class="btn-confirm-share" onclick="performShare()">
+                    <!-- From Feather Icons (MIT) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <span data-content="share"></span>
                 </button>
             </div>
         </div>
@@ -798,7 +985,12 @@
             <div class="modal-body-vertical">
                 <menu id="img_menu" class="modal-buttons">
                     <button class="btn-cancel" onclick="closeImgHandlerModal()">
-                        <i data-feather="x"></i><!-- From Feather Icons (MIT) -->
+                        <!-- From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                     <button onclick="document.getElementById('imageInput').click()"
                         style="padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
@@ -811,10 +1003,20 @@
                         </svg>
                     </button>
                     <button id="frame_to_thumb" style="padding: 20px;"> <!--onclick="frame_to_thumb()"-->
-                        <i data-feather="airplay"></i><!-- From Feather Icons (MIT) -->
+                        <!-- airplay From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                            <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                        </svg>
                     </button>
                     <button id="ok_thumb" class="btn-confirm" style="padding: 20px;">
-                        <i data-feather="check-circle"></i><!-- From Feather Icons (MIT) -->
+                        <!-- check-circle From Feather Icons (MIT) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
                     </button>
                     <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 </menu>
@@ -831,24 +1033,24 @@
         </div>
     </div>
 </body>
-
+<!-- MARK: Scripts -->
 <script>
-    // MARK: Translation Constants
-    /* #region main script !!!*/
-    /* #region initializations*/
-    // Initialize Feather icons
-    feather.replace();
+    /* #region main script !!! */
+    /* #region initializations */
+    const patientControls = document.getElementById('.patient-controls');
     let medications = [];
     const medicationForm = document.getElementById('medicationForm');
     const medicationTable = document.getElementById('medicationTable');
     const patientNameInput = document.getElementById('patientName');
+    let patientName;
+    let fileToShare;
     const pasteModal = document.getElementById('pasteModal');
     const pasteArea = document.getElementById('pasteArea');
+    const shareModal = document.getElementById('shareModal');
     const formThumbCnv = document.getElementById('formThumbCnv');
     const formThumbCtx = formThumbCnv.getContext("2d");
     formThumbCnv.clientWidth = "100px";
     formThumbCnv.clientHeight = "50px";
-
     // Define timing order
     const timingOrder = {
         'As_needed': 0,
@@ -859,7 +1061,16 @@
     /* #endregion initializations */
     /* #region major table / form functions */
     // Update table with medications
+
+    function handlePatientNameInput() {
+        patientName = patientNameInput.value;
+        console.log('Patient Name:', patientName);
+        document.getElementById('pt-btn').style.opacity = 1;
+        // Alternatively ... = patientName ? 'visible' : 'hidden';
+    }
+
     function updateTable() {
+        //console.log('UpdateTable');
         // deleting old table data, from last data row to first data row
         for (var i = medicationTable.rows.length - 1; i > 1; i--) {
             medicationTable.deleteRow(i);
@@ -878,13 +1089,31 @@
                     <td contenteditable="true" onblur="updateCell(${med.id}, 'note', this.textContent)">${med.note}</td>
                     <td>
                         <button class="btn-lookup" type="button" onclick="openMedLookup('${med.medicineName}')">
-                            <i data-feather="clipboard"></i>
+                            <svg data-name="Group 2" width="30" height="37" viewBox="0 0 141.721 192.336">
+                                <defs>
+                                    <linearGradient id="a" x1="-.479" y1="-.773" x2="1.267" y2="2.029"
+                                        gradientUnits="objectBoundingBox">
+                                        <stop offset="0" stop-color="#fdf6fe" />
+                                        <stop offset="1" stop-color="#7151cb" />
+                                    </linearGradient>
+                                    </defs>
+                                    <path data-name="Path 3"
+                                        d="M25.246 174.09A20.305 20.305 0 0 0 5 194.336h141.721a20.305 20.305 0 0 0-20.246-20.246H85.983v-20.246h30.369A20.305 20.305 0 0 0 136.6 133.6H55.615a30.3 30.3 0 0 1-15.488-56.387 24.823 24.823 0 0 0 18.525 10.73 25.178 25.178 0 0 0 18.727-6.276l5.973 16.3 9.516-3.442 3.442 9.516 19.031-6.884-3.441-9.517 9.516-3.442L93.677 8.074l-9.516 3.442L80.72 2 61.688 8.884 65.13 18.4l-9.516 3.543 5.669 15.691a25.143 25.143 0 0 0-25.1 18.829 50.635 50.635 0 0 0 19.436 97.383v20.244zm59.32-146.58 17.31 47.578-9.516 3.442-17.309-47.578zm-23.89 25.1a10.123 10.123 0 1 1-10.123 10.128 10.153 10.153 0 0 1 10.123-10.123z"
+                                        transform="translate(-5 -2)" style="fill:url(#a)" />
+                                </svg>
+
                         </button>
                     </td>
                     <td>${med.thumb ? `<img src="${med.thumb}" class="med-image" style="width:${formThumbCnv.clientWidth}px; height:${formThumbCnv.clientHeight}px" alt="${med.medicineName}">` : ''}</td>
                     <td>
                         <button class="btn-delete" onclick="showDeleteModal(${med.id}, '${med.medicineName}')">
-                            <i data-feather="trash-2"></i>
+                            <!-- trash-2 From Feather Icons (MIT) -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
                         </button>
                     </td>
                 `;
@@ -892,55 +1121,12 @@
                 alert('med.picture ='+med.picture);		*/
                 tbody.appendChild(tr);
             });
-
-        feather.replace();
     }
-
-
-    // Add this function to your JavaScript
-    function adjustInputWidth(input) {
-        // Create a temporary span to measure text width
-        const span = document.createElement('span');
-        span.style.visibility = 'hidden';
-        span.style.position = 'absolute';
-        span.style.whiteSpace = 'pre';
-        // Copy the input's font properties
-        const inputStyle = window.getComputedStyle(input);
-        span.style.font = inputStyle.font;
-        span.style.padding = inputStyle.padding;
-
-        document.body.appendChild(span);
-
-        // Update width based on content
-        span.textContent = input.value || input.placeholder || '';
-        let contentWidth = span.offsetWidth;
-
-        // Convert em to pixels (assuming base font size)
-        const fontSize = parseFloat(inputStyle.fontSize);
-        const minWidth = 4 * fontSize;
-        const maxWidth = 12 * fontSize;
-
-        // Clamp width between min and max
-        contentWidth = Math.max(minWidth, Math.min(maxWidth, contentWidth));
-
-        input.style.width = `${contentWidth}px`;
-
-        document.body.removeChild(span);
-    }
-
-    // Add event listeners to all inputs in the table
-    document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
-        input.addEventListener('input', () => adjustInputWidth(input));
-        // Initial adjustment
-        adjustInputWidth(input);
-    });
-//**new^***//
 
     // Function to open MedLookup
     function openMedLookup(medicineName) {
-        const url = `https://medlookup.org/he/index.html#${encodeURIComponent(medicineName)}`;
         localStorage.setItem("freeze_mode", "freeze");
-        window.open(url, '_blank');
+        window.open(`https://medlookup.org/he/index.html#${encodeURIComponent(medicineName)}`, '_blank');
     }
 
     // Update cell content
@@ -959,7 +1145,7 @@
         if (field === 'quantity') {
             const numValue = parseFloat(value);
             if (isNaN(numValue)) {
-                alert('Please enter a valid number for quantity');
+                alert(t('quantityA'));
                 updateTable();
                 return;
             }
@@ -988,7 +1174,7 @@
     medicationForm.addEventListener('submit', function (e) {
         e.preventDefault();
         if (!patientNameInput.value.trim()) {
-            alert('Please enter patient name first');
+            alert(t('patientNameA'));
             return;
         }
         const formData = new FormData(this);
@@ -1024,48 +1210,314 @@
         saveCurrentState();
     }
 
-    // MARK: Export via WhatsApp
-    function exportViaWhatsApp() {
-        const patientName = patientNameInput.value.trim();
+    function validatePtAndNameFile() {
+        patientName = patientNameInput.value.trim();
         if (!patientName) {
-            alert('Please enter patient name first');
+            alert(t('patientNameA'));
+            return false;
+        }
+        const now = new Date();
+        const timeStamp = '_' + now.getFullYear().toString().slice(2) +
+            (now.getMonth() + 1).toString().padStart(2, '0') +
+            now.getDate().toString().padStart(2, '0') + '.' +
+            now.getHours().toString().padStart(2, '0') +
+            now.getMinutes().toString().padStart(2, '0');
+        const fileName = t('fileNamePrefix') + patientName + timeStamp + '.png';
+        return fileName;
+    }
+
+    //new part//
+    async function shareAsPng() {
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        }
+        if (!validatePtAndNameFile()) { return; }
+        try {
+            const pngFile = await newPngFile();
+            await navigator.share({
+                files: [pngFile],
+                title: pngFile.name,
+            });
+        } catch (err) {
+            console.log('Share failed:', err);
+        }
+    }
+
+    async function saveAsPng() {
+        if (!validatePtAndNameFile()) { return; }
+        if (!medications.length) {
+            alert(t('NoMedsInTableA'));
+            return false;
+        }
+        const pngFile = await newPngFile();
+        if (pngFile) { downloadFile(pngFile); }
+    }
+
+    async function newPngFile() {
+        try {
+            const file = await encodeToPng(medications);
+            console.log('new Png file created:', file);
+            return file;
+        } catch (err) {
+            console.log('new Png file failed:', err);
+            return false;
+        }
+    }
+    // Function to encode JSON data into a PNG file
+    async function encodeToPng(data) {
+        try {
+            const jsonStr = JSON.stringify(data);
+            const encodedStr = encodeURIComponent(jsonStr);
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Calculate dimensions to ensure we have enough pixels
+            const totalLength = encodedStr.length;
+            const width = Math.ceil(Math.sqrt(totalLength));  // Changed this
+            canvas.width = width;
+            canvas.height = width;
+
+            console.log('Encoding - Canvas size:', width, 'x', width);
+            console.log('Total data length:', totalLength);
+
+            const imageData = ctx.createImageData(width, width);
+            const pixelData = imageData.data;
+
+            // Store length at the start
+            const lengthStr = totalLength.toString();
+            for (let i = 0; i < lengthStr.length; i++) {
+                pixelData[i * 4] = lengthStr.charCodeAt(i);     // R
+                pixelData[i * 4 + 1] = 0;                       // G = 0 marks length
+                pixelData[i * 4 + 2] = 0;                       // B
+                pixelData[i * 4 + 3] = 255;                     // A
+            }
+
+            // Store data
+            const dataOffset = lengthStr.length * 4;
+            for (let i = 0; i < encodedStr.length; i++) {
+                const pixelIndex = dataOffset + (i * 4);
+                if (pixelIndex + 3 < pixelData.length) {
+                    pixelData[pixelIndex] = encodedStr.charCodeAt(i);     // R
+                    pixelData[pixelIndex + 1] = 255;                      // G
+                    pixelData[pixelIndex + 2] = 255;                      // B
+                    pixelData[pixelIndex + 3] = 255;                      // A
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            return new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const file = new File([blob], validatePtAndNameFile(), { type: 'image/png' });
+                        resolve(file);
+                    } else {
+                        reject(new Error('Blob creation failed'));
+                    }
+                }, 'image/png');
+            });
+        } catch (err) {
+            console.error('Encoding error:', err);
+            throw err;
+        }
+    }
+
+    async function decodeFromPng(file) {
+        try {
+            const url = URL.createObjectURL(file);
+            const img = await new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            console.log('Decoding - Canvas size:', canvas.width, 'x', canvas.height);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixelData = imageData.data;
+
+            // Read length
+            let lengthStr = '';
+            let i = 0;
+            while (i < pixelData.length / 4 && pixelData[i * 4 + 1] === 0) {
+                lengthStr += String.fromCharCode(pixelData[i * 4]);
+                i++;
+            }
+            const expectedLength = parseInt(lengthStr, 10);
+            console.log('Length bytes read:', i);
+            console.log('Expected data length:', expectedLength);
+
+            // Read data
+            let encodedStr = '';
+            const dataOffset = i * 4;
+            const totalPixels = (pixelData.length / 4) - i;  // Available pixels for data
+            console.log('Available pixels for data:', totalPixels);
+
+            for (let j = 0; j < expectedLength; j++) {
+                const pixelIndex = dataOffset + (j * 4);
+                if (pixelIndex + 3 < pixelData.length) {
+                    encodedStr += String.fromCharCode(pixelData[pixelIndex]);
+                }
+            }
+
+            URL.revokeObjectURL(url);
+            console.log('Actual data length:', encodedStr.length);
+
+            const jsonStr = decodeURIComponent(encodedStr);
+            console.log('JSON string length:', jsonStr.length);
+
+            if (!jsonStr.endsWith(']')) {
+                throw new Error(`JSON string is truncated. Last 50 chars: ${jsonStr.slice(-50)}`);
+            }
+
+            return JSON.parse(jsonStr);
+        } catch (err) {
+            console.error('Decoding error:', err);
+            alert(t('decodingA') + err.message);
+            throw err;
+        }
+    }
+    async function readPngFile(file) {
+        try {
+            const data = await decodeFromPng(file);
+            console.log('Decoded medications:', data);
+            return data;
+        } catch (err) {
+            console.log('Reading Png file failed:', err);
+            return false;
+        }
+    }
+
+    function downloadFile(file) {
+        const link = document.createElement('a');
+        const objectURL = URL.createObjectURL(file);
+        link.href = objectURL;
+        link.download = file.name;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(objectURL), 100);
+    }
+
+    async function loadPngData(event) {
+        console.log('Load Data');
+        const file = event.target.files[0];
+
+        if (!file.name.endsWith('.png')) {
+            alert(t('pngFileA'));
             return;
         }
 
-        let message = `Medication Schedule for ${patientName}:\n\n`;
+        patientName = file.name.split('_').slice(2).join('_');
+        patientName = patientName.slice(0, patientName.lastIndexOf('_'));
+        patientNameInput.value = patientName;
 
-        const groupedMeds = medications.reduce((acc, med) => {
-            if (!acc[med.timing]) {
-                acc[med.timing] = [];
-            }
-            acc[med.timing].push(med);
-            return acc;
-        }, {});
+        try {
+            medications = await decodeFromPng(file);
+            updateTable();
+        } catch (err) {
+            alert(t('decodingA') + err.message);
+            console.error('Failed to load medications:', err);
+        }
+    }
 
-        Object.keys(groupedMeds)
-            .sort((a, b) => timingOrder[a] - timingOrder[b])
-            .forEach(timing => {
-                message += `${timing}:\n`;
-                groupedMeds[timing].forEach(med => {
-                    message += `- ${med.medicineName}`;
-                    if (med.dose) message += ` (${med.dose})`;
-                    if (med.quantity) message += ` - ${med.quantity} units`;
-                    if (med.note) message += ` - Note: ${med.note}`;
-                    message += '\n';
-                });
-                message += '\n';
+    // whatsapp dataURL image share (export) //works
+    async function shareAsJpg() {
+        try {
+            console.log('Share API supported:', 'share' in navigator);
+            console.log('Share files supported:', 'canShare' in navigator && navigator.canShare({ files: [] }));
+
+            const table = medicationTable;
+            const canvas = await tableToCanvas(table);
+
+            const blob = await new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        console.log('Blob created:', blob.size, 'bytes');
+                        resolve(blob);
+                    } else {
+                        console.error('Blob creation failed');
+                        reject(new Error('Blob creation failed'));
+                    }
+                }, 'image/jpeg', 0.8);
             });
 
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-        window.open(whatsappUrl, '_blank');
+            const file = new File([blob], 'table.jpg', { type: 'image/jpeg' });
+            console.log('File created:', file.size, 'bytes');
+
+            const shareData = { files: [file], title: 'Table Data' };
+            console.log('Can share this data:', navigator.canShare(shareData));
+
+            if (navigator.share && navigator.canShare(shareData)) {
+                console.log('navigator.canShare as Jpg');
+                await navigator.share(shareData);
+            } else {
+                throw new Error('Jpg ' + t('ShareBlocked'));
+            }
+        } catch (error) {
+            console.error('Full error:', error);
+            downloadCanvas(await tableToCanvas(medicationTable));
+        }
     }
+
+    async function tableToCanvas(table) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Create SVG
+        const xmlns = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(xmlns, "svg");
+        const foreignObject = document.createElementNS(xmlns, "foreignObject");
+
+        // Set dimensions
+        canvas.width = table.offsetWidth * 2;
+        canvas.height = table.offsetHeight * 2;
+        svg.setAttribute("width", table.offsetWidth);
+        svg.setAttribute("height", table.offsetHeight);
+        foreignObject.setAttribute("width", "100%");
+        foreignObject.setAttribute("height", "100%");
+
+        // Clone table into foreignObject
+        foreignObject.appendChild(table.cloneNode(true));
+        svg.appendChild(foreignObject);
+
+        // Convert to data URL
+        const svgString = new XMLSerializer().serializeToString(svg);
+        const encoded = encodeURIComponent(svgString);
+
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                ctx.scale(2, 2);
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas);
+            };
+            img.onerror = reject;
+            img.src = `data:image/svg+xml;charset=utf-8,${encoded}`;
+        });
+    }
+
+    function downloadCanvas(canvas) {
+        console.log('Download Canvas');
+        const link = document.createElement('a');
+        link.download = 'Medication_Table.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.8);
+        link.click();
+    }
+    // end of *new* whatsapp dataURL image export
 
     // Paste functionality
     function showPasteModal() {
         pasteModal.style.display = 'block';
         pasteArea.value = '';
-        feather.replace();
     }
 
     function closePasteModal() {
@@ -1075,7 +1527,7 @@
     function processePastedData() {
         const pastedText = pasteArea.value.trim();
         if (!pastedText) {
-            alert('Please paste medication data first');
+            alert(t('pastedTextA'));
             return;
         }
 
@@ -1134,15 +1586,33 @@
                 updateTable();
                 saveCurrentState();
                 closePasteModal();
-                alert('Medication data imported successfully');
+                alert(t('medicationDataImported'));
             } else {
-                alert('No valid medication data found in the pasted text');
+                alert(t('noValidMedicationData'));
             }
         } catch (error) {
-            alert('Error processing pasted data. Please make sure the format is correct.');
+            alert(t('errorProcessingPastedData'));
             console.error('Error processing pasted data:', error);
         }
     }
+    // ??? Must be handling a user gesture to perform a share request
+    function showShareModal(dataFile) {
+        shareModal.style.display = 'block';
+    }
+    async function performShare() {
+        try {
+            await navigator.share({
+                files: [fileToShare],
+                title: t('title')
+            });
+        } catch (err) {
+            console.log('performShare failed:', err);
+        }
+    }
+    function closeShareModal() {
+        shareModal.style.display = 'none';
+    }
+
 
     // Delete confirmation modal functionality
     const deleteModal = document.getElementById('deleteModal');
@@ -1154,7 +1624,6 @@
         deleteModal.style.display = 'block';
         const message = deleteModal.querySelector('p');
         message.textContent = `${t(`deleteMedication`)}${medicineName}?`;
-        feather.replace();
     }
 
     function closeDeleteModal() {
@@ -1172,31 +1641,23 @@
     });
 
     // Save patient data
-    function savePatientData() {
-        const patientName = patientNameInput.value.trim();
-        if (!patientName) {
-            alert('Please enter patient name');
-            return;
-        }
+    function memorizePatientData() {
+        patientName = patientNameInput.value.trim();
+        if (!validatePtAndNameFile()) { return; }
         saveCurrentState();
-        alert(`Medication data saved for patient: ${patientName}`);
+        alert(t('medicationDataMemorized') + ' ' + patientName);
     }
 
-    // Open patient data
-    function openPatientData() {
-        const patientName = patientNameInput.value.trim();
-        if (!patientName) {
-            alert('Please enter patient name');
-            return;
-        }
-
+    // Restore patient data (using cookies)
+    function restorePatientData() {
+        if (!validatePtAndNameFile()) { return; }
         const savedData = localStorage.getItem(`patient_${patientName}`);
         if (savedData) {
             medications = JSON.parse(savedData);
             updateTable();
-            alert(`Loaded medication data for patient: ${patientName}`);
+            alert(t('loadedMedicationData') + ` ${patientName}`);
         } else {
-            alert(`No saved data found for patient: ${patientName}`);
+            alert(t('noSavedDataFound') + ` ${patientName}`);
             medications = [];
             updateTable();
         }
@@ -1204,14 +1665,14 @@
 
     // Helper function to save current state
     function saveCurrentState() {
-        const patientName = patientNameInput.value.trim();
+        patientName = patientNameInput.value.trim();
         if (patientName) {
             try {
                 localStorage.setItem(`patient_${patientName}`, JSON.stringify(medications));
             }
             catch (err) {
                 if (err.message === "Failed to execute 'setItem' on 'Storage': Setting the value of 'patient_e' exceeded the quota") { }
-                alert(t(`errorQuotaExceeded`) + patientName);
+                alert(t('errorQuotaExceeded') + patientName);
             }
         }
     }
@@ -1228,13 +1689,14 @@
     // Switch to Thumbnail if QuotaExceededError (just idea...)
     /* #endregion major table / form functions */
     /* #endregion main script */
-    /* #region Translation */
+    // #region Translation */
     const translations = {
         en: {
             action: 'Action',
             cancel: 'Cancel',
             confirmDelete: 'Confirm Delete',
             confirmDeleteMedication: 'Confirm Delete Medication',
+            decodingA: 'File decoding error: ',
             delete: 'Delete',
             deleteMedication: 'Are you sure you want to delete',
             dose: 'Dose',
@@ -1244,46 +1706,56 @@
             errorQuotaExceeded: 'Quota exceeded. Error saving data for ',
             export: 'Export',
             exportT: 'Exports medications list to WhatsApp',
+            fileNamePrefix: 'medshare_for_', // Prefix for file names must have two "_" and end with "_"
             import: 'Import',
             importMedicationData: 'Import Medication Data',
             info: 'Leaflet',
             infoT: 'Medication information leaflet lookup',
             invalidQuantity: 'Please enter a valid number for quantity',
             invalidTiming: 'Invalid timing value. Please use: As_needed, Morning, Noon, or Evening',
+            jsonFileA: 'Please select a valid json file',
             languageT: 'Choose Language',
             loadedMedicationData: 'Loaded medication data for patient:',
             medicationDataImported: 'Medication data imported successfully',
-            medicationDataSaved: 'Medication data saved for patient:',
+            medicationDataMemorized: 'Medication data memorized (as cookies) for patient:',
             medicationScheduleFor: 'Medication Schedule for',
             medicineName: 'Medicine Name',
             medicineName1: 'Medicine',
             medicineName2: 'Name',
             medicineNameT: 'Name of the medication (required)',
+            medicineNamePH: 'Medicine Name',
+            medshareFileA: 'Please select a valid file (file name starting with ',
             morningShort: 'AM',
+            NoMedsInTableA: 'No medications in the table',
             noon: 'Noon',
             eveningShort: 'PM',
             noSavedDataFound: 'No saved data found for patient:',
             note: 'Note',
             noValidMedicationData: 'No valid medication data found in the pasted text',
             open: 'Open',
-            openT: 'Opens medications list from local storage (cookies)',
+            openT: 'Loads medications list from file (json)',
             paste: 'Paste',
             pastedTextA: 'Please paste medication data first',
             pasteMedicationData: 'Paste Medication Data',
             pasteT: 'Pastes medications list from clipboard',
             patientName: 'Patient Name',
             patientNameA: 'Please enter patient name',
-            patientNamePlaceholder: 'Private and family Name',
+            patientNamePH: 'Private and Family Name',
             patientNameRequired: 'Please enter patient name',
             patientNameT: 'Name of the patient',
             pictueT: 'Medication picture. (optional)',
             picture: 'Picture',
+            pngFileA: 'Please select a valid .png file',
             quantity: 'Quantity',
             quantityA: 'Please enter a valid number for quantity (eg. 0.25, 1, 1.5, 4)',
-            quantityA: 'Please enter a valid number for quantity',
             quantityT: 'Number of medication units to take each time. (optional)',
+            memorize: 'Keep',
+            restore: 'Recall',
+            restoreT: 'Opens medications list from local storage (cookies)',
             save: 'Save',
             saveT: 'Saves name and medications list to local storage (cookies)',
+            share: 'Share',
+            ShareBlocked: 'Share not supported - downloading instead',
             timing: 'Timing',
             As_needed: '🚨 As needed',
             Morning: '🐓 Morning',
@@ -1296,12 +1768,13 @@
             xplainAppT: 'Medication list manager for patients',
         },
         he: {
-            action: 'עולה',
+            action: 'פעולה',
             cancel: 'ביטול',
             confirmDelete: 'אשר מחיקה',
             confirmDeleteMedication: 'אשר מחיקת תרופה',
+            decodingA: 'שגיאה בפענוח הקובץ: ',
             delete: 'מחק',
-            deleteMedication: 'האם אתה בטוח שברצונך למחוק',
+            deleteMedication: 'האם אתה בטוח שברצונך למחוק את ',
             dose: 'מינון',
             doseT: 'מינון התרופה של טבליה אחת במ"ג, סירופ במ"ל וכו\' (אופציונלי)',
             dosePH: 'מינון במג, מל וכד',
@@ -1309,47 +1782,58 @@
             errorQuotaExceeded: 'חריגה מהמכסה. שגיאה בשמירת הנתונים עבור ',
             export: 'יצוא',
             exportT: 'מייצא את רשימת התרופות ל-WhatsApp',
+            fileNamePrefix: 'התרופות_של_', // תחילית לשם קובץ, חייבת להכיל שני "_" ולהסתיים ב"_" השני
             import: 'ייבא',
             importMedicationData: 'ייבא נתוני תרופות',
             info: 'עלון',
             infoT: 'חיפוש עלון מידע על התרופה',
             invalidQuantity: 'אנא הכנס מספר חוקי לכמות',
-            invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי הצורך, בוקר, צהריים או ערב',
+            invalidTiming: 'ערך זמן לא חוקי. אנא השתמש: לפי צורך, בוקר, צהריים או ערב',
+            jsonFileA: 'נא לבחור קובץ json תקין',
             languageT: 'לבחירת שפה',
             loadedMedicationData: 'נתוני התרופות נטענו עבור המטופל:',
             medicationDataImported: 'נתוני התרופות יובאו בהצלחה',
-            medicationDataSaved: 'נתוני התרופות נשמרו עבור המטופל:',
+            medicationDataMemorized: 'נתוני התרופות נרשמו (כ"עוגיות") עבור המטופל:',
             medicationScheduleFor: 'תכנית תרופות עבור',
             medicineName: 'שם תרופה',
             medicineName1: 'שם',
             medicineName2: 'התרופה',
             medicineNameT: 'שם התרופה (נדרש)',
+            medicineNamePH: 'שם התרופה',
+            medshareFileA: 'נא לבחור קובץ תקין )עם',
+            memorize: 'זכור',
             morningShort: 'בקר',
             noon: 'צהרים',
+            NoMedsInTableA: 'אין תרופות בטבלה',
             eveningShort: 'ערב',
             noSavedDataFound: 'לא נמצאו נתונים שמורים עבור המטופל:',
             note: 'הערה',
             noValidMedicationData: 'לא נמצאו נתוני תרופות חוקיים בטקסט שהודבק',
             open: 'פתח',
-            openT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
+            openT: 'פותח את רשימת התרופות מקובץ (json)',
             paste: 'הדבק',
             pastedTextA: 'אנא להדביק תחילה נתוני תרופות',
             pasteMedicationData: 'הדבק נתוני תרופות',
             pasteT: 'מדביק את רשימת התרופות מהלוח',
             patientName: 'שם המטופל',
             patientNameA: 'אנא להכניס כעת שם מטופל',
-            patientNamePlaceholder: 'שם-פרטי שם-משפחה',
+            patientNamePH: 'שם פרטי   שם משפחה',
             patientNameRequired: 'אנא הכנס שם מטופל',
             patientNameT: 'שם המטופל',
             pictueT: 'תמונת התרופה. (אופציונלי)',
             picture: 'תמונה',
+            pngFileA: 'נא לבחור קובץ .png תקין',
             quantity: 'כמות',
             quantityA: 'אנא להכניס מספר חוקי של כמות (לדוגמה: 0.25, 1, 1.5, 4)',
             quantityT: 'מספר יחידות התרופה לקחת בכל פעם. (אופציונלי)',
             save: 'שמור',
             saveT: 'שומר את השם ורשימת התרופות באחסון המקומי (עוגיות)',
+            share: 'שתף',
+            ShareBlocked: 'שיתוף ישיר לא נתמך, לכן שומר קובץ שניתן לשתף',
+            restore: 'שחזר',
+            restoreT: 'פותח את רשימת התרופות מהאחסון המקומי (עוגיות)',
             timing: 'מתי',
-            As_needed: '🚨 לפי הצורך',
+            As_needed: '🚨 לפי צורך',
             Morning: '🐓 בוקר',
             Noon: '☀️ צהריים',
             Evening: '🌙 ערב',
@@ -1358,16 +1842,318 @@
             timingT: 'מתי נטילת התרופה?',
             title: 'רשימת התרופות של',
             xplainAppT: 'מנהל רשימת תרופות עבור מטופלים',
-        }
-    };
-
+        },
+        ar: {
+            action: 'الإجراء',
+            cancel: 'إلغاء',
+            confirmDelete: 'تأكيد الحذف',
+            confirmDeleteMedication: 'تأكيد حذف الدواء',
+            decodingA: 'خطأ في فك تشفير الملف: ',
+            delete: 'حذف',
+            deleteMedication: 'هل أنت متأكد أنك تريد حذف',
+            dose: 'الجرعة',
+            doseT: 'جرعة الدواء لقرص واحد بالملغ، شراب بالمل إلخ. (اختياري)',
+            dosePH: 'الجرعة بالملغ، مل إلخ.',
+            errorProcessingPastedData: 'خطأ في معالجة البيانات الملصقة. يرجى التأكد من صحة التنسيق',
+            errorQuotaExceeded: 'تم تجاوز الحصة. خطأ في حفظ البيانات لـ ',
+            export: 'تصدير',
+            exportT: 'تصدير قائمة الأدوية إلى واتساب',
+            fileNamePrefix: 'ادوية_ل_',
+            import: 'استيراد',
+            importMedicationData: 'استيراد بيانات الأدوية',
+            info: 'النشرة',
+            infoT: 'البحث عن نشرة معلومات الدواء',
+            invalidQuantity: 'يرجى إدخال رقم صحيح للكمية',
+            invalidTiming: 'قيمة توقيت غير صالحة. يرجى استخدام: عند_الحاجة، صباحاً، ظهراً، أو مساءً',
+            jsonFileA: 'يرجى اختيار ملف json صالح',
+            languageT: 'اختر اللغة',
+            loadedMedicationData: 'تم تحميل بيانات الأدوية للمريض:',
+            medicationDataImported: 'تم استيراد بيانات الأدوية بنجاح',
+            medicationDataMemorized: 'تم حفظ بيانات الأدوية (ككوكيز) للمريض:',
+            medicationScheduleFor: 'جدول الأدوية لـ',
+            medicineName: 'اسم الدواء',
+            medicineName1: 'اسم',
+            medicineName2: 'الدواء',
+            medicineNameT: 'اسم الدواء (مطلوب)',
+            medicineNamePH: 'اسم الدواء',
+            medshareFileA: 'يرجى اختيار ملف صالح (يبدأ اسم الملف بـ ',
+            morningShort: 'صباحاً',
+            NoMedsInTableA: 'لا توجد أدوية في الجدول',
+            noon: 'ظهراً',
+            eveningShort: 'مساءً',
+            noSavedDataFound: 'لم يتم العثور على بيانات محفوظة للمريض:',
+            note: 'ملاحظة',
+            noValidMedicationData: 'لم يتم العثور على بيانات أدوية صالحة في النص الملصق',
+            open: 'فتح',
+            openT: 'فتح قائمة الأدوية من ملف (json)',
+            paste: 'لصق',
+            pastedTextA: 'يرجى لصق بيانات الأدوية أولاً',
+            pasteMedicationData: 'لصق بيانات الأدوية',
+            pasteT: 'لصق قائمة الأدوية من الحافظة',
+            patientName: 'اسم المريض',
+            patientNameA: 'يرجى إدخال اسم المريض',
+            patientNamePH: 'الاسم الشخصي والعائلي',
+            patientNameRequired: 'يرجى إدخال اسم المريض',
+            patientNameT: 'اسم المريض',
+            pictueT: 'صورة الدواء. (اختياري)',
+            picture: 'صورة',
+            pngFileA: 'يرجى اختيار ملف .png صالح',
+            quantity: 'الكمية',
+            quantityA: 'يرجى إدخال رقم صحيح للكمية (مثال: 0.25، 1، 1.5، 4)',
+            quantityT: 'عدد وحدات الدواء التي يجب تناولها في كل مرة. (اختياري)',
+            memorize: 'حفظ',
+            restore: 'استعادة',
+            restoreT: 'فتح قائمة الأدوية من التخزين المحلي (كوكيز)',
+            save: 'حفظ',
+            saveT: 'حفظ الاسم وقائمة الأدوية في التخزين المحلي (كوكيز)',
+            share: 'مشاركة',
+            ShareBlocked: 'المشاركة غير مدعومة - يتم التنزيل بدلاً من ذلك',
+            timing: 'التوقيت',
+            As_needed: '🚨 عند الحاجة',
+            Morning: '🐓 صباحاً',
+            Noon: '☀️ ظهراً',
+            Evening: '🌙 مساءً',
+            timingA: 'يرجى اختيار وقت تناول الدواء',
+            timingOrderA: 'قيمة توقيت غير صالحة. يرجى استخدام: عند_الحاجة، صباحاً، ظهراً، أو مساءً',
+            timingT: 'متى يتم تناول الدواء؟',
+            title: 'قائمة أدوية',
+            xplainAppT: 'مدير قائمة الأدوية للمرضى'
+        },
+        ru: {
+            action: 'Действие',
+            cancel: 'Отмена',
+            confirmDelete: 'Подтвердить удаление',
+            confirmDeleteMedication: 'Подтвердить удаление лекарства',
+            decodingA: 'Ошибка декодирования файла: ',
+            delete: 'Удалить',
+            deleteMedication: 'Вы уверены, что хотите удалить',
+            dose: 'Доза',
+            doseT: 'Доза лекарства одной таблетки в мг, сиропа в мл и т.д. (необязательно)',
+            dosePH: 'Доза в мг, мл и т.д.',
+            errorProcessingPastedData: 'Ошибка обработки вставленных данных. Убедитесь, что формат правильный',
+            errorQuotaExceeded: 'Превышена квота. Ошибка сохранения данных для ',
+            export: 'Экспорт',
+            exportT: 'Экспорт списка лекарств в WhatsApp',
+            fileNamePrefix: 'лекарства_для_',
+            import: 'Импорт',
+            importMedicationData: 'Импорт данных о лекарствах',
+            info: 'Инструкция',
+            infoT: 'Поиск инструкции по применению лекарства',
+            invalidQuantity: 'Пожалуйста, введите правильное число для количества',
+            invalidTiming: 'Неверное значение времени. Используйте: По_необходимости, Утро, Полдень или Вечер',
+            jsonFileA: 'Пожалуйста, выберите правильный json файл',
+            languageT: 'Выбрать язык',
+            loadedMedicationData: 'Загружены данные о лекарствах для пациента:',
+            medicationDataImported: 'Данные о лекарствах успешно импортированы',
+            medicationDataMemorized: 'Данные о лекарствах сохранены (как куки) для пациента:',
+            medicationScheduleFor: 'График приема лекарств для',
+            medicineName: 'Название лекарства',
+            medicineName1: 'Название',
+            medicineName2: 'лекарства',
+            medicineNameT: 'Название лекарства (обязательно)',
+            medicineNamePH: 'Название лекарства',
+            medshareFileA: 'Пожалуйста, выберите правильный файл (имя файла начинается с ',
+            morningShort: 'Утро',
+            NoMedsInTableA: 'В таблице нет лекарств',
+            noon: 'Полдень',
+            eveningShort: 'Вечер',
+            noSavedDataFound: 'Не найдены сохраненные данные для пациента:',
+            note: 'Примечание',
+            noValidMedicationData: 'В вставленном тексте не найдены действительные данные о лекарствах',
+            open: 'Открыть',
+            openT: 'Загрузить список лекарств из файла (json)',
+            paste: 'Вставить',
+            pastedTextA: 'Пожалуйста, сначала вставьте данные о лекарствах',
+            pasteMedicationData: 'Вставить данные о лекарствах',
+            pasteT: 'Вставить список лекарств из буфера обмена',
+            patientName: 'Имя пациента',
+            patientNameA: 'Пожалуйста, введите имя пациента',
+            patientNamePH: 'Имя и Фамилия',
+            patientNameRequired: 'Пожалуйста, введите имя пациента',
+            patientNameT: 'Имя пациента',
+            pictueT: 'Изображение лекарства. (необязательно)',
+            picture: 'Изображение',
+            pngFileA: 'Пожалуйста, выберите правильный .png файл',
+            quantity: 'Количество',
+            quantityA: 'Пожалуйста, введите правильное число для количества (например: 0.25, 1, 1.5, 4)',
+            quantityT: 'Количество единиц лекарства для приема за один раз. (необязательно)',
+            memorize: 'Запомнить',
+            restore: 'Восстановить',
+            restoreT: 'Открыть список лекарств из локального хранилища (куки)',
+            save: 'Сохранить',
+            saveT: 'Сохранить имя и список лекарств в локальное хранилище (куки)',
+            share: 'Поделиться',
+            ShareBlocked: 'Общий доступ не поддерживается - выполняется загрузка',
+            timing: 'Время',
+            As_needed: '🚨 По необходимости',
+            Morning: '🐓 Утро',
+            Noon: '☀️ Полдень',
+            Evening: '🌙 Вечер',
+            timingA: 'Пожалуйста, выберите время приема лекарства',
+            timingOrderA: 'Неверное значение времени. Используйте: По_необходимости, Утро, Полдень или Вечер',
+            timingT: 'Когда принимать лекарство?',
+            title: 'Список лекарств',
+            xplainAppT: 'Менеджер списка лекарств для пациентов'
+        },
+        es: {
+        action: 'Acción',
+        cancel: 'Cancelar',
+        confirmDelete: 'Confirmar Eliminación',
+        confirmDeleteMedication: 'Confirmar Eliminación de Medicamento',
+        decodingA: 'Error al decodificar archivo: ',
+        delete: 'Eliminar',
+        deleteMedication: '¿Está seguro que desea eliminar',
+        dose: 'Dosis',
+        doseT: 'Dosis del medicamento de 1 tableta en mg, jarabe en ml etc. (opcional)',
+        dosePH: 'Dosis en mg, ml etc.',
+        errorProcessingPastedData: 'Error al procesar datos pegados. Por favor asegúrese que el formato es correcto',
+        errorQuotaExceeded: 'Cuota excedida. Error al guardar datos para ',
+        export: 'Exportar',
+        exportT: 'Exporta lista de medicamentos a WhatsApp',
+        fileNamePrefix: 'medicamentos_de_',
+        import: 'Importar',
+        importMedicationData: 'Importar Datos de Medicamentos',
+        info: 'Prospecto',
+        infoT: 'Búsqueda de prospecto del medicamento',
+        invalidQuantity: 'Por favor ingrese un número válido para la cantidad',
+        invalidTiming: 'Valor de tiempo inválido. Por favor use: Según_necesidad, Mañana, Mediodía o Noche',
+        jsonFileA: 'Por favor seleccione un archivo json válido',
+        languageT: 'Elegir Idioma',
+        loadedMedicationData: 'Datos de medicamentos cargados para el paciente:',
+        medicationDataImported: 'Datos de medicamentos importados exitosamente',
+        medicationDataMemorized: 'Datos de medicamentos memorizados (como cookies) para el paciente:',
+        medicationScheduleFor: 'Programa de medicamentos para',
+        medicineName: 'Nombre del Medicamento',
+        medicineName1: 'Nombre del',
+        medicineName2: 'Medicamento',
+        medicineNameT: 'Nombre del medicamento (requerido)',
+        medicineNamePH: 'Nombre del Medicamento',
+        medshareFileA: 'Por favor seleccione un archivo válido (nombre del archivo que comience con ',
+        morningShort: 'AM',
+        NoMedsInTableA: 'No hay medicamentos en la tabla',
+        noon: 'Mediodía',
+        eveningShort: 'PM',
+        noSavedDataFound: 'No se encontraron datos guardados para el paciente:',
+        note: 'Nota',
+        noValidMedicationData: 'No se encontraron datos válidos de medicamentos en el texto pegado',
+        open: 'Abrir',
+        openT: 'Carga lista de medicamentos desde archivo (json)',
+        paste: 'Pegar',
+        pastedTextA: 'Por favor pegue primero los datos de medicamentos',
+        pasteMedicationData: 'Pegar Datos de Medicamentos',
+        pasteT: 'Pega lista de medicamentos desde el portapapeles',
+        patientName: 'Nombre del Paciente',
+        patientNameA: 'Por favor ingrese el nombre del paciente',
+        patientNamePH: 'Nombre y Apellido',
+        patientNameRequired: 'Por favor ingrese el nombre del paciente',
+        patientNameT: 'Nombre del paciente',
+        pictueT: 'Imagen del medicamento. (opcional)',
+        picture: 'Imagen',
+        pngFileA: 'Por favor seleccione un archivo .png válido',
+        quantity: 'Cantidad',
+        quantityA: 'Por favor ingrese un número válido para la cantidad (ej. 0.25, 1, 1.5, 4)',
+        quantityT: 'Número de unidades de medicamento a tomar cada vez. (opcional)',
+        memorize: 'Mantener',
+        restore: 'Recuperar',
+        restoreT: 'Abre lista de medicamentos desde almacenamiento local (cookies)',
+        save: 'Guardar',
+        saveT: 'Guarda nombre y lista de medicamentos en almacenamiento local (cookies)',
+        share: 'Compartir',
+        ShareBlocked: 'Compartir no soportado - descargando en su lugar',
+        timing: 'Horario',
+        As_needed: '🚨 Según necesidad',
+        Morning: '🐓 Mañana',
+        Noon: '☀️ Mediodía',
+        Evening: '🌙 Noche',
+        timingA: 'Por favor seleccione el horario de toma del medicamento',
+        timingOrderA: 'Valor de tiempo inválido. Por favor use: Según_necesidad, Mañana, Mediodía o Noche',
+        timingT: '¿Cuándo se toma el medicamento?',
+        title: 'Lista de medicamentos de',
+        xplainAppT: 'Gestor de lista de medicamentos para pacientes'
+    },
+    fr: {
+        action: 'Action',
+        cancel: 'Annuler',
+        confirmDelete: 'Confirmer la Suppression',
+        confirmDeleteMedication: 'Confirmer la Suppression du Médicament',
+        decodingA: 'Erreur de décodage du fichier : ',
+        delete: 'Supprimer',
+        deleteMedication: 'Êtes-vous sûr de vouloir supprimer',
+        dose: 'Dose',
+        doseT: 'Dose du médicament d\'un comprimé en mg, sirop en ml etc. (optionnel)',
+        dosePH: 'Dose en mg, ml etc.',
+        errorProcessingPastedData: 'Erreur lors du traitement des données collées. Veuillez vérifier que le format est correct',
+        errorQuotaExceeded: 'Quota dépassé. Erreur lors de la sauvegarde des données pour ',
+        export: 'Exporter',
+        exportT: 'Exporte la liste des médicaments vers WhatsApp',
+        fileNamePrefix: 'medicaments_de_',
+        import: 'Importer',
+        importMedicationData: 'Importer les Données des Médicaments',
+        info: 'Notice',
+        infoT: 'Recherche de notice du médicament',
+        invalidQuantity: 'Veuillez entrer un nombre valide pour la quantité',
+        invalidTiming: 'Valeur de temps invalide. Veuillez utiliser : Si_besoin, Matin, Midi ou Soir',
+        jsonFileA: 'Veuillez sélectionner un fichier json valide',
+        languageT: 'Choisir la Langue',
+        loadedMedicationData: 'Données des médicaments chargées pour le patient :',
+        medicationDataImported: 'Données des médicaments importées avec succès',
+        medicationDataMemorized: 'Données des médicaments mémorisées (comme cookies) pour le patient :',
+        medicationScheduleFor: 'Programme de médicaments pour',
+        medicineName: 'Nom du Médicament',
+        medicineName1: 'Nom du',
+        medicineName2: 'Médicament',
+        medicineNameT: 'Nom du médicament (requis)',
+        medicineNamePH: 'Nom du Médicament',
+        medshareFileA: 'Veuillez sélectionner un fichier valide (nom du fichier commençant par ',
+        morningShort: 'Matin',
+        NoMedsInTableA: 'Pas de médicaments dans le tableau',
+        noon: 'Midi',
+        eveningShort: 'Soir',
+        noSavedDataFound: 'Aucune donnée sauvegardée trouvée pour le patient :',
+        note: 'Note',
+        noValidMedicationData: 'Aucune donnée valide de médicaments trouvée dans le texte collé',
+        open: 'Ouvrir',
+        openT: 'Charge la liste des médicaments depuis un fichier (json)',
+        paste: 'Coller',
+        pastedTextA: 'Veuillez d\'abord coller les données des médicaments',
+        pasteMedicationData: 'Coller les Données des Médicaments',
+        pasteT: 'Colle la liste des médicaments depuis le presse-papiers',
+        patientName: 'Nom du Patient',
+        patientNameA: 'Veuillez entrer le nom du patient',
+        patientNamePH: 'Prénom et Nom',
+        patientNameRequired: 'Veuillez entrer le nom du patient',
+        patientNameT: 'Nom du patient',
+        pictueT: 'Image du médicament. (optionnel)',
+        picture: 'Image',
+        pngFileA: 'Veuillez sélectionner un fichier .png valide',
+        quantity: 'Quantité',
+        quantityA: 'Veuillez entrer un nombre valide pour la quantité (ex. 0.25, 1, 1.5, 4)',
+        quantityT: 'Nombre d\'unités de médicament à prendre à chaque fois. (optionnel)',
+        memorize: 'Garder',
+        restore: 'Restaurer',
+        restoreT: 'Ouvre la liste des médicaments depuis le stockage local (cookies)',
+        save: 'Sauvegarder',
+        saveT: 'Sauvegarde le nom et la liste des médicaments dans le stockage local (cookies)',
+        share: 'Partager',
+        ShareBlocked: 'Partage non supporté - téléchargement à la place',
+        timing: 'Horaire',
+        As_needed: '🚨 Si besoin',
+        Morning: '🐓 Matin',
+        Noon: '☀️ Midi',
+        Evening: '🌙 Soir',
+        timingA: 'Veuillez sélectionner l\'heure de prise du médicament',
+        timingOrderA: 'Valeur de temps invalide. Veuillez utiliser : Si_besoin, Matin, Midi ou Soir',
+        timingT: 'Quand prendre le médicament ?',
+        title: 'Liste de médicaments de',
+        xplainAppT: 'Gestionnaire de liste de médicaments pour patients'
+    }
+    }
     const rtlLanguages = ['ar', 'he'];
     const defaultLang = navigator.language.split('-')[0];//to avoid regional dialects
     let currentLang = defaultLang;
-    console.log('defaultLang = ' + defaultLang);
 
     function t(key) {
-        console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
+        //console.log('translations[', currentLang, '][', key, ']=', translations[currentLang][key]);
         return translations[currentLang][key];
     }
 
@@ -1379,35 +2165,74 @@
         // Update text position in drugName input label svg according to language direction
         const text_x = isRTL ? 240 : 40;
         document.getElementById('t-text').setAttribute('x', text_x);
-        // Update text content in elements with data-content attribute.
+        // Update text content in data-content containing elements.
         document.querySelectorAll('[data-content]').forEach(el => el.textContent = t(el.getAttribute('data-content')) || el.textContent);
-        // Update titles (popup text) content in elements with data-title attribute.
+        // Update titles (popup text) content if have data-title attribute.
         document.querySelectorAll('[data-title]').forEach(el => el.title = t(el.getAttribute('data-title')) || el.title);
         // Update all placeholders
         document.querySelectorAll('[data-placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-placeholder')) || el.placeholder);
         // Function to populate the timing select based on selected language
         const selector = document.getElementById('timingSelect')
         const align = isRTL ? 'right-align' : 'left-align';
+        const selectedTiming = selector.value;//**new^***
         selector.innerHTML = `<option value="" class=` + align + `>🕓</option>`;
-        const currentTiming = Object.keys(timingOrder).find(key => t(key) === selector.value);//**new^***
         Object.keys(timingOrder).forEach(timingKey => {
             const option = document.createElement('option');
             option.value = timingKey;
             option.textContent = t(timingKey);
             option.classList.add(align);
             selector.appendChild(option);
-
         });
+        selector.value = selectedTiming;
+        adjustInputWidth(selector, "select_type");
+        SyncUpScrollWidth();
+        fileNamePrefix = t('fileNamePrefix');
     }
 
+    // Add this function to your JavaScript
+    function adjustInputWidth(input_element, type) {
+        //console.log('adjustInputWidth');
+        // Create a temporary span to measure text width
+        // Reuse a single span element for all adjustments
+        if (!window.adjustmentSpan) {
+            window.adjustmentSpan = document.createElement('span');
+            window.adjustmentSpan.style.visibility = 'hidden';
+            window.adjustmentSpan.style.position = 'absolute';
+            window.adjustmentSpan.style.whiteSpace = 'pre';
+            document.body.appendChild(window.adjustmentSpan);
+        }
+        const span = window.adjustmentSpan;
+        // Copy the input's font properties
+        const inputStyle = window.getComputedStyle(input_element);
+        span.style.font = inputStyle.font;
+        span.style.padding = inputStyle.padding;
 
-    function TitleLayoutPerfection() {
+        // Update width based on content
+        span.textContent = input_element.value || input_element.placeholder || '';
+        /*         if (input_element.id == "medicineName") {
+                    console.log('input_e.value=' + input_element.value + ' .placeholder=' + input_element.placeholder)
+                }; DEBUGGING */
+        if (type == "select_type") {
+            if (input_element.value) {
+                span.textContent = t(input_element.value) + "##"; // Add space for the dropdown arrow
+            }
+        }
+        let contentWidth = span.offsetWidth;
+        // Convert em to pixels (assuming base font size)
+        const fontSize = parseFloat(inputStyle.fontSize);
+        // Clamp width between min (4 fontSize) and max (12 fontSize)
+        contentWidth = Math.max(4 * fontSize, Math.min(12 * fontSize, contentWidth));
+        input_element.style.width = `${contentWidth}px`;
+    }
+
+    function titlePlaceMiddle() {
+        //console.log('titlePlaceMiddle');
         function properSpaceWidth(titleE) { // calculate the proper width for the spacer element, to center the title
             if (!titleE) return {};
-            const containerWidth = titleE.parentElement.offsetWidth;
+            const containerWidth = titleE.parentElement.parentElement.offsetWidth;
             const titleWidth = titleE.offsetWidth;
             //let spacerWidth = document.getElementById('spacer');
-            const langWidth = document.getElementById('languageSelector').offsetWidth;
+            const langWidth = document.getElementById('languageSelector').offsetWidth + document.getElementById('langIcon').offsetWidth;
             spacerWidthPx = Math.floor(Math.max(0, containerWidth * 0.5 - langWidth - titleWidth * 0.5)) + "px";
             //console.log('width= ' + width+ 'contWidth' + containerWidth); 
             return {
@@ -1422,23 +2247,20 @@
         const selectElement = document.getElementById('language');
         // Get browser language, taking only the first two characters (e.g., 'en' from 'en-US')
         const browserLang = navigator.language.slice(0, 2);
-
         // Set the value if it exists in options
         if (Array.from(selectElement.options).some(option => option.value === browserLang)) {
             selectElement.value = browserLang;
         }
+        let fileNamePrefix = t('fileNamePrefix');
+        // Create and dispatch change event (calls handleLanguageChange)
+        selectElement.dispatchEvent(new Event('change'));
 
-        // Create and dispatch change event
-        const event = new Event('change');
-        selectElement.dispatchEvent(event);
-        TitleLayoutPerfection();
     }
 
-    /* #endregion Translation */
+    // #endregion Translation */
 
-
-    /* #region  Image Handler Modal */
-    /*  #region Initialize img_handler global elements */
+    /* #region Image Handler Modal */
+    /* #region Initialize_img_handler global elements */
     const img_handler_mdl = document.getElementById('img_handler_modal');
     // Call img_handler once to set up the initial state
     const mdlCanvas = document.getElementById('mdlCanvas');
@@ -1464,7 +2286,7 @@
         startY: 0
     };
     const handlers = img_handler(false); // call img_handler to set up the initial state
-    /* #endregion */
+    /* #endregion Initialize_img_handler global elements */
 
     function img_handler(show) {
         if (show) { img_handler_mdl.style.display = 'block'; } // show the modal
@@ -1768,30 +2590,88 @@
     /* #endregion Image Handler Modal */
 
     /* #region Initialize */
-    console.log("Script re/start");// js start point
-    // Ensure width of patient-controls is same as form
+    //console.log("Script re/start");// js start point
     document.addEventListener('DOMContentLoaded', function () {
-        triggerInitialLanguage();
-        updateTable();
-        init();
+        initialize();
     });
+
     window.addEventListener('resize', function () {
-        init();
+        console.log("resize");
+        initialize();
     });
-    function init() {
-        TitleLayoutPerfection();
-        ensurePatientControlsWidthLessThanTable();
+
+    function tableAdjustWidths() {
+        //console.log("tableAdjustWidths");
+        // Add event listeners to all inputs in the table
+        document.querySelectorAll('.table-container input[type="text"]').forEach(input => {
+            input.addEventListener('input', () => adjustInputWidth(input, "input_text_type"));
+            // Initial adjustment
+            adjustInputWidth(input, "input_text_type");
+        });
+        // Same to all select inputs in the table
+        document.querySelectorAll('.table-container select').forEach(select => {
+            select.addEventListener('change', () => adjustInputWidth(select, "select_type"));
+            // Initial adjustment
+            adjustInputWidth(select, "select_type");
+
+        });
+        SyncUpScrollWidth();
     }
-    function ensurePatientControlsWidthLessThanTable() {
-        const table = document.querySelector('.table-container');
-        const patientControls = document.querySelector('.patient-controls');
-        if (table && patientControls) {
-            const tableWidth = table.offsetWidth;
+
+    const scrollbar = document.querySelector('.scrollbar');//Upper horizontal scrollbar container
+    const scrollWrap = document.querySelector('.scroll-wrapper');
+
+    scrollbar.addEventListener('scroll', () => {
+        //console.log("scrollbar scroll");
+        scrollWrap.scrollLeft = scrollbar.scrollLeft;
+    });
+
+    scrollWrap.addEventListener('scroll', () => {
+        scrollbar.scrollLeft = scrollWrap.scrollLeft;
+    });
+
+    triggerInitialLanguage();
+    function initialize() {
+        /*debugging
+        const err = new Error();
+        const callerName = err.stack.split('\n')[2].trim().split(' ')[1];
+        console.log("initialize <" + callerName);
+        //end of debugging*/
+        updateTable();
+        overallAllign();
+    }
+    function overallAllign() {
+        //console.log("overallAllign");
+        tableAdjustWidths();
+        // Force pc browser re-render
+        medicationTable.style.display = 'none';
+        medicationTable.offsetHeight; // Trigger reflow
+        medicationTable.style.display = '';
+        // Force mobile browser re-render
+        setTimeout(() => {
+            medicationTable.style.opacity = '0.99';
+            setTimeout(() => medicationTable.style.opacity = '1', 20);
+        }, 0);
+        titlePlaceMiddle();
+        adjustControlsWidthsToTable();
+    }
+
+    function adjustControlsWidthsToTable() {
+        //console.log("adjustControlsWidthsToTable");
+        if (medicationTable && patientControls) {
             //console.log("tableWidth = " + tableWidth);
-            patientControls.style.maxWidth = `${tableWidth}px`;
+            patientControls.style.maxWidth = `${medicationTable.offsetWidth}px`;
         }
-    };
-    /* #endregion Initialize */
+        SyncUpScrollWidth();
+    }
+    // Sync the upper scrollbar width with the table container
+    function SyncUpScrollWidth() {
+        //    console.log("SyncUpScrollWidth ");
+        document.getElementById("scrollbarDiv").style.width = medicationTable.offsetWidth + 'px';
+        scrollbar.style.width = scrollWrap.offsetWidth + 'px';
+        //document.getElementsByClassName("dotted-background")[0].style.width = medicationTable.offsetWidth + 'px';
+    }
+    /* #endregion */
 </script>
 
 </html>
